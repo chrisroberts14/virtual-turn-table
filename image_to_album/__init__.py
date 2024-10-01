@@ -2,10 +2,13 @@
 Module creating the image to album API
 """
 
-from fastapi import FastAPI, UploadFile
+from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 
+from image_to_album.images import imgs_router
+
 app = FastAPI()
+app.include_router(imgs_router, prefix="/imgs", tags=["Images"])
 
 
 @app.get("/")
@@ -24,12 +27,3 @@ def check_health():
     :return:
     """
     return {"status": "alive"}
-
-
-@app.post("/image_to_album")
-def image_to_album(img: UploadFile = UploadFile(...)):
-    """
-    Endpoint to get the image to album
-    :return:
-    """
-    return {"filename", img.filename}
