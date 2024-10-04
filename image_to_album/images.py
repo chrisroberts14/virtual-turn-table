@@ -8,8 +8,7 @@ from fastapi.responses import JSONResponse
 
 from pathlib import Path
 
-from GoogleSearch import Search
-from starlette.responses import FileResponse
+from .reverse_image_search import bing_reverse_image_search
 
 imgs_router = APIRouter()
 
@@ -29,12 +28,7 @@ async def reverse_image_search(file: UploadFile = File(...)):
             content={"message": "Invalid file type. Only JPEG and PNG are allowed."}
         )
 
-    # Save the uploaded file
-    file_path = Path(r"C:\Users\chris\OneDrive\Desktop\python\virtual-turn-table") / file.filename
-    with file_path.open("wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-
-    output = Search(file_path=str(file_path))
+    response = bing_reverse_image_search(file.file)
 
     # Return the saved image file as a response
-    return {"test": output}
+    return {"test": response}
