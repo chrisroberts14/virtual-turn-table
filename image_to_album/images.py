@@ -1,14 +1,12 @@
 """
 Module for all image endpoints in the image_to_album API
 """
-import shutil
+import os
 
-from fastapi import APIRouter, UploadFile, File
+import requests
+from fastapi import APIRouter, UploadFile, File, HTTPException
 from fastapi.responses import JSONResponse
 
-from pathlib import Path
-
-from .reverse_image_search import bing_reverse_image_search
 
 imgs_router = APIRouter()
 
@@ -17,7 +15,6 @@ imgs_router = APIRouter()
 async def reverse_image_search(file: UploadFile = File(...)):
     """
     Upload an image to the API
-    Then save it to an online storage service
     Then do the reverse image search
     :param file:
     :return:
@@ -28,7 +25,28 @@ async def reverse_image_search(file: UploadFile = File(...)):
             content={"message": "Invalid file type. Only JPEG and PNG are allowed."}
         )
 
-    response = bing_reverse_image_search(file.file)
+    subscription_key = os.getenv("BING_API_KEY")
+    endpoint = "https://api.bing.microsoft.com/v7.0/images/visualsearch"
 
-    # Return the saved image file as a response
-    return {"test": response}
+    headers = {
+        'Ocp-Apim-Subscription-Key': subscription_key,
+    }
+
+    # This contains the image data
+    files = {'image': ('placeholder.jpg', file.file)}
+
+    try:
+        # Call the Bing Visual Search API
+        response = requests.post(endpoint, headers=headers, files=files)
+        response.raise_for_status()
+
+        results = response.json()
+
+        # Extract the image names from the response
+        for tag in results.get("tags", []):
+            for action in tag.get("actions", []):
+                if action["actionType"] == "VisualSearch":
+                    return [i['name'] for i in action['data']['value'][:5]]
+
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(status_code=500, detail=str(e))
