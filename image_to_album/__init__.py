@@ -1,6 +1,4 @@
-"""
-Module creating the image to album API
-"""
+"""Module creating the image to album API."""
 
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
@@ -14,7 +12,8 @@ app.include_router(imgs_router, prefix="/imgs", tags=["Images"])
 @app.get("/")
 def docs_redirect() -> RedirectResponse:
     """
-    Redirect to the docs
+    Redirect to the docs.
+
     :return:
     """
     return RedirectResponse(url="/docs")
@@ -23,7 +22,8 @@ def docs_redirect() -> RedirectResponse:
 @app.get("/health")
 def check_health():
     """
-    Endpoint to check health of the api for use with docker compose
+    Endpoint to check health of the api for use with docker compose.
+
     :return:
     """
     return {"status": "alive"}
