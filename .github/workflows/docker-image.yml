@@ -17,4 +17,4 @@ jobs:
     - name: Build the Docker image
       run: |
         cd image_to_album
-        docker build.
+        docker build .
