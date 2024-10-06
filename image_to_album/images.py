@@ -1,10 +1,14 @@
 """Module for all image endpoints in the image_to_album API."""
 
 import os
+import logging
 
 import requests
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from fastapi.responses import JSONResponse
+
+
+logger = logging.getLogger(__name__)
 
 
 imgs_router = APIRouter()
@@ -17,8 +21,9 @@ async def reverse_image_search(file: UploadFile = File(...)):
 
     Then do the reverse image search
     :param file:
-    :return:
+    :return A list of the top 5 image names from the reverse image search:
     """
+    logger.info("Received image: %s", file.filename)
     if file.content_type not in ["image/jpeg", "image/png"]:
         return JSONResponse(
             status_code=400,
@@ -46,7 +51,10 @@ async def reverse_image_search(file: UploadFile = File(...)):
         for tag in results.get("tags", []):
             for action in tag.get("actions", []):
                 if action["actionType"] == "VisualSearch":
-                    return [i["name"] for i in action["data"]["value"][:5]]
+                    top_5 = [i["name"] for i in action["data"]["value"][:5]]
+                    logger.info("Top 5 image names: %s", top_5)
+                    return top_5
 
     except requests.exceptions.RequestException as e:
+        logger.error("Error with API: %s", e)
         raise HTTPException(status_code=500, detail=str(e)) from e

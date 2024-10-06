@@ -1,17 +1,13 @@
-"""Module creating the image to album API."""
-
-import logging
+"""API to return music."""
 
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 
-from image_to_album.images import imgs_router
+from music.music import music_router
 
-logger = logging.getLogger(__name__)
-logging.basicConfig(filename="img_to_album.log", level=logging.INFO)
 
 app = FastAPI()
-app.include_router(imgs_router, prefix="/imgs", tags=["Images"])
+app.include_router(music_router, prefix="/music", tags=["music"])
 
 
 @app.get("/")
