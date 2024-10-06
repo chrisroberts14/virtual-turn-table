@@ -25,7 +25,7 @@ const Player = () => {
 
         window.onSpotifyWebPlaybackSDKReady = () => {
             const spotifyPlayer = new window.Spotify.Player({
-                name: 'Vite React Player',
+                name: 'Player',
                 getOAuthToken: cb => { cb(token); },
                 volume: 0.5
             });
@@ -62,31 +62,7 @@ const Player = () => {
 
             setPlayer(spotifyPlayer);
         };
-    };
-
-    const transferPlaybackHere = async (deviceId, token) => {
-        try {
-            const response = await fetch('https://api.spotify.com/v1/me/player', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({
-                    "device_ids": [ deviceId ],
-                    "play": false,
-                }),
-            });
-
-            if (response.status === 204) {
-                console.log('Successfully transferred playback!');
-            } else {
-                console.error('Failed to transfer playback.', await response.text());
-            }
-        } catch (error) {
-            console.error('Error transferring playback:', error);
-        }
-    };
+    }
 
     const playTrack = async () => {
         if (!deviceId) {
@@ -102,7 +78,7 @@ const Player = () => {
                     'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                    uris: ['spotify:track:YOUR_TRACK_URI'] // Replace with your track URI
+                    uris: ['spotify:track:3F2N8N0qHrQ32cQaX8DWRS'] // Replace with the desired track
                 }),
             });
 
@@ -143,22 +119,21 @@ const Player = () => {
 
     return (
         <div style={{ textAlign: 'center', marginTop: '50px' }}>
-            <h1>Spotify Web Playback SDK</h1>
+            <h1>Player</h1>
             <div id="status">
                 {isReady ? 'Ready' : 'Not Ready'}
             </div>
             <div style={{ marginTop: '20px' }}>
-                <button onClick={playTrack} style={styles.button}>
+                <button onClick={playTrack}>
                     Play
                 </button>
-                <button onClick={pauseTrack} style={styles.button}>
+                <button onClick={pauseTrack}>
                     Pause
                 </button>
             </div>
             {currentTrack && (
                 <div style={{ marginTop: '30px' }}>
                     <h2>Now Playing:</h2>
-                    <img src={currentTrack.album.images[0].url} alt={currentTrack.name} width="200" />
                     <h3>{currentTrack.name}</h3>
                     <p>{currentTrack.artists.map(artist => artist.name).join(', ')}</p>
                 </div>
