@@ -77,8 +77,8 @@ async def reverse_image_search(
         raise HTTPException(status_code=500, detail=str(e)) from e
 
 
-@album_router.post("/get_uris/")
-async def get_uris(
+@album_router.post("/get_uri/")
+async def get_uri(
     settings: Annotated[Settings, Depends(get_settings)], image_names: list[str]
 ):
     """
