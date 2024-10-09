@@ -47,3 +47,19 @@ def image_to_uri(file: UploadFile) -> str:
     endpoint = "http://localhost:8000/image_to_album/get_uri/"
     response = requests.post(endpoint, json=response.json(), timeout=5)
     return response.json()
+
+
+@app.get("/get_user_info/")
+def get_user_info(access_token: str):
+    """
+    Get user data from spotify returning only the necessary data.
+
+    :param access_token:
+    :return:
+    """
+    endpoint = "https://api.spotify.com/v1/me"
+    headers = {"Authorization": f"Bearer {access_token}"}
+
+    response = requests.get(endpoint, headers=headers, timeout=5)
+    response.raise_for_status()
+    return {k: response.json()[k] for k in ["display_name", "email", "id", "images"]}
