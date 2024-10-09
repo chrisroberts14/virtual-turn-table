@@ -18,3 +18,25 @@ jobs:
       run: |
         cd image_to_album
         docker build .
+
+  build-bff-container:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build the Docker image
+      run: |
+        cd bff
+        docker build .
+
+  build-ui-container:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the Docker image
+        run: |
+          cd turn_table_ui
+          docker build .
