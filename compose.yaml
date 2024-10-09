@@ -4,8 +4,18 @@ services:
     command: fastapi run image_to_album --port 8000
     ports:
       - "8000:8000"
+    healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+        interval: 10s
+        timeout: 5s
+        retries: 3
   bff:
     build: bff
     command: fastapi run bff --port 8001
     ports:
       - "8001:8001"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8001/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
