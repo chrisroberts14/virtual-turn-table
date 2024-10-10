@@ -1,6 +1,7 @@
 """Tests for the image to album api."""
 
 import json
+from pathlib import Path
 
 import requests
 
@@ -39,14 +40,16 @@ def test_reverse_image_search(client, mocker):
     # Mock the response from the image search api
     mock_post = mocker.patch("requests.post")
     with open(
-        "./mock_api_data/mock_image_search_data.json", "r", encoding="utf-8"
+        Path(__file__).parent / "mock_api_data/mock_image_search_data.json",
+        "r",
+        encoding="utf-8",
     ) as f:
         mock_response_data = json.load(f)
     mock_response = mocker.Mock()
     mock_response.json.return_value = mock_response_data
     mock_post.return_value = mock_response
 
-    with open("./mock_api_data/mock_image.jpg", "rb") as f:
+    with open(Path(__file__).parent / "mock_api_data/mock_image.jpg", "rb") as f:
         response = client.post(
             "/imgs/reverse_image_search/",
             files={
@@ -68,7 +71,9 @@ def test_bad_file_type(client):
     :param client:
     :return:
     """
-    with open("./mock_api_data/mock_image_search_data.json", "rb") as f:
+    with open(
+        Path(__file__).parent / "mock_api_data/mock_image_search_data.json", "rb"
+    ) as f:
         response = client.post(
             "/imgs/reverse_image_search/",
             files={
@@ -94,7 +99,7 @@ def test_api_timeout(client, mocker):
     :return:
     """
     mocker.patch("requests.post", side_effect=requests.exceptions.ConnectionError)
-    with open("./mock_api_data/mock_image.jpg", "rb") as f:
+    with open(Path(__file__).parent / "mock_api_data/mock_image.jpg", "rb") as f:
         response = client.post(
             "/imgs/reverse_image_search/",
             files={
@@ -117,7 +122,7 @@ def test_api_error(client, mocker):
     :return:
     """
     mocker.patch("requests.post", side_effect=requests.exceptions.RequestException)
-    with open("./mock_api_data/mock_image.jpg", "rb") as f:
+    with open(Path(__file__).parent / "mock_api_data/mock_image.jpg", "rb") as f:
         response = client.post(
             "/imgs/reverse_image_search/",
             files={
@@ -151,7 +156,9 @@ def test_spotify_search(client, mocker):
             mock_response_data = {"access_token": "test_token"}
         else:
             with open(
-                "./mock_api_data/mock_spotify_search_data.json", "r", encoding="utf-8"
+                Path(__file__).parent / "mock_api_data/mock_spotify_search_data.json",
+                "r",
+                encoding="utf-8",
             ) as f:
                 mock_response_data = json.load(f)
         mock_response = mocker.Mock()
