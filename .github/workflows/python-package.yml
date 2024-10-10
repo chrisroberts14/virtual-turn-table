@@ -32,4 +32,6 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Test with pytest
       run: |
+        pwd
+        ls
         pytest image_to_album
