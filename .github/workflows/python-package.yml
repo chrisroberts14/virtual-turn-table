@@ -26,10 +26,9 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        cd image_to_album
         python -m pip install --upgrade pip
         python -m pip install pytest
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        if [ -f ./image_to_album/requirements.txt ]; then pip install -r ./image_to_album/requirements.txt; fi
     - name: Test with pytest
       run: |
         pytest
