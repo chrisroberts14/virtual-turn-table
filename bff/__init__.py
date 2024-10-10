@@ -71,22 +71,16 @@ def image_to_uri(
     :param file:
     :return:
     """
-    print(file.filename)
-    # Hard coded for now will eventually be in a config file
-    # endpoint = f"{settings.img_to_album_address}imgs/reverse_image_search/"
-    # files = {"file": ("placeholder.jpg", file.file)}
+    endpoint = f"{settings.img_to_album_address}imgs/reverse_image_search/"
+    files = {"file": ("placeholder.jpg", file.file)}
 
     # Get best results for image search
-    # response = requests.post(endpoint, files=files, timeout=5)
-    # response.raise_for_status()
-
-    data = ["Arcade Fire - We"]
+    response = requests.post(endpoint, files=files, timeout=5)
+    response.raise_for_status()
 
     # Get the URI
     endpoint = f"{settings.img_to_album_address}album/get_uri/"
-    response = requests.post(endpoint, json=data, timeout=5)
-    print(response.status_code)
-    print(response.text)
+    response = requests.post(endpoint, json=response.json(), timeout=5)
     response.raise_for_status()
     return response.json()
 

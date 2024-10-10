@@ -4,6 +4,7 @@ import UserBox from "./components/UserBox";
 import {useEffect, useState} from "react";
 import Upload from "@/components/Upload.tsx";
 import axios from "axios";
+import Album from "@/components/Album.tsx";
 
 function App() {
     const [isSignedIn, setIsSignedIn] = useState(false);
@@ -43,19 +44,21 @@ function App() {
     });
 
     useEffect(() => {
-        axios.get(import.meta.env.VITE_BFF_ADDRESS + "/album_details/", {
-            params: {
-                spotify_access_token: localStorage.getItem('spotify_access_token'),
-                album_uri: albumURI
-            }
-        }).then(function (response) {
-            setCurrentAlbumTitle(response.data["name"]);
-            setCurrentAlbumArtist(response.data["artist"]);
-            setCurrentAlbumImage(response.data["image_url"]);
-        }).catch(function (error) {
-          console.log(error);
-        });
-
+        if (localStorage.getItem('spotify_access_token') && albumURI){
+            axios.get(import.meta.env.VITE_BFF_ADDRESS + "/album_details/", {
+                params: {
+                    spotify_access_token: localStorage.getItem('spotify_access_token'),
+                    album_uri: albumURI
+                }
+            }).then(function (response) {
+                console.log(response);
+                setCurrentAlbumTitle(response.data["title"]);
+                setCurrentAlbumArtist(response.data["artists"]);
+                setCurrentAlbumImage(response.data["image_url"]);
+            }).catch(function (error) {
+                console.log(error);
+            });
+        }
     }, [albumURI]);
 
     return (
@@ -69,6 +72,7 @@ function App() {
                 </NavbarItem>
             </Navbar>
             <Upload setAlbumURI={setAlbumURI}></Upload>
+            <Album title={currentAlbumTitle} artist={currentAlbumArtist} img_url={currentAlbumImage}></Album>
         </>
     );
 }

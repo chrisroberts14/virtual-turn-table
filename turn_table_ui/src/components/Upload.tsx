@@ -44,7 +44,7 @@ const Upload = ({setAlbumURI}) => {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            height: '100vh',
+            height: '50vh',
         }}
             >
             <Card className="max-w-[400px]">
