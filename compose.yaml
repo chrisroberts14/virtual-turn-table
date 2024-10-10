@@ -19,3 +19,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
+
+  ui:
+    build: turn_table_ui
+    command: ["serve", "-l", "5173", "-s", "dist"]
+    ports:
+      - "5173:5173"
