@@ -109,7 +109,7 @@ async def get_uri(
 
     search_url = "https://api.spotify.com/v1/search"
 
-    headers = {"Authorization": f'Bearer {response_data['access_token']}'}
+    headers = {"Authorization": f"Bearer {response_data['access_token']}"}
 
     logger.info("Image name: %s", image_name)
 
