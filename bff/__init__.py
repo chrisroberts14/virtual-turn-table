@@ -1,10 +1,42 @@
 """Module creating the bff."""
 
+from functools import lru_cache
+
 import requests
 from fastapi import FastAPI, UploadFile
 from fastapi.responses import RedirectResponse
+from fastapi.middleware.cors import CORSMiddleware
+
+from bff.api_models import User
+from bff.config import Settings
 
 app = FastAPI()
+
+
+@lru_cache
+def get_settings():
+    """
+    Get the settings.
+
+    :return:
+    """
+    return Settings()
+
+
+origins = [
+    "http://localhost",
+    "http://localhost:3000",
+    "http://localhost:8000",
+    "http://localhost:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")
@@ -50,16 +82,23 @@ def image_to_uri(file: UploadFile) -> str:
 
 
 @app.get("/get_user_info/")
-def get_user_info(access_token: str):
+def get_user_info(spotify_access_token: str) -> User:
     """
     Get user data from spotify returning only the necessary data.
 
-    :param access_token:
+    :param spotify_access_token:
     :return:
     """
     endpoint = "https://api.spotify.com/v1/me"
-    headers = {"Authorization": f"Bearer {access_token}"}
+    headers = {"Authorization": f"Bearer {spotify_access_token}"}
 
     response = requests.get(endpoint, headers=headers, timeout=5)
     response.raise_for_status()
-    return {k: response.json()[k] for k in ["display_name", "email", "id", "images"]}
+    data = response.json()
+
+    return User(
+        id=data["id"],
+        display_name=data["display_name"],
+        email=data["email"],
+        image_url=data["images"][0]["url"],
+    )

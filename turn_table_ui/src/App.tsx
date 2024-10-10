@@ -2,6 +2,7 @@ import {Navbar, NavbarBrand, NavbarItem} from "@nextui-org/navbar";
 import Login from "./components/Login";
 import UserBox from "./components/UserBox";
 import React, {useEffect} from "react";
+import Upload from "@/components/Upload.tsx";
 
 function App() {
     const [isSignedIn, setIsSignedIn] = React.useState(false);
@@ -12,7 +13,6 @@ function App() {
         const token = params.get("access_token")
 
         if (token) {
-            console.log("Logging in");
             localStorage.setItem('spotify_access_token', token);
             localStorage.setItem('spotify_login_time', String(new Date()));
             localStorage.setItem("spotify_session_length", params.get("expires_in") as string);
@@ -22,30 +22,30 @@ function App() {
             // @ts-ignore
             const session_length = (new Date().getTime() - new Date(start_time).getTime()) / 1000;
             if (session_length > Number(localStorage.getItem("spotify_session_length"))) {
-                console.log("Logging out");
                 localStorage.removeItem('spotify_access_token');
                 localStorage.removeItem('spotify_login_time');
                 localStorage.removeItem("spotify_session_length");
                 setIsSignedIn(false);
             } else {
-                console.log("Logging in");
                 setIsSignedIn(true);
             }
         } else {
-            console.log("Not logged in");
             setIsSignedIn(false);
         }
     });
 
     return (
-    <Navbar shouldHideOnScroll>
-        <NavbarBrand>
-            <p className="font-bold text-2xl">Virtual Turn Table</p>
-        </NavbarBrand>
-        <NavbarItem>
-            {!isSignedIn ? <Login></Login> : <UserBox></UserBox>}
-        </NavbarItem>
-    </Navbar>
+        <>
+            <Navbar shouldHideOnScroll>
+                <NavbarBrand>
+                    <p className="font-bold text-2xl">Virtual Turn Table</p>
+                </NavbarBrand>
+                <NavbarItem>
+                    {!isSignedIn ? <Login></Login> : <UserBox></UserBox>}
+                </NavbarItem>
+            </Navbar>
+            <Upload></Upload>
+        </>
     );
 }
 

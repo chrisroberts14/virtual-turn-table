@@ -1,19 +1,36 @@
 import {User} from "@nextui-org/user";
-import {useEffect} from "react";
+import React, {useEffect} from "react";
+import axios from "axios";
 
 const UserBox = () => {
+    const [displayName, setDisplayName] = React.useState("");
+    const [email, setEmail] = React.useState("");
+    const [profileImage, setProfileImage] = React.useState()
 
     useEffect(() => {
-        // Make call to BFF to retrieve the items of data we want
+            axios.get(import.meta.env.VITE_BFF_ADDRESS + "/get_user_info/", {
+                params: {
+                    spotify_access_token: localStorage.getItem('spotify_access_token')
+                }
+            })
+            .then(function (response) {
+                console.log(response);
+                setDisplayName(response.data["display_name"]);
+                setEmail(response.data["email"]);
+                setProfileImage(response.data["image_url"]);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
         }
     )
 
     return (
         <User
-            name="Jane Doe"
-            description="Product Designer"
+            name={displayName}
+            description={email}
             avatarProps={{
-                src: "https://i.pravatar.cc/150?u=a04258114e29026702d"
+                src: profileImage
             }}
         />
     );
