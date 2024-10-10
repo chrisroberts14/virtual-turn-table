@@ -28,7 +28,7 @@ const Upload = () => {
             >
             <Card className="max-w-[400px]">
                 <CardHeader className="flex gap-3">
-                    <Input type={"file"} onChange={handleFileChange}></Input>
+                    <Input type={"file"} onChange={handleFileChange} accept={".png, .jpg"}></Input>
                 </CardHeader>
 
             <Divider/>
