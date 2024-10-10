@@ -42,7 +42,7 @@ async def reverse_image_search(
     """
     logger.info(settings.dict())
     logger.info("Received image: %s", file.filename)
-    if file.content_type not in ["image/jpeg", "image/png"]:
+    if not (file.filename.endswith(".jpg") or file.filename.endswith(".png")):
         return JSONResponse(
             status_code=400,
             content={"message": "Invalid file type. Only JPEG and PNG are allowed."},
@@ -79,7 +79,7 @@ async def reverse_image_search(
 
 @album_router.post("/get_uri/")
 async def get_uri(
-    settings: Annotated[Settings, Depends(get_settings)], image_names: list[str]
+    image_names: list[str], settings: Annotated[Settings, Depends(get_settings)]
 ):
     """
     Get the spotify URIs for the album(s).
@@ -93,7 +93,9 @@ async def get_uri(
     auth_url = "https://accounts.spotify.com/api/token"
 
     # Encode client_id and client_secret to base64 for Authorization header
-    auth_str = f"{settings.spotify_client_id}:{settings.spotify_client_secret}"
+    auth_str = (
+        f"{settings.vite_spotify_client_id}:{settings.vite_spotify_client_secret}"
+    )
     b64_auth_str = base64.b64encode(auth_str.encode()).decode()
 
     headers = {"Authorization": f"Basic {b64_auth_str}"}

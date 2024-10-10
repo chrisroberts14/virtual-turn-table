@@ -1,11 +1,16 @@
 import {Navbar, NavbarBrand, NavbarItem} from "@nextui-org/navbar";
 import Login from "./components/Login";
 import UserBox from "./components/UserBox";
-import React, {useEffect} from "react";
+import {useEffect, useState} from "react";
 import Upload from "@/components/Upload.tsx";
+import axios from "axios";
 
 function App() {
-    const [isSignedIn, setIsSignedIn] = React.useState(false);
+    const [isSignedIn, setIsSignedIn] = useState(false);
+    const [albumURI, setAlbumURI] = useState("");
+    const [currentAlbumTitle, setCurrentAlbumTitle] = useState("");
+    const [currentAlbumArtist, setCurrentAlbumArtist] = useState("");
+    const [currentAlbumImage, setCurrentAlbumImage] = useState("");
 
     useEffect(() => {
         const hash = window.location.hash.substring(1);
@@ -17,8 +22,11 @@ function App() {
             localStorage.setItem('spotify_login_time', String(new Date()));
             localStorage.setItem("spotify_session_length", params.get("expires_in") as string);
             setIsSignedIn(true);
+            // @ts-ignore
+            window.location = "/";
         } else if (localStorage.getItem('spotify_access_token')) {
             const start_time = localStorage.getItem("spotify_login_time");
+
             // @ts-ignore
             const session_length = (new Date().getTime() - new Date(start_time).getTime()) / 1000;
             if (session_length > Number(localStorage.getItem("spotify_session_length"))) {
@@ -34,6 +42,22 @@ function App() {
         }
     });
 
+    useEffect(() => {
+        axios.get(import.meta.env.VITE_BFF_ADDRESS + "/album_details/", {
+            params: {
+                spotify_access_token: localStorage.getItem('spotify_access_token'),
+                album_uri: albumURI
+            }
+        }).then(function (response) {
+            setCurrentAlbumTitle(response.data["name"]);
+            setCurrentAlbumArtist(response.data["artist"]);
+            setCurrentAlbumImage(response.data["image_url"]);
+        }).catch(function (error) {
+          console.log(error);
+        });
+
+    }, [albumURI]);
+
     return (
         <>
             <Navbar shouldHideOnScroll>
@@ -44,7 +68,7 @@ function App() {
                     {!isSignedIn ? <Login></Login> : <UserBox></UserBox>}
                 </NavbarItem>
             </Navbar>
-            <Upload></Upload>
+            <Upload setAlbumURI={setAlbumURI}></Upload>
         </>
     );
 }

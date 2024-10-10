@@ -10,3 +10,11 @@ class User(BaseModel):
     display_name: str
     email: str
     image_url: str
+
+
+class Album(BaseModel):  #
+    """Album model."""
+
+    title: str
+    artists: list[str]
+    image_url: str

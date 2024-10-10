@@ -1,13 +1,14 @@
 """Module creating the bff."""
 
 from functools import lru_cache
+from typing import Annotated
 
 import requests
-from fastapi import FastAPI, UploadFile
+from fastapi import FastAPI, UploadFile, Depends
 from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from bff.api_models import User
+from bff.api_models import User, Album
 from bff.config import Settings
 
 app = FastAPI()
@@ -60,24 +61,33 @@ def check_health():
 
 
 @app.post("/image_to_uri/")
-def image_to_uri(file: UploadFile) -> str:
+def image_to_uri(
+    file: UploadFile, settings: Annotated[Settings, Depends(get_settings)]
+) -> str:
     """
     Take an image and return the best guess of the spotify URI.
 
+    :param settings:
     :param file:
     :return:
     """
+    print(file.filename)
     # Hard coded for now will eventually be in a config file
-    endpoint = "http://localhost:8000/image_to_album/reverse_image_search/"
-    files = {"file": ("placeholder.jpg", file.file)}
+    # endpoint = f"{settings.img_to_album_address}imgs/reverse_image_search/"
+    # files = {"file": ("placeholder.jpg", file.file)}
 
     # Get best results for image search
-    response = requests.post(endpoint, files=files, timeout=5)
-    response.raise_for_status()
+    # response = requests.post(endpoint, files=files, timeout=5)
+    # response.raise_for_status()
+
+    data = ["Arcade Fire - We"]
 
     # Get the URI
-    endpoint = "http://localhost:8000/image_to_album/get_uri/"
-    response = requests.post(endpoint, json=response.json(), timeout=5)
+    endpoint = f"{settings.img_to_album_address}album/get_uri/"
+    response = requests.post(endpoint, json=data, timeout=5)
+    print(response.status_code)
+    print(response.text)
+    response.raise_for_status()
     return response.json()
 
 
@@ -100,5 +110,27 @@ def get_user_info(spotify_access_token: str) -> User:
         id=data["id"],
         display_name=data["display_name"],
         email=data["email"],
+        image_url=data["images"][0]["url"],
+    )
+
+
+@app.get("/album_details/")
+def get_album_details(spotify_access_token: str, album_uri: str) -> Album:
+    """
+    Gets the album details given a specific uri.
+
+    :param spotify_access_token:
+    :param album_uri:
+    :return:
+    """
+    endpoint = f"https://api.spotify.com/v1/albums/{album_uri.split(":")[2]}"
+    headers = {"Authorization": f"Bearer {spotify_access_token}"}
+    response = requests.get(endpoint, headers=headers, timeout=5)
+    response.raise_for_status()
+    data = response.json()
+
+    return Album(
+        title=data["name"],
+        artists=[i["name"] for i in data["artists"]],
         image_url=data["images"][0]["url"],
     )

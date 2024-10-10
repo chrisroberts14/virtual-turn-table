@@ -3,8 +3,10 @@ import {Button} from "@nextui-org/button";
 import {Card, CardBody, CardFooter, CardHeader} from "@nextui-org/card"
 import {Input} from "@nextui-org/input";
 import {Divider} from "@nextui-org/divider"
+import axios from "axios";
 
-const Upload = () => {
+// @ts-ignore
+const Upload = ({setAlbumURI}) => {
     const [file, setFile] = useState<File | null>(null);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -13,7 +15,26 @@ const Upload = () => {
         }
     };
 
-    const handleUpload = () => {};
+    const handleUpload = () => {
+        if (file)
+        {
+            const formData = new FormData();
+            formData.append('file', file);
+            axios.post(import.meta.env.VITE_BFF_ADDRESS + "/image_to_uri/", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+            .then(function (response) {
+                console.log(response);
+                setAlbumURI(response.data);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        }
+
+    };
 
 
     return (
