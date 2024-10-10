@@ -30,7 +30,7 @@ repos:
     rev: v3.2.5
     hooks:
     -   id: pylint
-        entry: ./pylint.sh
+        entry: ./pylint_script.py
         language: system
 -   repo: https://github.com/compilerla/conventional-pre-commit
     rev: v3.2.0
