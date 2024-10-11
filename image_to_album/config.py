@@ -12,4 +12,4 @@ class Settings(BaseSettings):
     vite_spotify_client_id: str = ""
     vite_spotify_client_secret: str = ""
     bing_api_key: str = ""
-    model_config = SettingsConfigDict(env_file=Path(__file__).parent / ".env")
+    model_config = SettingsConfigDict(env_file=Path(__file__).parent.parent / ".env")

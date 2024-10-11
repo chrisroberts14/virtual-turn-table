@@ -12,4 +12,4 @@ class Settings(BaseSettings):
     vite_spotify_client_id: str = ""
     vite_spotify_redirect_uri: str = ""
     img_to_album_address: str = ""
-    model_config = SettingsConfigDict(env_file=Path(__file__).parent / ".env")
+    model_config = SettingsConfigDict(env_file=Path(__file__).parent.parent / ".env")
