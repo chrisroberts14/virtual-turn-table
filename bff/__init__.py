@@ -119,7 +119,7 @@ def get_album_details(spotify_access_token: str, album_uri: str) -> Album:
     """
     if not album_uri.startswith("spotify:album:"):
         raise HTTPException(status_code=400, detail="Invalid album URI")
-    endpoint = f"https://api.spotify.com/v1/albums/{album_uri.split(":")[2]}"
+    endpoint = f"https://api.spotify.com/v1/albums/{album_uri.split(':')[2]}"
     headers = {"Authorization": f"Bearer {spotify_access_token}"}
     response = requests.get(endpoint, headers=headers, timeout=5)
     response.raise_for_status()
