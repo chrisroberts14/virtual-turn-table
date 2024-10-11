@@ -113,11 +113,13 @@ def test_get_album_details(client, mocker):
 
         :return:
         """
-        mock_response_data = Album(
-            title="test_name",
-            artists=["test_artist"],
-            image_url="test_url",
-        )
+        mock_response_data = {
+            "name": "test_name",
+            "artists": [{"name": "test_artist"}],
+            "images": [{"url": "test_url"}],
+            "uri": "test_uri",
+            "tracks": {"href": "test_tracks_url"},
+        }
         mock_response = mocker.Mock()
         mock_response.json.return_value = mock_response_data
         return mock_response
@@ -134,6 +136,8 @@ def test_get_album_details(client, mocker):
             title="test_name",
             artists=["test_artist"],
             image_url="test_url",
+            album_uri="test_uri",
+            tracks_url="test_tracks_url",
         ).model_dump()
     )
 

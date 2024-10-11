@@ -8,7 +8,7 @@ const UserBox = () => {
     const [profileImage, setProfileImage] = React.useState()
 
     useEffect(() => {
-            axios.get(import.meta.env.VITE_BFF_ADDRESS + "/get_user_info/", {
+            axios.get(import.meta.env.VITE_BFF_ADDRESS + "get_user_info/", {
                 params: {
                     spotify_access_token: localStorage.getItem('spotify_access_token')
                 }

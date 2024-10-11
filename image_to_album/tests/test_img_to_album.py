@@ -6,6 +6,7 @@ from pathlib import Path
 import requests
 
 
+# pylint: disable=duplicate-code
 def test_docs_redirect(client):
     """
     Test the redirect to the docs.

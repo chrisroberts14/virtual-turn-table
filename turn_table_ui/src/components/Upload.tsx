@@ -20,7 +20,7 @@ const Upload = ({setAlbumURI}) => {
         {
             const formData = new FormData();
             formData.append('file', file);
-            axios.post(import.meta.env.VITE_BFF_ADDRESS + "/image_to_uri/", formData, {
+            axios.post(import.meta.env.VITE_BFF_ADDRESS + "image_to_uri/", formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }

@@ -8,7 +8,7 @@ from fastapi import FastAPI, UploadFile, Depends, HTTPException
 from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from bff.api_models import User, Album
+from bff.api_models import User, Album, Song
 from bff.config import Settings
 
 app = FastAPI()
@@ -71,7 +71,7 @@ def image_to_uri(
     :param file:
     :return:
     """
-    endpoint = f"{settings.img_to_album_address}imgs/reverse_image_search/"
+    endpoint = f"{settings.image_to_album_address}imgs/reverse_image_search/"
     files = {"file": ("placeholder.jpg", file.file)}
 
     # Get best results for image search
@@ -79,8 +79,10 @@ def image_to_uri(
     response.raise_for_status()
 
     # Get the URI
-    endpoint = f"{settings.img_to_album_address}album/get_uri/"
-    response = requests.post(endpoint, json=response.json(), timeout=5)
+    endpoint = (
+        f"{settings.image_to_album_address}album/get_uri/?image_name={response.json()}"
+    )
+    response = requests.post(endpoint, timeout=5)
     response.raise_for_status()
     return response.json()
 
@@ -123,5 +125,64 @@ def get_album_details(spotify_access_token: str, album_uri: str) -> Album:
     headers = {"Authorization": f"Bearer {spotify_access_token}"}
     response = requests.get(endpoint, headers=headers, timeout=5)
     response.raise_for_status()
+    data = response.json()
 
-    return response.json()
+    return Album(
+        title=data["name"],
+        artists=[artist["name"] for artist in data["artists"]],
+        image_url=data["images"][0]["url"],
+        album_uri=data["uri"],
+        tracks_url=data["tracks"]["href"],
+    )
+
+
+@app.post("/play_track/")
+def play_track(track_uri: str, spotify_access_token: str, device_id: str):
+    """
+    Play a track on the user's device.
+
+    :param device_id:
+    :param track_uri:
+    :param spotify_access_token:
+    :return:
+    """
+    endpoint = f"https://api.spotify.com/v1/me/player/play?device_id={device_id}"
+    headers = {
+        "Authorization": f"Bearer {spotify_access_token}",
+        "Content-Type": "application/json",
+    }
+    data = {"uris": [track_uri]}
+
+    response = requests.put(endpoint, headers=headers, json=data, timeout=5)
+    response.raise_for_status()
+
+
+@app.get("/get_songs_in_album/")
+def get_songs_in_album(album_uri: str, spotify_access_token: str) -> list[Song]:
+    """
+    Get the songs on the album.
+
+    :param album_uri:
+    :param spotify_access_token:
+    :return:
+    """
+    endpoint = f"https://api.spotify.com/v1/albums/{album_uri.split(":")[2]}/tracks"
+    headers = {"Authorization": f"Bearer {spotify_access_token}"}
+    response = requests.get(endpoint, headers=headers, timeout=5)
+    response.raise_for_status()
+
+    full_result_url = response.json()["href"]
+    full_result = requests.get(full_result_url, headers=headers, timeout=5)
+    full_result.raise_for_status()
+
+    result = full_result.json()
+
+    return [
+        Song(
+            album_uri=album_uri,
+            title=track["name"],
+            artists=[artist["name"] for artist in track["artists"]],
+            uri=track["uri"],
+        )
+        for track in result["items"]
+    ]

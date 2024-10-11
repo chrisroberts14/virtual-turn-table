@@ -1,9 +1,12 @@
 import {useEffect, useState} from "react";
 import {Button} from "@nextui-org/button";
+import axios from "axios";
 
-const MusicPlayer = (props: {token: string | null}) => {
+const MusicPlayer = (props: {token: string | null, albumURI: string | null}) => {
     const [player, setPlayer] = useState<any>(null);
     const [deviceID, setDeviceID] = useState("");
+    const [isConnected, setIsConnected] = useState(false);
+    const [songURIs, setSongURIs] = useState<string[]>([]);
 
     useEffect(() => {
         const script = document.createElement('script');
@@ -22,58 +25,57 @@ const MusicPlayer = (props: {token: string | null}) => {
             })
             player.connect().then((success: any) => {
                 if (success) {
-                    console.log('The Web Playback SDK successfully connected to Spotify!');
-
+                    setIsConnected(true);
+                } else {
+                    // TODO: ADD ERROR MESSAGE ON FRONTEND
+                    setIsConnected(false);
                 }
             })
-            // @ts-ignore
-            player.on('ready', ({device_id}) => {
-                console.log('Ready with Device ID', device_id);
-                setDeviceID(device_id);
+
+            player.on('ready', (event: {device_id: string}) => {
+                setDeviceID(event.device_id);
             });
+
             setPlayer(player);
         }
     }, []);
 
-    const printCurrentData = () => {
-        player.getCurrentState().then((state: { track_window: { current_track: any; next_tracks: any[]; }; }) => {
-            if (!state) {
-                console.error('User is not playing music through the Web Playback SDK');
-                return;
+    useEffect(() => {
+        axios.get(import.meta.env.VITE_BFF_ADDRESS + "get_songs_in_album/", {
+            params: {
+                spotify_access_token: props.token,
+                album_uri: props.albumURI
             }
+        })
+            .then(function (response) {
+                console.log(response);
+                setSongURIs(response.data);
+            })
+            .catch(function (error) {
+                console.log(error);
 
-            var current_track = state.track_window.current_track;
-            var next_track = state.track_window.next_tracks[0];
+        })
+    }, [props.albumURI]);
 
-            console.log('Currently Playing', current_track);
-            console.log('Playing Next', next_track);
-        });
-    }
 
     const playSong = async () => {
-        try {
-            const response = await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceID}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${props.token}`
-                },
-                body: JSON.stringify({
-                    uris: ['spotify:track:3F2N8N0qHrQ32cQaX8DWRS'] // Replace with the desired track
-                }),
-            });
-            if (response.status === 204) {
-                console.log('Playback started');
-            } else {
-                console.error('Failed to start playback.', await response.text());
+        axios.post(import.meta.env.VITE_BFF_ADDRESS + "play_track/", null, {
+            params: {
+                spotify_access_token: props.token,
+                track_uri: "spotify:track:5gmv3BgePSYiHnPJgY7oTJ",
+                device_id: deviceID
             }
-        } catch (error) {
-            console.error('Error starting playback:', error);
-        }
+        })
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
 
     return (
-        <><Button onClick={printCurrentData}>Print Current Data</Button><Button onClick={playSong}>Play</Button></>
+        <>{isConnected ? <Button onClick={playSong}>Play</Button> : <div>Not connected to spotify</div>}</>
     );
 }
 

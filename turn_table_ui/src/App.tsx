@@ -47,7 +47,7 @@ function App() {
 
     useEffect(() => {
         if (localStorage.getItem('spotify_access_token') && albumURI){
-            axios.get(import.meta.env.VITE_BFF_ADDRESS + "/album_details/", {
+            axios.get(import.meta.env.VITE_BFF_ADDRESS + "album_details/", {
                 params: {
                     spotify_access_token: localStorage.getItem('spotify_access_token'),
                     album_uri: albumURI
@@ -75,7 +75,7 @@ function App() {
             </Navbar>
             <Upload setAlbumURI={setAlbumURI}></Upload>
             <Album title={currentAlbumTitle} artist={currentAlbumArtist} img_url={currentAlbumImage}></Album>
-            <MusicPlayer token={localStorage.getItem('spotify_access_token')}></MusicPlayer>
+            <MusicPlayer token={localStorage.getItem('spotify_access_token')} albumURI={albumURI}></MusicPlayer>
         </>
     );
 }

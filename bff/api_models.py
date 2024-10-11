@@ -18,3 +18,14 @@ class Album(BaseModel):  #
     title: str
     artists: list[str]
     image_url: str
+    album_uri: str
+    tracks_url: str
+
+
+class Song(BaseModel):
+    """Song model."""
+
+    title: str
+    artists: list[str]
+    uri: str
+    album_uri: str
