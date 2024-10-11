@@ -5,6 +5,7 @@ import {useEffect, useState} from "react";
 import Upload from "@/components/Upload.tsx";
 import axios from "axios";
 import Album from "@/components/Album.tsx";
+import MusicPlayer from "@/components/MusicPlayer.tsx";
 
 function App() {
     const [isSignedIn, setIsSignedIn] = useState(false);
@@ -73,6 +74,7 @@ function App() {
             </Navbar>
             <Upload setAlbumURI={setAlbumURI}></Upload>
             <Album title={currentAlbumTitle} artist={currentAlbumArtist} img_url={currentAlbumImage}></Album>
+            <MusicPlayer token={localStorage.getItem('spotify_access_token')}></MusicPlayer>
         </>
     );
 }
