@@ -1,77 +1,79 @@
 import {useEffect, useState} from "react";
+import {Button} from "@nextui-org/button";
 
 const MusicPlayer = (props: {token: string | null}) => {
-    const [player, setPlayer] = useState(undefined);
-    const [isReady, setIsReady] = useState(false);
-
-    const test = () => {
-        player.togglePlay()
-        console.log(player.getCurrentState());
-    }
+    const [player, setPlayer] = useState<any>(null);
+    const [deviceID, setDeviceID] = useState("");
 
     useEffect(() => {
+        const script = document.createElement('script');
+        script.src = 'https://sdk.scdn.co/spotify-player.js';
+        script.async = true;
+        document.body.appendChild(script);
 
-        if (props.token) {
-
-            // Load Spotify Web Playback SDK script
-            const script = document.createElement('script');
-            script.src = 'https://sdk.scdn.co/spotify-player.js';
-            script.async = true;
-            document.body.appendChild(script);
-
+        // @ts-ignore
+        window.onSpotifyWebPlaybackSDKReady = async () => {
             // @ts-ignore
-            window.onSpotifyWebPlaybackSDKReady = () => {
-                // @ts-ignore
-                const player = new window.Spotify.Player({
-                    name: 'Web Playback SDK Player',
-                    getOAuthToken: (cb: (arg0: any) => void) => { cb(props.token); },
-                    volume: 0.5
-                });
+            const player = new Spotify.Player({
+                name: 'Vinyl Scanner',
+                getOAuthToken: (cb: (token: string) => void) => {
+                    cb(props.token as string);
+                }
+            })
+            player.connect().then((success: any) => {
+                if (success) {
+                    console.log('The Web Playback SDK successfully connected to Spotify!');
 
-                setPlayer(player);
-
-                // Ready
-                // @ts-ignore
-                player.addListener('ready', ({ device_id }) => {
-                    console.log('Ready with Device ID', device_id);
-                    setIsReady(true);
-                });
-
-                // Not Ready
-                // @ts-ignore
-                player.addListener('not_ready', ({ device_id }) => {
-                    console.log('Device ID has gone offline', device_id);
-                });
-
-                // @ts-ignore
-                player.addListener('initialization_error', ({ message }) => {
-                    console.error(message);
-                });
-
-                // @ts-ignore
-                player.addListener('authentication_error', ({ message }) => {
-                    console.error(message);
-                });
-
-                // @ts-ignore
-                player.addListener('account_error', ({ message }) => {
-                    console.error(message);
-                });
-
-                // Connect to the player!
-                player.connect();
-            };
+                }
+            })
+            // @ts-ignore
+            player.on('ready', ({device_id}) => {
+                console.log('Ready with Device ID', device_id);
+                setDeviceID(device_id);
+            });
+            setPlayer(player);
         }
     }, []);
 
-    // @ts-ignore
+    const printCurrentData = () => {
+        player.getCurrentState().then((state: { track_window: { current_track: any; next_tracks: any[]; }; }) => {
+            if (!state) {
+                console.error('User is not playing music through the Web Playback SDK');
+                return;
+            }
+
+            var current_track = state.track_window.current_track;
+            var next_track = state.track_window.next_tracks[0];
+
+            console.log('Currently Playing', current_track);
+            console.log('Playing Next', next_track);
+        });
+    }
+
+    const playSong = async () => {
+        try {
+            const response = await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceID}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${props.token}`
+                },
+                body: JSON.stringify({
+                    uris: ['spotify:track:3F2N8N0qHrQ32cQaX8DWRS'] // Replace with the desired track
+                }),
+            });
+            if (response.status === 204) {
+                console.log('Playback started');
+            } else {
+                console.error('Failed to start playback.', await response.text());
+            }
+        } catch (error) {
+            console.error('Error starting playback:', error);
+        }
+    }
+
     return (
-        <div>
-            <div>
-                <h1>Spotify Web Player</h1>
-                {!isReady ? <div></div> : <button onClick={() => test()}>Play/Pause</button>}
-            </div>
-        </div>
+        <><Button onClick={printCurrentData}>Print Current Data</Button><Button onClick={playSong}>Play</Button></>
     );
 }
 
