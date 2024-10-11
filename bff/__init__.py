@@ -166,7 +166,7 @@ def get_songs_in_album(album_uri: str, spotify_access_token: str) -> list[Song]:
     :param spotify_access_token:
     :return:
     """
-    endpoint = f"https://api.spotify.com/v1/albums/{album_uri.split(":")[2]}/tracks"
+    endpoint = f"https://api.spotify.com/v1/albums/{album_uri.split(':')[2]}/tracks"
     headers = {"Authorization": f"Bearer {spotify_access_token}"}
     response = requests.get(endpoint, headers=headers, timeout=5)
     response.raise_for_status()

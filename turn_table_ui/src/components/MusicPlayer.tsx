@@ -50,6 +50,8 @@ const MusicPlayer = (props: {token: string | null, albumURI: string | null}) => 
             .then(function (response) {
                 console.log(response);
                 setSongURIs(response.data);
+                console.log(songURIs);
+                console.log(player);
             })
             .catch(function (error) {
                 console.log(error);
