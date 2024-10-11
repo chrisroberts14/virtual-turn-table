@@ -14,7 +14,7 @@ def main():
     if sys.platform == "win32":
         cmd = (r".venv\Scripts\pylint.exe", *sys.argv[1:])
     else:
-        cmd = (".tox/pre-commit/bin/pylint", *sys.argv[1:])
+        cmd = (".venv/bin/pylint", *sys.argv[1:])
     return subprocess.call(cmd)
 
 

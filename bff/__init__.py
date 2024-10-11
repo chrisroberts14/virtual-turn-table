@@ -4,7 +4,7 @@ from functools import lru_cache
 from typing import Annotated
 
 import requests
-from fastapi import FastAPI, UploadFile, Depends
+from fastapi import FastAPI, UploadFile, Depends, HTTPException
 from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -117,14 +117,11 @@ def get_album_details(spotify_access_token: str, album_uri: str) -> Album:
     :param album_uri:
     :return:
     """
+    if not album_uri.startswith("spotify:album:"):
+        raise HTTPException(status_code=400, detail="Invalid album URI")
     endpoint = f"https://api.spotify.com/v1/albums/{album_uri.split(":")[2]}"
     headers = {"Authorization": f"Bearer {spotify_access_token}"}
     response = requests.get(endpoint, headers=headers, timeout=5)
     response.raise_for_status()
-    data = response.json()
 
-    return Album(
-        title=data["name"],
-        artists=[i["name"] for i in data["artists"]],
-        image_url=data["images"][0]["url"],
-    )
+    return response.json()
