@@ -1,12 +1,18 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Button} from "@nextui-org/button";
 import axios from "axios";
+import Album from "@/components/Album.tsx";
+import {Card, CardBody} from "@nextui-org/card";
 
 const MusicPlayer = (props: {token: string | null, albumURI: string | null}) => {
     const [player, setPlayer] = useState<any>(null);
     const [deviceID, setDeviceID] = useState("");
     const [isConnected, setIsConnected] = useState(false);
     const [songURIs, setSongURIs] = useState<string[]>([]);
+    const [currentSongIndex, setCurrentSongIndex] = useState(-1);
+    const [currentAlbumTitle, setCurrentAlbumTitle] = useState("");
+    const [currentAlbumArtist, setCurrentAlbumArtist] = useState("");
+    const [currentAlbumImage, setCurrentAlbumImage] = useState("");
 
     useEffect(() => {
         const script = document.createElement('script');
@@ -41,6 +47,20 @@ const MusicPlayer = (props: {token: string | null, albumURI: string | null}) => 
     }, []);
 
     useEffect(() => {
+        axios.get(import.meta.env.VITE_BFF_ADDRESS + "album_details/", {
+            params: {
+                spotify_access_token: localStorage.getItem('spotify_access_token'),
+                album_uri: props.albumURI
+            }
+        }).then(function (response) {
+            console.log(response);
+            setCurrentAlbumTitle(response.data["title"]);
+            setCurrentAlbumArtist(response.data["artists"]);
+            setCurrentAlbumImage(response.data["image_url"]);
+        }).catch(function (error) {
+            console.log(error);
+        });
+
         axios.get(import.meta.env.VITE_BFF_ADDRESS + "get_songs_in_album/", {
             params: {
                 spotify_access_token: props.token,
@@ -59,25 +79,55 @@ const MusicPlayer = (props: {token: string | null, albumURI: string | null}) => 
         })
     }, [props.albumURI]);
 
+    const nextSong = async () => {
+        setCurrentSongIndex(currentSongIndex + 1);
+        if (songURIs && player) {
+            if (currentSongIndex < songURIs.length) {
+                axios.post(import.meta.env.VITE_BFF_ADDRESS + "play_track/", null, {
+                    params: {
+                        spotify_access_token: props.token,
+                        track_uri: songURIs.at(currentSongIndex)["uri"],
+                        device_id: deviceID
+                    }
+                })
+                    .then(function (response) {
+                        console.log(response);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
+        }
+    }
+
+    const pauseSong = async () => {
+        player.pause()
+    }
 
     const playSong = async () => {
-        axios.post(import.meta.env.VITE_BFF_ADDRESS + "play_track/", null, {
-            params: {
-                spotify_access_token: props.token,
-                track_uri: "spotify:track:5gmv3BgePSYiHnPJgY7oTJ",
-                device_id: deviceID
-            }
-        })
-            .then(function (response) {
-                console.log(response);
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+        player.resume()
     }
 
     return (
-        <>{isConnected ? <Button onClick={playSong}>Play</Button> : <div>Not connected to spotify</div>}</>
+        <div
+            style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '50vh',
+            }}
+        >
+            <Card className="max-w-[400px]">
+                <CardBody className="flex gap-3">
+                    <>{isConnected ? <>
+                        <Album title={currentAlbumTitle} artist={currentAlbumArtist} img_url={currentAlbumImage}></Album>
+                        <Button onClick={playSong}>Play</Button>
+                        <Button onClick={pauseSong}>Pause</Button>
+                        <Button onClick={nextSong}>Skip</Button>
+                    </> : <div>Not connected to spotify</div>}</>
+                </CardBody>
+            </Card>
+        </div>
     );
 }
 

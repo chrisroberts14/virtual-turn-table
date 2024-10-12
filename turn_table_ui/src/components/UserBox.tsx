@@ -1,6 +1,7 @@
 import {User} from "@nextui-org/user";
 import React, {useEffect} from "react";
 import axios from "axios";
+import {Dropdown, DropdownItem, DropdownMenu, DropdownTrigger} from "@nextui-org/dropdown";
 
 const UserBox = () => {
     const [displayName, setDisplayName] = React.useState("");
@@ -25,14 +26,30 @@ const UserBox = () => {
         }
     )
 
+    const logout = () => {
+        localStorage.removeItem('spotify_access_token');
+        localStorage.removeItem('spotify_login_time');
+        localStorage.removeItem("spotify_session_length");
+        // @ts-ignore
+        window.location = "/";
+    }
+
     return (
-        <User
-            name={displayName}
-            description={email}
-            avatarProps={{
-                src: profileImage
-            }}
-        />
+        <Dropdown >
+            <DropdownTrigger>
+                <User
+                    name={displayName}
+                    description={email}
+                    avatarProps={{
+                        src: profileImage
+                    }}
+                />
+            </DropdownTrigger>
+            <DropdownMenu onAction={(key) => {if (key == "logout") {logout()}}}>
+                <DropdownItem key={"logout"}>Logout</DropdownItem>
+            </DropdownMenu>
+        </Dropdown>
+
     );
 }
 
