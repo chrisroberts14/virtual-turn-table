@@ -8,6 +8,7 @@ import axios from "axios";
 // @ts-ignore
 const Upload = ({setAlbumURI}) => {
     const [file, setFile] = useState<File | null>(null);
+    const [isUploading, setIsUploading] = useState(false);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -16,8 +17,8 @@ const Upload = ({setAlbumURI}) => {
     };
 
     const handleUpload = () => {
-        if (file)
-        {
+        if (file) {
+            setIsUploading(true);
             const formData = new FormData();
             formData.append('file', file);
             axios.post(import.meta.env.VITE_BFF_ADDRESS + "image_to_uri/", formData, {
@@ -25,60 +26,60 @@ const Upload = ({setAlbumURI}) => {
                     'Content-Type': 'multipart/form-data'
                 }
             })
-            .then(function (response) {
-                console.log(response);
-                setAlbumURI(response.data);
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+                .then(function (response) {
+                    setAlbumURI(response.data);
+                    setIsUploading(false);
+                    setFile(null);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
         }
-
     };
 
 
     return (
-        <>
-        <div
+        <>{!isUploading ? <div
             style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '50vh',
-        }}
-            >
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '50vh',
+            }}
+        >
             <Card className="max-w-[400px]">
                 <CardHeader className="flex gap-3">
                     <Input type={"file"} onChange={handleFileChange} accept={".png, .jpg"}></Input>
                 </CardHeader>
 
-            <Divider/>
-            <CardBody>
-                {
-                    file && (
-                        <section>
-                            File details:
-                            <ul>
-                                <li>Name: {file.name}</li>
-                                <li>Type: {file.type}</li>
-                                <li>Size: {file.size} bytes</li>
-                            </ul>
-                        </section>
-                    )
-                }
-            </CardBody>
-            <Divider/>
-            <CardFooter>
-                {
-                file && (
-                    <Button
-                        onClick={handleUpload}
-                        className="submit"
-                    >Upload a file</Button>
-                )}
-            </CardFooter>
+                <Divider/>
+                <CardBody>
+                    {
+                        file && (
+                            <section>
+                                File details:
+                                <ul>
+                                    <li>Name: {file.name}</li>
+                                    <li>Type: {file.type}</li>
+                                    <li>Size: {file.size} bytes</li>
+                                </ul>
+                            </section>
+                        )
+                    }
+                </CardBody>
+                <Divider/>
+                <CardFooter>
+                    {
+                        file && (
+                            <Button
+                                onClick={handleUpload}
+                                className="submit"
+                            >Upload a file</Button>
+                        )}
+                </CardFooter>
             </Card>
-        </div>
+        </div> : <div>Uploading...</div>}
+
         </>
     );
 }

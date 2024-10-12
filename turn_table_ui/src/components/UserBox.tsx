@@ -15,7 +15,6 @@ const UserBox = () => {
                 }
             })
             .then(function (response) {
-                console.log(response);
                 setDisplayName(response.data["display_name"]);
                 setEmail(response.data["email"]);
                 setProfileImage(response.data["image_url"]);

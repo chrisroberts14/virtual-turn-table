@@ -48,11 +48,11 @@ function App() {
                     <p className="font-bold text-2xl">Virtual Turn Table</p>
                 </NavbarBrand>
                 <NavbarItem>
-                    {!isSignedIn ? <Login></Login> : <UserBox></UserBox>}
+                    {!isSignedIn ? <Login/> : <UserBox/>}
                 </NavbarItem>
             </Navbar>
-            <Upload setAlbumURI={setAlbumURI}></Upload>
-            <MusicPlayer token={localStorage.getItem('spotify_access_token')} albumURI={albumURI}></MusicPlayer>
+            <Upload setAlbumURI={setAlbumURI}/>
+            <MusicPlayer token={localStorage.getItem('spotify_access_token')} albumURI={albumURI}/>
         </>
     );
 }

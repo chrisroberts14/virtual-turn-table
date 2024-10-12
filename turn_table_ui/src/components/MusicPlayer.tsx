@@ -51,31 +51,35 @@ const MusicPlayer = (props: {token: string | null, albumURI: string | null}) => 
     }, []);
 
     useEffect(() => {
-        axios.get(import.meta.env.VITE_BFF_ADDRESS + "album_details/", {
-            params: {
-                spotify_access_token: localStorage.getItem('spotify_access_token'),
-                album_uri: props.albumURI
-            }
-        }).then(function (response) {
-            setCurrentAlbumTitle(response.data["title"]);
-            setCurrentAlbumArtist(response.data["artists"]);
-            setCurrentAlbumImage(response.data["image_url"]);
-        }).catch(function (error) {
-            console.log(error);
-        });
+        if (props.albumURI)
+        {
+            axios.get(import.meta.env.VITE_BFF_ADDRESS + "album_details/", {
+                params: {
+                    spotify_access_token: localStorage.getItem('spotify_access_token'),
+                    album_uri: props.albumURI
+                }
+            }).then(function (response) {
+                setCurrentAlbumTitle(response.data["title"]);
+                setCurrentAlbumArtist(response.data["artists"]);
+                setCurrentAlbumImage(response.data["image_url"]);
+            }).catch(function (error) {
+                console.log(error);
+            });
 
-        axios.get(import.meta.env.VITE_BFF_ADDRESS + "get_songs_in_album/", {
-            params: {
-                spotify_access_token: props.token,
-                album_uri: props.albumURI
-            }
-        })
+            axios.get(import.meta.env.VITE_BFF_ADDRESS + "get_songs_in_album/", {
+                params: {
+                    spotify_access_token: props.token,
+                    album_uri: props.albumURI
+                }
+            })
             .then(function (response) {
                 setSongs(response.data);
             })
             .catch(function (error) {
                 console.log(error);
-        })
+            })
+        }
+
     }, [props.albumURI]);
 
     const nextSong = async () => {
@@ -95,12 +99,9 @@ const MusicPlayer = (props: {token: string | null, albumURI: string | null}) => 
                         device_id: deviceID
                     }
                 })
-                    .then(function (response) {
-                        console.log(response);
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
+                .catch(function (error) {
+                    console.log(error);
+                });
             }
         }
     }
