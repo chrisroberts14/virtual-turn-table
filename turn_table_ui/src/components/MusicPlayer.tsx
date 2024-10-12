@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {Button} from "@nextui-org/button";
 import axios from "axios";
 import Album from "@/components/Album.tsx";
@@ -83,10 +83,12 @@ const MusicPlayer = (props: {token: string | null, albumURI: string | null}) => 
         setCurrentSongIndex(currentSongIndex + 1);
         if (songURIs && player) {
             if (currentSongIndex < songURIs.length) {
+                // @ts-ignore
+                const trackURI = songURIs.at(currentSongIndex)["uri"];
                 axios.post(import.meta.env.VITE_BFF_ADDRESS + "play_track/", null, {
                     params: {
                         spotify_access_token: props.token,
-                        track_uri: songURIs.at(currentSongIndex)["uri"],
+                        track_uri: trackURI,
                         device_id: deviceID
                     }
                 })
