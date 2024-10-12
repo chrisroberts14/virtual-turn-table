@@ -34,6 +34,11 @@ jobs:
         pytest image_to_album
       env:
         PYTHONPATH: ${{ github.workspace }}
+        BING_API_KEY: "bing_api_key"
+        SPOTIFY_CLIENT_ID: "spotify_client_id"
+        SPOTIFY_CLIENT_SECRET: "spotify_client_secret"
+        SPOTIFY_REDIRECT_URI: "spotify_redirect_uri"
+
 
   build_bff:
     runs-on: ubuntu-latest
@@ -58,3 +63,7 @@ jobs:
           pytest bff
         env:
           PYTHONPATH: ${{ github.workspace }}
+          BING_API_KEY: "bing_api_key"
+          SPOTIFY_CLIENT_ID: "spotify_client_id"
+          SPOTIFY_CLIENT_SECRET: "spotify_client_secret"
+          SPOTIFY_REDIRECT_URI: "spotify_redirect_uri"
