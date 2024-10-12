@@ -11,7 +11,6 @@ function App() {
 
 
     useEffect(() => {
-        console.log(import.meta.env);
         const hash = window.location.hash.substring(1);
         const params = new URLSearchParams(hash);
         const token = params.get("access_token")
@@ -40,7 +39,6 @@ function App() {
             setIsSignedIn(false);
         }
     });
-
 
 
     return (

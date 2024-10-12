@@ -3,16 +3,19 @@ import {Button} from "@nextui-org/button";
 import axios from "axios";
 import Album from "@/components/Album.tsx";
 import {Card, CardBody} from "@nextui-org/card";
+import SongDetails from "@/components/SongDetails.tsx";
 
 const MusicPlayer = (props: {token: string | null, albumURI: string | null}) => {
     const [player, setPlayer] = useState<any>(null);
     const [deviceID, setDeviceID] = useState("");
     const [isConnected, setIsConnected] = useState(false);
-    const [songURIs, setSongURIs] = useState<string[]>([]);
     const [currentSongIndex, setCurrentSongIndex] = useState(-1);
     const [currentAlbumTitle, setCurrentAlbumTitle] = useState("");
     const [currentAlbumArtist, setCurrentAlbumArtist] = useState("");
     const [currentAlbumImage, setCurrentAlbumImage] = useState("");
+    const [songs, setSongs] = useState<string[]>([]);
+    const [currentSong, setCurrentSong] = useState("");
+    const [currentSongArtist, setCurrentSongArtist] = useState("");
 
     useEffect(() => {
         const script = document.createElement('script');
@@ -27,7 +30,8 @@ const MusicPlayer = (props: {token: string | null, albumURI: string | null}) => 
                 name: 'Vinyl Scanner',
                 getOAuthToken: (cb: (token: string) => void) => {
                     cb(props.token as string);
-                }
+                },
+                volume: 0.5
             })
             player.connect().then((success: any) => {
                 if (success) {
@@ -53,7 +57,6 @@ const MusicPlayer = (props: {token: string | null, albumURI: string | null}) => 
                 album_uri: props.albumURI
             }
         }).then(function (response) {
-            console.log(response);
             setCurrentAlbumTitle(response.data["title"]);
             setCurrentAlbumArtist(response.data["artists"]);
             setCurrentAlbumImage(response.data["image_url"]);
@@ -68,23 +71,23 @@ const MusicPlayer = (props: {token: string | null, albumURI: string | null}) => 
             }
         })
             .then(function (response) {
-                console.log(response);
-                setSongURIs(response.data);
-                console.log(songURIs);
-                console.log(player);
+                setSongs(response.data);
             })
             .catch(function (error) {
                 console.log(error);
-
         })
     }, [props.albumURI]);
 
     const nextSong = async () => {
         setCurrentSongIndex(currentSongIndex + 1);
-        if (songURIs && player) {
-            if (currentSongIndex < songURIs.length) {
+        // @ts-ignore
+        setCurrentSong(songs.at(currentSongIndex)["title"]);
+        // @ts-ignore
+        setCurrentSongArtist(songs.at(currentSongIndex)["artists"].join(", "));
+        if (songs && player) {
+            if (currentSongIndex < songs.length) {
                 // @ts-ignore
-                const trackURI = songURIs.at(currentSongIndex)["uri"];
+                const trackURI = songs.at(currentSongIndex)["uri"];
                 axios.post(import.meta.env.VITE_BFF_ADDRESS + "play_track/", null, {
                     params: {
                         spotify_access_token: props.token,
@@ -122,7 +125,8 @@ const MusicPlayer = (props: {token: string | null, albumURI: string | null}) => 
             <Card className="max-w-[400px]">
                 <CardBody className="flex gap-3">
                     <>{isConnected ? <>
-                        <Album title={currentAlbumTitle} artist={currentAlbumArtist} img_url={currentAlbumImage}></Album>
+                        <Album title={currentAlbumTitle} artist={currentAlbumArtist} img_url={currentAlbumImage}/>
+                        <SongDetails song={currentSong} artist={currentSongArtist}/>
                         <Button onClick={playSong}>Play</Button>
                         <Button onClick={pauseSong}>Pause</Button>
                         <Button onClick={nextSong}>Skip</Button>
