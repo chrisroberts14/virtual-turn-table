@@ -24,10 +24,8 @@ def get_settings():
     return Settings()
 
 
+# pylint: disable=duplicate-code
 origins = [
-    "http://localhost",
-    "http://localhost:3000",
-    "http://localhost:8000",
     "http://localhost:5173",
 ]
 
@@ -71,6 +69,7 @@ def image_to_uri(
     :param file:
     :return:
     """
+    print(settings.image_to_album_address)
     endpoint = f"{settings.image_to_album_address}imgs/reverse_image_search/"
     files = {"file": ("placeholder.jpg", file.file)}
 

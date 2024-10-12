@@ -1,17 +1,14 @@
 """Config for api."""
 
-from pathlib import Path
+import os
 
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
     """Settings model."""
 
     app_name: str = "image_to_album"
-    vite_spotify_client_id: str = ""
-    vite_spotify_client_secret: str = ""
-    bing_api_key: str = ""
-    model_config = SettingsConfigDict(
-        env_file=Path(__file__).parent.parent / ".env", extra="ignore"
-    )
+    spotify_client_id: str = os.getenv("SPOTIFY_CLIENT_ID")
+    spotify_client_secret: str = os.getenv("SPOTIFY_CLIENT_SECRET")
+    bing_api_key: str = os.getenv("BING_API_KEY")

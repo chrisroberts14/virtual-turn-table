@@ -8,11 +8,15 @@ import {fileURLToPath} from "node:url";
 // Get the current directory (where the Vite process is running)
 const currentDir = fileURLToPath(new URL('.', import.meta.url));
 
-// Load environment variables from the parent directory
-dotenv.config({ path: `${currentDir}../.env` });
+// Load environment variables conditionally
+export default defineConfig(({ mode }) => {
+  if (mode === 'development') {
+    dotenv.config({ path: `${currentDir}../.env` });
+  } else {
+    dotenv.config({ path: `${currentDir}/.env` });
+  }
 
-
-// https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [react(), tsconfigPaths()],
-})
+  return {
+    plugins: [react(), tsconfigPaths()],
+  };
+});

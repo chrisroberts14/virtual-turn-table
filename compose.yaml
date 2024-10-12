@@ -1,29 +1,31 @@
 services:
   image_to_album:
     build: image_to_album
-    command: fastapi run image_to_album --port 8000
+    command: fastapi run image_to_album --port 8001
     ports:
-      - "8000:8000"
+      - "8001:8001"
     healthcheck:
-        test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+        test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
         interval: 10s
         timeout: 5s
         retries: 3
     env_file:
-      - ".env"
+      - .env
 
   bff:
     build: bff
-    command: fastapi run bff --port 8001
+    command: fastapi run bff --port 8000
     ports:
-      - "8001:8001"
+      - "8000:8000"
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8001/health" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/health" ]
       interval: 10s
       timeout: 5s
       retries: 3
     env_file:
-      - ".env"
+      - .env
+    depends_on:
+      - image_to_album
 
   ui:
     build: turn_table_ui
@@ -31,4 +33,6 @@ services:
     ports:
       - "5173:5173"
     env_file:
-      - ".env"
+      - .env
+    depends_on:
+      - bff

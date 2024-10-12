@@ -94,9 +94,7 @@ async def get_uri(
     auth_url = "https://accounts.spotify.com/api/token"
 
     # Encode client_id and client_secret to base64 for Authorization header
-    auth_str = (
-        f"{settings.vite_spotify_client_id}:{settings.vite_spotify_client_secret}"
-    )
+    auth_str = f"{settings.spotify_client_id}:{settings.spotify_client_secret}"
     b64_auth_str = base64.b64encode(auth_str.encode()).decode()
 
     headers = {"Authorization": f"Basic {b64_auth_str}"}

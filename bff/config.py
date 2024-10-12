@@ -1,17 +1,14 @@
 """Config for api."""
 
-from pathlib import Path
+import os
 
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
     """Settings model."""
 
     app_name: str = "bff"
-    vite_spotify_client_id: str = ""
-    vite_spotify_redirect_uri: str = ""
-    image_to_album_address: str = ""
-    model_config = SettingsConfigDict(
-        env_file=Path(__file__).parent.parent / ".env", extra="ignore"
-    )
+    spotify_client_id: str = os.getenv("SPOTIFY_CLIENT_ID")
+    spotify_redirect_uri: str = os.getenv("SPOTIFY_REDIRECT_URI")
+    image_to_album_address: str = os.getenv("IMAGE_TO_ALBUM_ADDRESS")
