@@ -55,8 +55,8 @@ function App() {
         <>
             <Navbar
                 style={{
-                    backgroundColor: '#383838', // Replace with your desired color
-                    borderBottom: '2px solid #000', // Optional: Add a border or other styles
+                    backgroundColor: '#383838',
+                    borderBottom: '2px solid #000',
                 }}>
                 <NavbarBrand>
                     <Logo/>

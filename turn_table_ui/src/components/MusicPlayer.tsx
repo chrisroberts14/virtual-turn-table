@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {SetStateAction, useEffect, useState} from "react";
 import {Button} from "@nextui-org/button";
 import axios from "axios";
 import AlbumDisplay from "@/components/AlbumDisplay.tsx";
@@ -7,64 +7,20 @@ import SongDetails from "@/components/SongDetails.tsx";
 import TrackList from "@/components/TrackList.tsx";
 import Song from "@/interfaces/Song.tsx";
 import Album from "@/interfaces/Album.tsx";
+import TrackScrubber from "@/components/TrackScrubber.tsx";
+import VolumeScrubber from "@/components/VolumeScrubber.tsx";
 
 
-declare global {
-    interface Window {
-        onSpotifyWebPlaybackSDKReady: () => void;
-        Spotify: typeof Spotify;
-    }
-}
-
-declare namespace Spotify {
-    interface PlayerOptions {
-        name: string;
-        getOAuthToken: (cb: (token: string) => void) => void;
-        volume?: number;
-    }
-
-    interface PlaybackState {
-        context: {
-            uri: string;
-        };
-        position: number;
-        duration: number;
-        paused: boolean;
-        track_window: {
-            current_track: {
-                name: string;
-                uri: string;
-                artists: Array<{ name: string; uri: string }>;
-            };
-        };
-    }
-
-    interface ReadyEvent {
-        device_id: string;
-    }
-
-    class Player {
-        constructor(options: PlayerOptions);
-
-        // The 'connect' method returns a promise
-        connect(): Promise<boolean>;
-
-        // The 'on' method to listen to various events
-        on(event: 'ready', callback: (event: ReadyEvent) => void): void;
-        on(event: 'not_ready', callback: (event: ReadyEvent) => void): void;
-        on(event: 'player_state_changed', callback: (state: PlaybackState) => void): void;
-        on(event: string, callback: (...args: any[]) => void): void; // Catch-all for other events
-    }
-}
-
-
-const MusicPlayer = (props: {token: string | null, albumURI: string | null}) => {
-    const [player, setPlayer] = useState<any>(null);
+const MusicPlayer = (props: { token: string | null, albumURI: string | null }) => {
+    const [player, setPlayer] = useState<SpotifyPlayer | null>(null);
     const [deviceID, setDeviceID] = useState("");
     const [isConnected, setIsConnected] = useState(false);
     const [songs, setSongs] = useState<Song[]>([]);
     const [currentSong, setCurrentSong] = useState<Song | null>(null);
     const [currentAlbum, setCurrentAlbum] = useState<Album | null>(null);
+    const [isPaused, setIsPaused] = useState(false);
+    const [trackPosition, setTrackPosition] = useState(0); // In ms
+    const [trackDuration, setTrackDuration] = useState(0);
 
     useEffect(() => {
         const script = document.createElement('script');
@@ -73,7 +29,7 @@ const MusicPlayer = (props: {token: string | null, albumURI: string | null}) => 
         document.body.appendChild(script);
 
         window.onSpotifyWebPlaybackSDKReady = async () => {
-            const player = new Spotify.Player({
+            const player = new window.Spotify.Player({
                 name: 'Vinyl Scanner',
                 getOAuthToken: (cb: (token: string) => void) => {
                     cb(props.token as string);
@@ -89,13 +45,24 @@ const MusicPlayer = (props: {token: string | null, albumURI: string | null}) => 
                 }
             })
 
-            player.on('ready', (event: {device_id: string}) => {
+            player.on('ready', (event: { device_id: string }) => {
                 setDeviceID(event.device_id);
+            });
+
+            player.addListener('player_state_changed', (state: { paused: boolean | ((prevState: boolean) => boolean); position: SetStateAction<number>; duration: SetStateAction<number>; }) => {
+                if (!state) return;
+
+                setIsPaused(state.paused);
+                setTrackPosition(state.position);
+                setTrackDuration(state.duration);
             });
 
             setPlayer(player);
         }
     }, [props.token]);
+
+
+
 
     useEffect(() => {
         if (props.albumURI)
@@ -156,11 +123,19 @@ const MusicPlayer = (props: {token: string | null, albumURI: string | null}) => 
     }, [currentSong]);
 
     const pauseSong = async () => {
-        player.pause()
+        if (player)
+        {
+            await player.pause()
+            setIsPaused(true);
+        }
     }
 
     const playSong = async () => {
-        player.resume()
+        if (player)
+        {
+            await player.resume()
+            setIsPaused(false);
+        }
     }
 
     return (
@@ -175,11 +150,28 @@ const MusicPlayer = (props: {token: string | null, albumURI: string | null}) => 
             <Card className="max-w-[400px]">
                 <CardBody className="flex gap-3">
                     <>{isConnected ? <>
-                            {currentAlbum ? <AlbumDisplay currentAlbum={currentAlbum}/> : <div>No album</div>}
-                            {currentSong ? <SongDetails currentSong={currentSong}/> : <div>No song</div>}
-                        <Button onClick={playSong}>Play</Button>
-                        <Button onClick={pauseSong}>Pause</Button>
-                        <TrackList songs={songs} setCurrentSong={setCurrentSong}/>
+                        {currentAlbum ? <AlbumDisplay currentAlbum={currentAlbum}/> : <div>No album</div>}
+                        {currentSong ? <SongDetails currentSong={currentSong}/> : <div>No song</div>}
+                        <TrackScrubber player={player} trackPosition={trackPosition} trackDuration={trackDuration}/>
+                        <VolumeScrubber player={player}/>
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            flexDirection: 'row'
+                        }}>
+                            {!isPaused ? <Button onClick={pauseSong}>Pause</Button> :
+                                <Button onClick={playSong}>Play</Button>}
+                        </div>
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}>
+                            <TrackList songs={songs} setCurrentSong={setCurrentSong}/>
+                        </div>
+
+
                     </> : <div>Not connected to spotify</div>}</>
                 </CardBody>
             </Card>
