@@ -4,6 +4,7 @@ import UserBox from "./components/UserBox";
 import {useEffect, useState} from "react";
 import Upload from "@/components/Upload.tsx";
 import MusicPlayer from "@/components/MusicPlayer.tsx";
+import { Logo } from "./components/Logo.tsx";
 
 function App() {
     const [isSignedIn, setIsSignedIn] = useState(false);
@@ -52,9 +53,14 @@ function App() {
 
     return (
         <>
-            <Navbar>
+            <Navbar
+                style={{
+                    backgroundColor: '#383838', // Replace with your desired color
+                    borderBottom: '2px solid #000', // Optional: Add a border or other styles
+                }}>
                 <NavbarBrand>
-                    <p className="font-bold text-2xl">Virtual Turn Table</p>
+                    <Logo/>
+                    <p className="font-bold text-inherit" style={{padding: 10}}>Virtual Turn Table</p>
                 </NavbarBrand>
                 <NavbarItem>
                     {!isSignedIn ? <Login/> : <UserBox/>}

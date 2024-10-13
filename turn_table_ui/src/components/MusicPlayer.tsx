@@ -85,8 +85,7 @@ const MusicPlayer = (props: {token: string | null, albumURI: string | null}) => 
                     setIsConnected(true);
                 } else {
                     // TODO: ADD ERROR MESSAGE ON FRONTEND
-                    // TODO: REVERT BACK TO false
-                    setIsConnected(true);
+                    setIsConnected(false);
                 }
             })
 
@@ -96,7 +95,7 @@ const MusicPlayer = (props: {token: string | null, albumURI: string | null}) => 
 
             setPlayer(player);
         }
-    }, []);
+    }, [props.token]);
 
     useEffect(() => {
         if (props.albumURI)
@@ -150,9 +149,9 @@ const MusicPlayer = (props: {token: string | null, albumURI: string | null}) => 
                     device_id: deviceID
                 }
             })
-                .catch(function (error) {
-                    console.log(error);
-                });
+            .catch(function (error) {
+                console.log(error);
+            });
         }
     }, [currentSong]);
 
