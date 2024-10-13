@@ -1,9 +1,8 @@
 import {Card, CardBody} from "@nextui-org/card";
 import {Image} from "@nextui-org/image";
+import Album from "@/interfaces/Album.tsx";
 
-const Album = (props: { img_url: string | undefined,
-    artist: string | undefined, title: string | undefined; }) => {
-
+const AlbumDisplay = (props: { currentAlbum: Album}) => {
     return (
         <Card
             isBlurred
@@ -13,7 +12,7 @@ const Album = (props: { img_url: string | undefined,
             <CardBody>
                 <div className="flex flex-col items-center justify-center">
                 <Image
-                    src={props.img_url}
+                    src={props.currentAlbum.image_url}
                     alt="album cover"
                     shadow="md">
                 </Image>
@@ -23,4 +22,4 @@ const Album = (props: { img_url: string | undefined,
     );
 }
 
-export default Album;
+export default AlbumDisplay;

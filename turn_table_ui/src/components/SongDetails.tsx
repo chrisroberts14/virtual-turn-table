@@ -1,7 +1,7 @@
 import {Card, CardBody} from "@nextui-org/card";
+import Song from "@/interfaces/Song.tsx";
 
-const SongDetails = (props: { song: string | undefined,
-    artist: string | undefined; }) => {
+const SongDetails = (props: { currentSong: Song }) => {
 
     return (
         <Card
@@ -11,8 +11,8 @@ const SongDetails = (props: { song: string | undefined,
         >
             <CardBody>
                 <div className="flex flex-col items-center justify-center">
-                    <h1>{props.song}</h1>
-                    <h2>{props.artist}</h2>
+                    <h1>{props.currentSong.title}</h1>
+                    <h2>{props.currentSong.artists}</h2>
                 </div>
             </CardBody>
         </Card>

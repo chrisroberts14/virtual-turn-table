@@ -29,8 +29,7 @@ const UserBox = () => {
         localStorage.removeItem('spotify_access_token');
         localStorage.removeItem('spotify_login_time');
         localStorage.removeItem("spotify_session_length");
-        // @ts-ignore
-        window.location = "/";
+        window.location.href = "/";
     }
 
     return (
@@ -42,6 +41,7 @@ const UserBox = () => {
                     avatarProps={{
                         src: profileImage
                     }}
+                    isFocusable={true}
                 />
             </DropdownTrigger>
             <DropdownMenu onAction={(key) => {if (key == "logout") {logout()}}}>

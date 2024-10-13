@@ -1,21 +1,70 @@
 import {useEffect, useState} from "react";
 import {Button} from "@nextui-org/button";
 import axios from "axios";
-import Album from "@/components/Album.tsx";
+import AlbumDisplay from "@/components/AlbumDisplay.tsx";
 import {Card, CardBody} from "@nextui-org/card";
 import SongDetails from "@/components/SongDetails.tsx";
+import TrackList from "@/components/TrackList.tsx";
+import Song from "@/interfaces/Song.tsx";
+import Album from "@/interfaces/Album.tsx";
+
+
+declare global {
+    interface Window {
+        onSpotifyWebPlaybackSDKReady: () => void;
+        Spotify: typeof Spotify;
+    }
+}
+
+declare namespace Spotify {
+    interface PlayerOptions {
+        name: string;
+        getOAuthToken: (cb: (token: string) => void) => void;
+        volume?: number;
+    }
+
+    interface PlaybackState {
+        context: {
+            uri: string;
+        };
+        position: number;
+        duration: number;
+        paused: boolean;
+        track_window: {
+            current_track: {
+                name: string;
+                uri: string;
+                artists: Array<{ name: string; uri: string }>;
+            };
+        };
+    }
+
+    interface ReadyEvent {
+        device_id: string;
+    }
+
+    class Player {
+        constructor(options: PlayerOptions);
+
+        // The 'connect' method returns a promise
+        connect(): Promise<boolean>;
+
+        // The 'on' method to listen to various events
+        on(event: 'ready', callback: (event: ReadyEvent) => void): void;
+        on(event: 'not_ready', callback: (event: ReadyEvent) => void): void;
+        on(event: 'player_state_changed', callback: (state: PlaybackState) => void): void;
+        on(event: string, callback: (...args: any[]) => void): void; // Catch-all for other events
+    }
+}
+
 
 const MusicPlayer = (props: {token: string | null, albumURI: string | null}) => {
     const [player, setPlayer] = useState<any>(null);
     const [deviceID, setDeviceID] = useState("");
     const [isConnected, setIsConnected] = useState(false);
-    const [currentSongIndex, setCurrentSongIndex] = useState(-1);
-    const [currentAlbumTitle, setCurrentAlbumTitle] = useState("");
-    const [currentAlbumArtist, setCurrentAlbumArtist] = useState("");
-    const [currentAlbumImage, setCurrentAlbumImage] = useState("");
-    const [songs, setSongs] = useState<string[]>([]);
-    const [currentSong, setCurrentSong] = useState("");
-    const [currentSongArtist, setCurrentSongArtist] = useState("");
+    const [songs, setSongs] = useState<Song[]>([]);
+    const [currentSong, setCurrentSong] = useState<Song | null>(null);
+    const [currentAlbum, setCurrentAlbum] = useState<Album | null>(null);
 
     useEffect(() => {
         const script = document.createElement('script');
@@ -23,9 +72,7 @@ const MusicPlayer = (props: {token: string | null, albumURI: string | null}) => 
         script.async = true;
         document.body.appendChild(script);
 
-        // @ts-ignore
         window.onSpotifyWebPlaybackSDKReady = async () => {
-            // @ts-ignore
             const player = new Spotify.Player({
                 name: 'Vinyl Scanner',
                 getOAuthToken: (cb: (token: string) => void) => {
@@ -38,7 +85,8 @@ const MusicPlayer = (props: {token: string | null, albumURI: string | null}) => 
                     setIsConnected(true);
                 } else {
                     // TODO: ADD ERROR MESSAGE ON FRONTEND
-                    setIsConnected(false);
+                    // TODO: REVERT BACK TO false
+                    setIsConnected(true);
                 }
             })
 
@@ -59,9 +107,14 @@ const MusicPlayer = (props: {token: string | null, albumURI: string | null}) => 
                     album_uri: props.albumURI
                 }
             }).then(function (response) {
-                setCurrentAlbumTitle(response.data["title"]);
-                setCurrentAlbumArtist(response.data["artists"]);
-                setCurrentAlbumImage(response.data["image_url"]);
+                const album: Album = response.data;
+                setCurrentAlbum({
+                    title: album.title,
+                    artists: album.artists,
+                    image_url: album.image_url,
+                    album_uri: album.album_uri,
+                    tracks_url: album.tracks_url
+                });
             }).catch(function (error) {
                 console.log(error);
             });
@@ -73,7 +126,12 @@ const MusicPlayer = (props: {token: string | null, albumURI: string | null}) => 
                 }
             })
             .then(function (response) {
-                setSongs(response.data);
+                setSongs(response.data.map((song: Song) => ({
+                    title: song.title,
+                    artists: song.artists,
+                    uri: song.uri,
+                    album_uri: song.album_uri
+                })));
             })
             .catch(function (error) {
                 console.log(error);
@@ -82,29 +140,21 @@ const MusicPlayer = (props: {token: string | null, albumURI: string | null}) => 
 
     }, [props.albumURI]);
 
-    const nextSong = async () => {
-        setCurrentSongIndex(currentSongIndex + 1);
-        // @ts-ignore
-        setCurrentSong(songs.at(currentSongIndex)["title"]);
-        // @ts-ignore
-        setCurrentSongArtist(songs.at(currentSongIndex)["artists"].join(", "));
-        if (songs && player) {
-            if (currentSongIndex < songs.length) {
-                // @ts-ignore
-                const trackURI = songs.at(currentSongIndex)["uri"];
-                axios.post(import.meta.env.VITE_BFF_ADDRESS + "play_track/", null, {
-                    params: {
-                        spotify_access_token: props.token,
-                        track_uri: trackURI,
-                        device_id: deviceID
-                    }
-                })
+
+    useEffect(() => {
+        if (currentSong) {
+            axios.post(import.meta.env.VITE_BFF_ADDRESS + "play_track/", null, {
+                params: {
+                    spotify_access_token: props.token,
+                    track_uri: currentSong.uri,
+                    device_id: deviceID
+                }
+            })
                 .catch(function (error) {
                     console.log(error);
                 });
-            }
         }
-    }
+    }, [currentSong]);
 
     const pauseSong = async () => {
         player.pause()
@@ -126,11 +176,11 @@ const MusicPlayer = (props: {token: string | null, albumURI: string | null}) => 
             <Card className="max-w-[400px]">
                 <CardBody className="flex gap-3">
                     <>{isConnected ? <>
-                        <Album title={currentAlbumTitle} artist={currentAlbumArtist} img_url={currentAlbumImage}/>
-                        <SongDetails song={currentSong} artist={currentSongArtist}/>
+                            {currentAlbum ? <AlbumDisplay currentAlbum={currentAlbum}/> : <div>No album</div>}
+                            {currentSong ? <SongDetails currentSong={currentSong}/> : <div>No song</div>}
                         <Button onClick={playSong}>Play</Button>
                         <Button onClick={pauseSong}>Pause</Button>
-                        <Button onClick={nextSong}>Skip</Button>
+                        <TrackList songs={songs} setCurrentSong={setCurrentSong}/>
                     </> : <div>Not connected to spotify</div>}</>
                 </CardBody>
             </Card>

@@ -8,6 +8,7 @@ import MusicPlayer from "@/components/MusicPlayer.tsx";
 function App() {
     const [isSignedIn, setIsSignedIn] = useState(false);
     const [albumURI, setAlbumURI] = useState("");
+    const [spotifyToken, setSpotifyToken] = useState("");
 
 
     useEffect(() => {
@@ -20,30 +21,38 @@ function App() {
             localStorage.setItem('spotify_login_time', String(new Date()));
             localStorage.setItem("spotify_session_length", params.get("expires_in") as string);
             setIsSignedIn(true);
-            // @ts-ignore
-            window.location = "/";
-        } else if (localStorage.getItem('spotify_access_token')) {
-            const start_time = localStorage.getItem("spotify_login_time");
+            setSpotifyToken(token);
+            window.location.href = "/";
+        } else{
+            const storageToken = localStorage.getItem('spotify_access_token');
+            if (storageToken) {
+                const start_time = localStorage.getItem("spotify_login_time");
+                const session_length = Number(localStorage.getItem("spotify_session_length"));
+                if (start_time) {
+                    const current_session_length = (new Date().getTime() - new Date(start_time).getTime()) / 1000;
 
-            // @ts-ignore
-            const session_length = (new Date().getTime() - new Date(start_time).getTime()) / 1000;
-            if (session_length > Number(localStorage.getItem("spotify_session_length"))) {
-                localStorage.removeItem('spotify_access_token');
-                localStorage.removeItem('spotify_login_time');
-                localStorage.removeItem("spotify_session_length");
-                setIsSignedIn(false);
+                    if (current_session_length > Number(session_length)) {
+                        localStorage.removeItem('spotify_access_token');
+                        localStorage.removeItem('spotify_login_time');
+                        localStorage.removeItem("spotify_session_length");
+                        setIsSignedIn(false);
+                        setSpotifyToken("");
+                    } else {
+                        setIsSignedIn(true);
+                        setSpotifyToken(storageToken);
+                    }
+                }
+
             } else {
-                setIsSignedIn(true);
+                setIsSignedIn(false);
+                setSpotifyToken("");
             }
-        } else {
-            setIsSignedIn(false);
         }
     });
 
-
     return (
         <>
-            <Navbar shouldHideOnScroll>
+            <Navbar>
                 <NavbarBrand>
                     <p className="font-bold text-2xl">Virtual Turn Table</p>
                 </NavbarBrand>
@@ -52,7 +61,7 @@ function App() {
                 </NavbarItem>
             </Navbar>
             <Upload setAlbumURI={setAlbumURI}/>
-            <MusicPlayer token={localStorage.getItem('spotify_access_token')} albumURI={albumURI}/>
+            <MusicPlayer token={spotifyToken} albumURI={albumURI}/>
         </>
     );
 }

@@ -1,12 +1,11 @@
-import React, {useState} from "react";
+import React, {Dispatch, SetStateAction, useState} from "react";
 import {Button} from "@nextui-org/button";
 import {Card, CardBody, CardFooter, CardHeader} from "@nextui-org/card"
 import {Input} from "@nextui-org/input";
 import {Divider} from "@nextui-org/divider"
 import axios from "axios";
 
-// @ts-ignore
-const Upload = ({setAlbumURI}) => {
+const Upload: React.FC<{ setAlbumURI: Dispatch<SetStateAction<string>> }> = ({ setAlbumURI }) => {
     const [file, setFile] = useState<File | null>(null);
     const [isUploading, setIsUploading] = useState(false);
 
@@ -26,14 +25,14 @@ const Upload = ({setAlbumURI}) => {
                     'Content-Type': 'multipart/form-data'
                 }
             })
-                .then(function (response) {
-                    setAlbumURI(response.data);
-                    setIsUploading(false);
-                    setFile(null);
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
+            .then(function (response) {
+                setAlbumURI(response.data);
+                setIsUploading(false);
+                setFile(null);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
         }
     };
 
