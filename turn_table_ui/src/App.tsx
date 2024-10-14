@@ -67,7 +67,8 @@ function App() {
                 </NavbarItem>
             </Navbar>
             <Upload setAlbumURI={setAlbumURI}/>
-            <MusicPlayer token={spotifyToken} albumURI={albumURI}/>
+            {isSignedIn ? <MusicPlayer token={spotifyToken} albumURI={albumURI}/>: <div>Please sign into spotify to use</div>}
+
         </>
     );
 }

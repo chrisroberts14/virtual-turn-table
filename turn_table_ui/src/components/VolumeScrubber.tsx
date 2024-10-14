@@ -27,6 +27,7 @@ const VolumeScrubber = (props: {player: SpotifyPlayer | null}) => {
             step={0.01}
             className="max-w-sm"
             value={volume}
+            getValue={(value: number) => (Math.round(value * 100)).toString() + "%"}
             onChange={handleChange}
         />
     );

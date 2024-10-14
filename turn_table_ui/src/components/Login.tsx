@@ -6,8 +6,7 @@ const Login = () => {
         const redirect_uri = import.meta.env.VITE_SPOTIFY_REDIRECT_URI;
         const scope = "streaming user-read-email user-read-private";
 
-        // @ts-ignore
-        window.location = 'https://accounts.spotify.com/authorize' +
+        window.location.href = 'https://accounts.spotify.com/authorize' +
             `?response_type=token` +
             `&client_id=${encodeURIComponent(client_id)}` +
             `&scope=${encodeURIComponent(scope)}` +

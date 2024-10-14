@@ -1,4 +1,4 @@
-import {SetStateAction, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {Button} from "@nextui-org/button";
 import axios from "axios";
 import AlbumDisplay from "@/components/AlbumDisplay.tsx";
@@ -49,19 +49,15 @@ const MusicPlayer = (props: { token: string | null, albumURI: string | null }) =
                 setDeviceID(event.device_id);
             });
 
-            player.addListener('player_state_changed', (state: { paused: boolean | ((prevState: boolean) => boolean); position: SetStateAction<number>; duration: SetStateAction<number>; }) => {
-                if (!state) return;
-
-                setIsPaused(state.paused);
-                setTrackPosition(state.position);
-                setTrackDuration(state.duration);
+            player.addListener('player_state_changed', ({position, duration, paused})  => {
+                setIsPaused(paused);
+                setTrackPosition(position);
+                setTrackDuration(duration);
             });
 
             setPlayer(player);
         }
     }, [props.token]);
-
-
 
 
     useEffect(() => {
@@ -144,12 +140,11 @@ const MusicPlayer = (props: { token: string | null, albumURI: string | null }) =
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                height: '50vh',
             }}
         >
-            <Card className="max-w-[400px]">
+            <Card className="min-w-[400px] max-w-[400px]">
                 <CardBody className="flex gap-3">
-                    <>{isConnected ? <>
+                    <>
                         {currentAlbum ? <AlbumDisplay currentAlbum={currentAlbum}/> : <div>No album</div>}
                         {currentSong ? <SongDetails currentSong={currentSong}/> : <div>No song</div>}
                         <TrackScrubber player={player} trackPosition={trackPosition} trackDuration={trackDuration}/>
@@ -170,9 +165,7 @@ const MusicPlayer = (props: { token: string | null, albumURI: string | null }) =
                         }}>
                             <TrackList songs={songs} setCurrentSong={setCurrentSong}/>
                         </div>
-
-
-                    </> : <div>Not connected to spotify</div>}</>
+                    </>
                 </CardBody>
             </Card>
         </div>
