@@ -5,6 +5,7 @@ import {useEffect, useState} from "react";
 import Upload from "@/components/Upload.tsx";
 import MusicPlayer from "@/components/MusicPlayer.tsx";
 import { Logo } from "./components/Logo.tsx";
+import NavigationBar from "@/components/NavigationBar.tsx";
 
 function App() {
     const [isSignedIn, setIsSignedIn] = useState(false);
@@ -53,22 +54,9 @@ function App() {
 
     return (
         <>
-            <Navbar
-                style={{
-                    backgroundColor: '#383838',
-                    borderBottom: '2px solid #000',
-                }}>
-                <NavbarBrand>
-                    <Logo/>
-                    <p className="font-bold text-inherit" style={{padding: 10}}>Virtual Turn Table</p>
-                </NavbarBrand>
-                <NavbarItem>
-                    {!isSignedIn ? <Login/> : <UserBox/>}
-                </NavbarItem>
-            </Navbar>
+            <NavigationBar isSignedIn={isSignedIn}/>
             <Upload setAlbumURI={setAlbumURI}/>
             {isSignedIn ? <MusicPlayer token={spotifyToken} albumURI={albumURI}/>: <div>Please sign into spotify to use</div>}
-
         </>
     );
 }
