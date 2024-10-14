@@ -1,10 +1,6 @@
-import {Navbar, NavbarBrand, NavbarItem} from "@nextui-org/navbar";
-import Login from "./components/Login";
-import UserBox from "./components/UserBox";
 import {useEffect, useState} from "react";
 import Upload from "@/components/Upload.tsx";
 import MusicPlayer from "@/components/MusicPlayer.tsx";
-import { Logo } from "./components/Logo.tsx";
 import NavigationBar from "@/components/NavigationBar.tsx";
 
 function App() {
