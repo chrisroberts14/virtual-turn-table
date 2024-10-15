@@ -8,6 +8,9 @@ function App() {
 	const [albumUri, setAlbumUri] = useState("");
 	const [spotifyToken, setSpotifyToken] = useState("");
 
+	// Two pages are defined in the state: "play" and "scan"
+	const [currentPage, setCurrentPage] = useState("play");
+
 	useEffect(() => {
 		const hash = window.location.hash.substring(1);
 		const params = new URLSearchParams(hash);
@@ -54,7 +57,11 @@ function App() {
 
 	return (
 		<>
-			<NavigationBar isSignedIn={isSignedIn} />
+			<NavigationBar
+				isSignedIn={isSignedIn}
+				currentPage={currentPage}
+				setCurrentPage={setCurrentPage}
+			/>
 			<Upload setAlbumURI={setAlbumUri} />
 			{isSignedIn ? (
 				<MusicPlayer token={spotifyToken} albumURI={albumUri} />
