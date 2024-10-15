@@ -26,15 +26,21 @@ repos:
       args: [ --fix ]
     # Run the formatter.
     - id: ruff-format
--   repo: https://github.com/pycqa/pylint
-    rev: v3.2.5
-    hooks:
-    -   id: pylint
-        entry: ./pylint_script.py
-        language: system
--   repo: https://github.com/compilerla/conventional-pre-commit
-    rev: v3.2.0
-    hooks:
-      - id: conventional-pre-commit
-        stages: [commit-msg]
-        args: []
+- repo: local
+  hooks:
+    - id: local-biome-check
+      name: biome check
+      entry: bash -c "cd turn_table_ui && npx biome check --fix ."
+      language: system
+- repo: https://github.com/pycqa/pylint
+  rev: v3.2.5
+  hooks:
+    - id: pylint
+      entry: ./pylint_script.py
+      language: system
+- repo: https://github.com/compilerla/conventional-pre-commit
+  rev: v3.2.0
+  hooks:
+    - id: conventional-pre-commit
+      stages: [commit-msg]
+      args: []
