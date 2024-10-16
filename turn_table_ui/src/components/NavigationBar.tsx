@@ -19,12 +19,7 @@ const NavigationBar = (props: {
 	};
 
 	return (
-		<Navbar
-			style={{
-				backgroundColor: "#383838",
-				borderBottom: "2px solid #000",
-			}}
-		>
+		<Navbar className="bg-default-100">
 			<NavbarBrand>
 				<Logo />
 				<p className="font-bold text-inherit" style={{ padding: 10 }}>

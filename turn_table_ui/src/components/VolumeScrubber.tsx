@@ -25,7 +25,8 @@ const VolumeScrubber = (props: { player: SpotifyPlayer | null }) => {
 			minValue={0}
 			defaultValue={0.5}
 			step={0.01}
-			className="max-w-sm"
+			orientation="vertical"
+			className="h-44 p-2"
 			value={volume}
 			getValue={(value: SliderValue) =>
 				`${Math.round(Number(value) * 100).toString()}%`

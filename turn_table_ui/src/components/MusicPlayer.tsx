@@ -1,12 +1,8 @@
-import AlbumDisplay from "@/components/AlbumDisplay.tsx";
-import SongDetails from "@/components/SongDetails.tsx";
-import TrackList from "@/components/TrackList.tsx";
-import TrackScrubber from "@/components/TrackScrubber.tsx";
+import PlayingAlbum from "@/components/PlayingAlbum.tsx";
+import SongControls from "@/components/SongControls.tsx";
 import VolumeScrubber from "@/components/VolumeScrubber.tsx";
 import type Album from "@/interfaces/Album.tsx";
 import type Song from "@/interfaces/Song.tsx";
-import { Button } from "@nextui-org/button";
-import { Card, CardBody } from "@nextui-org/card";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -19,6 +15,7 @@ const MusicPlayer = (props: {
 	// const [isConnected, setIsConnected] = useState(false);
 	const [songs, setSongs] = useState<Song[]>([]);
 	const [currentSong, setCurrentSong] = useState<Song | null>(null);
+	const [nextSong, setNextSong] = useState<Song | null>(null);
 	const [currentAlbum, setCurrentAlbum] = useState<Album | null>(null);
 	const [isPaused, setIsPaused] = useState(false);
 	const [trackPosition, setTrackPosition] = useState(0); // In ms
@@ -110,90 +107,40 @@ const MusicPlayer = (props: {
 		}
 	}, [props.albumURI, props.token]);
 
-	useEffect(() => {
-		if (currentSong) {
-			axios
-				.post(`${import.meta.env.VITE_BFF_ADDRESS}play_track/`, null, {
-					params: {
-						spotify_access_token: props.token,
-						track_uri: currentSong.uri,
-						device_id: deviceId,
-					},
-				})
-				.catch((error) => {
-					console.log(error);
-				});
-		}
-	}, [currentSong, props.token, deviceId]);
-
-	const pauseSong = async () => {
-		if (player) {
-			await player.pause();
-			setIsPaused(true);
-		}
-	};
-
-	const playSong = async () => {
-		if (player) {
-			await player.resume();
-			setIsPaused(false);
-		}
-	};
-
 	return (
-		<div
-			style={{
-				display: "flex",
-				justifyContent: "center",
-				alignItems: "center",
-			}}
-		>
-			<Card className="min-w-[400px] max-w-[400px]">
-				<CardBody className="flex gap-3">
-					<>
-						{currentAlbum ? (
-							<AlbumDisplay currentAlbum={currentAlbum} />
-						) : (
-							<div>No album</div>
-						)}
-						{currentSong ? (
-							<SongDetails currentSong={currentSong} />
-						) : (
-							<div>No song</div>
-						)}
-						<TrackScrubber
-							player={player}
-							trackPosition={trackPosition}
-							trackDuration={trackDuration}
-						/>
-						<VolumeScrubber player={player} />
-						<div
-							style={{
-								display: "flex",
-								justifyContent: "center",
-								alignItems: "center",
-								flexDirection: "row",
-							}}
-						>
-							{isPaused ? (
-								<Button onClick={playSong}>Play</Button>
-							) : (
-								<Button onClick={pauseSong}>Pause</Button>
-							)}
+		<>
+			<div className="flex-grow bg-gray-200 p-4 overflow-auto">
+				<div className="flex flex-row flex-wrap justify-center h-full" />
+			</div>
+			<div className="bg-gray-800 text-white p-2 text-center h-44">
+				{player ? (
+					<div className="flex flex-row justify-center">
+						<div>
+							<PlayingAlbum
+								currentAlbum={currentAlbum}
+								currentSong={currentSong}
+								nextSong={nextSong}
+							/>
 						</div>
-						<div
-							style={{
-								display: "flex",
-								justifyContent: "center",
-								alignItems: "center",
-							}}
-						>
-							<TrackList songs={songs} setCurrentSong={setCurrentSong} />
+						<div className="flex-[2]">
+							<SongControls
+								player={player}
+								trackPosition={trackPosition}
+								trackDuration={trackDuration}
+								isPaused={isPaused}
+								setIsPaused={setIsPaused}
+								currentSong={currentSong}
+								songList={songs}
+								setCurrentSong={setCurrentSong}
+							/>
 						</div>
-					</>
-				</CardBody>
-			</Card>
-		</div>
+						<div>
+							<VolumeScrubber player={player} />
+						</div>
+					</div>
+				) : null}
+			</div>
+		</>
 	);
 };
 

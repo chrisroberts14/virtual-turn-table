@@ -1,11 +1,12 @@
 import MusicPlayer from "@/components/MusicPlayer.tsx";
 import NavigationBar from "@/components/NavigationBar.tsx";
-import Upload from "@/components/Upload.tsx";
 import { useEffect, useState } from "react";
 
 function App() {
 	const [isSignedIn, setIsSignedIn] = useState(false);
-	const [albumUri, setAlbumUri] = useState("");
+	const [albumUri, setAlbumUri] = useState(
+		"spotify:album:0o5xjCboti8vXhdoUG9LYi",
+	);
 	const [spotifyToken, setSpotifyToken] = useState("");
 
 	// Two pages are defined in the state: "play" and "scan"
@@ -56,19 +57,18 @@ function App() {
 	});
 
 	return (
-		<>
+		<div className="flex flex-col h-screen">
 			<NavigationBar
 				isSignedIn={isSignedIn}
 				currentPage={currentPage}
 				setCurrentPage={setCurrentPage}
 			/>
-			<Upload setAlbumURI={setAlbumUri} />
-			{isSignedIn ? (
+			{currentPage === "play" ? (
 				<MusicPlayer token={spotifyToken} albumURI={albumUri} />
 			) : (
-				<div>Please sign into spotify to use</div>
+				<div>Scan Page Not Completed</div>
 			)}
-		</>
+		</div>
 	);
 }
 
