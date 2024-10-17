@@ -1,3 +1,4 @@
+import type Song from "@/interfaces/Song.tsx";
 import { Slider, type SliderValue } from "@nextui-org/slider";
 import { useEffect, useState } from "react";
 
@@ -5,6 +6,7 @@ const TrackScrubber = (props: {
 	player: SpotifyPlayer | null;
 	trackPosition: number;
 	trackDuration: number;
+	currentSong: Song | null;
 }) => {
 	const [position, setPosition] = useState(props.trackPosition);
 
@@ -14,7 +16,7 @@ const TrackScrubber = (props: {
 
 	useEffect(() => {
 		setInterval(async () => {
-			if (!props.player) {
+			if (!props.player || !props.currentSong) {
 				return;
 			}
 			const state = await props.player.getCurrentState();
@@ -22,7 +24,7 @@ const TrackScrubber = (props: {
 				setPosition(state.position);
 			}
 		}, 1000);
-	}, [props.player]);
+	}, [props.player, props.currentSong]);
 
 	const handleChange = (value: SliderValue) => {
 		if (props.player) {

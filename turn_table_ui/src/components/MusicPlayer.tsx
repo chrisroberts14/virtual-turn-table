@@ -23,7 +23,6 @@ const MusicPlayer = (props: {
 	const [isPaused, setIsPaused] = useState(false);
 	const [trackPosition, setTrackPosition] = useState(0); // In ms
 	const [trackDuration, setTrackDuration] = useState(0);
-
 	const [contentHeight, setContentHeight] = useState(window.innerHeight - 240);
 
 	useEffect(() => {
@@ -67,11 +66,11 @@ const MusicPlayer = (props: {
 	}, [props.token]);
 
 	useEffect(() => {
-		if (props.albumURI) {
+		if (props.albumURI && props.token) {
 			axios
 				.get(`${import.meta.env.VITE_BFF_ADDRESS}album_details/`, {
 					params: {
-						spotify_access_token: localStorage.getItem("spotify_access_token"),
+						spotify_access_token: props.token,
 						album_uri: props.albumURI,
 					},
 				})
@@ -112,6 +111,27 @@ const MusicPlayer = (props: {
 		}
 	}, [props.albumURI, props.token]);
 
+	useEffect(() => {
+		if (currentSong) {
+			const currentSongIndex = songs.findIndex(
+				(song) => song.title === currentSong.title,
+			);
+			if (currentSongIndex < songs.length - 1) {
+				setNextSong(songs[currentSongIndex + 1]);
+			}
+
+			axios
+				.post(`${import.meta.env.VITE_BFF_ADDRESS}play_track/`, {
+					spotify_access_token: props.token,
+					track_uri: currentSong.uri,
+					device_id: deviceId,
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		}
+	}, [currentSong, songs, props.token, deviceId]);
+
 	const onResize = () => {
 		setContentHeight(window.innerHeight - 240);
 	};
@@ -129,7 +149,7 @@ const MusicPlayer = (props: {
 					enable={{
 						top: false,
 						right: false,
-						bottom: true,
+						bottom: false,
 						left: false,
 						topRight: false,
 						bottomRight: false,

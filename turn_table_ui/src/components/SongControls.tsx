@@ -67,6 +67,7 @@ const SongControls = (props: {
 					player={props.player}
 					trackPosition={props.trackPosition}
 					trackDuration={props.trackDuration}
+					currentSong={props.currentSong}
 				/>
 			</div>
 			<div className={"flex flex-row justify-center"}>
