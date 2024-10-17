@@ -4,7 +4,10 @@ import VolumeScrubber from "@/components/VolumeScrubber.tsx";
 import type Album from "@/interfaces/Album.tsx";
 import type Song from "@/interfaces/Song.tsx";
 import axios from "axios";
+import { Resizable } from "re-resizable";
 import { useEffect, useState } from "react";
+import "react-resizable/css/styles.css";
+import SongList from "@/components/SongList.tsx";
 
 const MusicPlayer = (props: {
 	token: string | null;
@@ -20,6 +23,8 @@ const MusicPlayer = (props: {
 	const [isPaused, setIsPaused] = useState(false);
 	const [trackPosition, setTrackPosition] = useState(0); // In ms
 	const [trackDuration, setTrackDuration] = useState(0);
+
+	const [contentHeight, setContentHeight] = useState(window.innerHeight - 240);
 
 	useEffect(() => {
 		const script = document.createElement("script");
@@ -107,38 +112,79 @@ const MusicPlayer = (props: {
 		}
 	}, [props.albumURI, props.token]);
 
+	const onResize = () => {
+		setContentHeight(window.innerHeight - 240);
+	};
+
+	window.addEventListener("resize", onResize);
+
 	return (
 		<>
-			<div className="flex-grow bg-gray-200 p-4 overflow-auto">
-				<div className="flex flex-row flex-wrap justify-center h-full" />
-			</div>
-			<div className="bg-gray-800 text-white p-2 text-center h-44">
-				{player ? (
-					<div className="flex flex-row justify-center">
-						<div>
-							<PlayingAlbum
-								currentAlbum={currentAlbum}
-								currentSong={currentSong}
-								nextSong={nextSong}
-							/>
-						</div>
-						<div className="flex-[2]">
-							<SongControls
-								player={player}
-								trackPosition={trackPosition}
-								trackDuration={trackDuration}
-								isPaused={isPaused}
-								setIsPaused={setIsPaused}
-								currentSong={currentSong}
-								songList={songs}
-								setCurrentSong={setCurrentSong}
-							/>
-						</div>
-						<div>
-							<VolumeScrubber player={player} />
-						</div>
+			<div className="flex flex-col h-full">
+				<Resizable
+					defaultSize={{ width: "100%", height: contentHeight }}
+					maxHeight={contentHeight}
+					minHeight={contentHeight}
+					onResize={onResize}
+					enable={{
+						top: false,
+						right: false,
+						bottom: true,
+						left: false,
+						topRight: false,
+						bottomRight: false,
+						bottomLeft: false,
+						topLeft: false,
+					}}
+				>
+					<div className="flex flex-row h-full">
+						<Resizable
+							enable={{
+								top: false,
+								right: true,
+								bottom: false,
+								left: false,
+								topRight: false,
+								bottomRight: false,
+								bottomLeft: false,
+								topLeft: false,
+							}}
+						>
+							<div className="overflow-y-auto h-full">
+								<SongList songList={songs} setCurrentSong={setCurrentSong} />
+							</div>
+						</Resizable>
+						<div className="flex">Spinning Vinyl</div>
 					</div>
-				) : null}
+				</Resizable>
+				<div className="flex-grow bg-primary-100 flex justify-center pt-2 pl-2 w-screen">
+					{player ? (
+						<div className="flex flex-row justify-center w-screen">
+							<div>
+								<PlayingAlbum
+									currentAlbum={currentAlbum}
+									currentSong={currentSong}
+									nextSong={nextSong}
+								/>
+							</div>
+							<div className="flex-[2]">
+								<SongControls
+									player={player}
+									trackPosition={trackPosition}
+									trackDuration={trackDuration}
+									isPaused={isPaused}
+									setIsPaused={setIsPaused}
+									currentSong={currentSong}
+									songList={songs}
+									setCurrentSong={setCurrentSong}
+								/>
+							</div>
+							<div>
+								<VolumeScrubber player={player} />
+							</div>
+						</div>
+					) : null}
+				</div>
 			</div>
 		</>
 	);

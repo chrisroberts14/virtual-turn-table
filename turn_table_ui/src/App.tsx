@@ -1,5 +1,6 @@
 import MusicPlayer from "@/components/MusicPlayer.tsx";
 import NavigationBar from "@/components/NavigationBar.tsx";
+import ScanPage from "@/components/ScanPage.tsx";
 import { useEffect, useState } from "react";
 
 function App() {
@@ -66,7 +67,7 @@ function App() {
 			{currentPage === "play" ? (
 				<MusicPlayer token={spotifyToken} albumURI={albumUri} />
 			) : (
-				<div>Scan Page Not Completed</div>
+				<ScanPage />
 			)}
 		</div>
 	);

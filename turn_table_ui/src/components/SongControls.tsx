@@ -70,7 +70,7 @@ const SongControls = (props: {
 				/>
 			</div>
 			<div className={"flex flex-row justify-center"}>
-				<Tabs aria-label="Track of Album Controls">
+				<Tabs aria-label="Track or Album Controls">
 					<Tab key="track" title="Track" />
 					<Tab key="album" title="Album" />
 				</Tabs>
