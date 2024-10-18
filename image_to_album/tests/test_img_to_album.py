@@ -169,5 +169,5 @@ def test_spotify_search(client, mocker):
     mocker.patch("requests.post", side_effect=mock_request)
     mocker.patch("requests.get", side_effect=mock_request)
 
-    response = client.post("/album/get_uri/", params={"image_name": "test"})
+    response = client.post("/album/get_album/", params={"image_name": "test"})
     assert response.status_code == 200

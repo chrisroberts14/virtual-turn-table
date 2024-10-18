@@ -1,5 +1,6 @@
 """Tests for the bff api."""
 
+import base64
 from pathlib import Path
 
 from bff import Album
@@ -47,16 +48,35 @@ def test_image_to_uri(client, mocker):
         if url.endswith("/reverse_image_search/"):
             mock_response_data = "Arcade Fire We"
         else:
-            mock_response_data = "spotify:album:4EVnJfjXZjbyb8f2XvIVc2"
+            mock_response_data = Album(
+                title="We",
+                artists=["Arcade Fire"],
+                image_url="test_url",
+                album_uri="spotify:album:4EVnJfjXZjbyb8f2XvIVc2",
+                tracks_url="test_tracks_url",
+            ).model_dump()
         mock_response = mocker.Mock()
         mock_response.json.return_value = mock_response_data
         return mock_response
 
     mocker.patch("requests.post", side_effect=mock_request)
     with open(Path(__file__).parent / "data/mock_image.jpg", "rb") as file:
-        response = client.post("/image_to_uri/", files={"file": file})
+        base_64_image = base64.b64encode(file.read()).decode("utf-8")
+
+    response = client.post(
+        "/image_to_album/", json={"image": f"data:image/jpeg;base64,{base_64_image}"}
+    )
     assert response.status_code == 200
-    assert response.json() == "spotify:album:4EVnJfjXZjbyb8f2XvIVc2"
+    assert (
+        response.json()
+        == Album(
+            title="We",
+            artists=["Arcade Fire"],
+            image_url="test_url",
+            album_uri="spotify:album:4EVnJfjXZjbyb8f2XvIVc2",
+            tracks_url="test_tracks_url",
+        ).model_dump()
+    )
 
 
 def test_get_user_info(client, mocker):
