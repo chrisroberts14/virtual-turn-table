@@ -1,4 +1,5 @@
 import AlbumConfirm from "@/components/AlbumConfirm.tsx";
+import Upload from "@/components/Upload.tsx";
 import type Album from "@/interfaces/Album.tsx";
 import { Button } from "@nextui-org/button";
 import axios from "axios";
@@ -26,9 +27,10 @@ const ScanPage = (props: {
 }) => {
 	const [contentHeight, setContentHeight] = useState(window.innerHeight - 240);
 	const [cameras, setCameras] = useState<MediaDeviceInfo[]>([]);
-	const webcamRef = useRef<Webcam>(null);
+	const webcamRef = useRef<Webcam | null>(null);
 	const [isUploading, setIsUploading] = useState(false);
 	const [scannedAlbum, setScannedAlbum] = useState<Album | null>(null);
+	const [isConfirmVisible, setIsConfirmVisible] = useState(false);
 
 	const onResize = () => {
 		setContentHeight(window.innerHeight - 240);
@@ -47,19 +49,19 @@ const ScanPage = (props: {
 		});
 	}, [getCameras]);
 
-	useEffect(() => {
-		setScannedAlbum(null);
-	}, []);
-
 	const getAlbum = () => {
 		setIsUploading(true);
 		if (webcamRef.current) {
+			if (!(webcamRef.current instanceof Webcam)) {
+				return;
+			}
 			const imageSrc = webcamRef.current.getScreenshot();
 			if (!imageSrc) {
 				console.error("Failed to capture image");
 				setIsUploading(false);
 				return;
 			}
+
 			axios
 				.post(
 					`${import.meta.env.VITE_BFF_ADDRESS}image_to_album/`,
@@ -73,7 +75,6 @@ const ScanPage = (props: {
 				.then((response) => {
 					const newAlbum: Album = response.data;
 					setScannedAlbum(newAlbum);
-					setIsUploading(false);
 				})
 				.catch((error) => {
 					console.log(error);
@@ -100,45 +101,50 @@ const ScanPage = (props: {
 				}}
 			>
 				<div className="flex flex-row h-full">
-					<Resizable
-						enable={{
-							top: false,
-							right: true,
-							bottom: false,
-							left: false,
-							topRight: false,
-							bottomRight: false,
-							bottomLeft: false,
-							topLeft: false,
-						}}
-						minWidth={"20%"}
-						maxWidth={"45%"}
-						maxHeight={"100%"}
-					>
-						<div className="overflow-y-auto h-full max-h-full">
-							<AlbumConfirm
-								scannedAlbum={scannedAlbum}
-								setCurrentAlbum={props.setCurrentAlbum}
-							/>
-						</div>
-					</Resizable>
-					<div className="flex-grow p-3 max-w-[65%] relative">
+					{scannedAlbum ? (
+						<Resizable
+							enable={{
+								top: false,
+								right: true,
+								bottom: false,
+								left: false,
+								topRight: false,
+								bottomRight: false,
+								bottomLeft: false,
+								topLeft: false,
+							}}
+							minWidth={"20%"}
+							maxWidth={"25%"}
+							maxHeight={"100%"}
+						>
+							<div className="overflow-y-auto h-full max-h-full">
+								<AlbumConfirm
+									scannedAlbum={scannedAlbum}
+									setCurrentAlbum={props.setCurrentAlbum}
+									setScannedAlbum={setScannedAlbum}
+								/>
+							</div>
+						</Resizable>
+					) : null}
+
+					<div className="flex flex-grow p-3 justify-center relative max-w-full">
 						{cameras.length === 0 ? (
-							<div>No cameras found</div>
+							<div className="flex flex-col items-center">
+								No cameras found
+								<Upload setScannedAlbum={setScannedAlbum} />
+							</div>
 						) : (
 							<div>
-								<div className="flex justify-center max-h-full p-32 flex-col">
-									<Webcam
-										audio={false}
-										screenshotFormat="image/jpeg"
-										className="rounded-lg object-cover absolute top-0 left-0 w-full h-full p-8 pb-16"
-										ref={webcamRef}
-									/>
-									<div className="p-4 text-center absolute bottom-0 w-full left-0">
-										<Button onClick={getAlbum} isDisabled={isUploading}>
-											Capture
-										</Button>
-									</div>
+								<Webcam
+									audio={false}
+									screenshotFormat="image/jpeg"
+									className="rounded-lg object-cover w-full h-full p-8 pb-16"
+									ref={webcamRef}
+								/>
+								<div className="p-4 text-center absolute bottom-0 w-full left-0">
+									<Button onClick={getAlbum} isDisabled={isUploading}>
+										Capture
+									</Button>
 								</div>
 							</div>
 						)}

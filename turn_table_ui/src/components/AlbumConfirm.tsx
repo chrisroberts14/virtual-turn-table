@@ -9,6 +9,7 @@ import { type SetStateAction, useEffect, useState } from "react";
 
 const AlbumConfirm = (props: {
 	scannedAlbum: Album | null;
+	setScannedAlbum: React.Dispatch<SetStateAction<Album | null>>;
 	setCurrentAlbum: React.Dispatch<SetStateAction<Album | null>>;
 }) => {
 	const [buttonsDisabled, setButtonsDisabled] = useState(true);
@@ -27,6 +28,7 @@ const AlbumConfirm = (props: {
 
 	const rejectAlbum = () => {
 		props.setCurrentAlbum(null);
+		props.setScannedAlbum(null);
 	};
 
 	return (
@@ -35,10 +37,10 @@ const AlbumConfirm = (props: {
 				<div className="flex flex-col flex-grow max-w-[100%] max-h-full">
 					<Card className="flex-shrink max-w-[100%] text-center h-full min-w-0 max-h-full">
 						<CardHeader className="justify-center">Album selection</CardHeader>
-						<CardBody>
+						<CardBody className="flex flex-shrink max-h-[70%]">
 							<div
-								className="max-h-[50%]"
-								style={{ width: "80%", paddingBottom: "100%" }}
+								className="max-h-[50%] flex-grow"
+								style={{ width: "100%", paddingBottom: "100%" }}
 							>
 								{props.scannedAlbum ? (
 									<div>
@@ -51,8 +53,8 @@ const AlbumConfirm = (props: {
 								)}
 							</div>
 
-							<Spacer className="pt-2" />
-							<div className="w-full flex-grow">
+							<Spacer className="flex pt-2 flex-shrink" />
+							<div className="w-full flex-grow max-h-[10%]">
 								{props.scannedAlbum ? (
 									<Card className="bg-default-200 h-full">
 										<div>
@@ -71,24 +73,26 @@ const AlbumConfirm = (props: {
 								)}
 							</div>
 						</CardBody>
-
-						<CardFooter className="flex justify-center">
-							<div className="flex flex-row flex-grow px-6">
-								<Button
-									isDisabled={buttonsDisabled}
-									style={{ background: "#8c0606" }}
-									onClick={rejectAlbum}
-								>
-									No
-								</Button>
-								<Spacer className="flex flex-grow" />
-								<Button
-									isDisabled={buttonsDisabled}
-									style={{ background: "#0b6b02" }}
-									onClick={confirmAlbum}
-								>
-									Yes
-								</Button>
+						<CardFooter className="flex flex-grow justify-center">
+							<div className="flex flex-col flex-grow px-6">
+								<p className="pb-10">Is this the correct album?</p>
+								<div className="flex flex-row flex-grow px-6">
+									<Button
+										isDisabled={buttonsDisabled}
+										style={{ background: "#8c0606" }}
+										onClick={rejectAlbum}
+									>
+										No
+									</Button>
+									<Spacer className="flex flex-grow" />
+									<Button
+										isDisabled={buttonsDisabled}
+										style={{ background: "#0b6b02" }}
+										onClick={confirmAlbum}
+									>
+										Yes
+									</Button>
+								</div>
 							</div>
 						</CardFooter>
 					</Card>

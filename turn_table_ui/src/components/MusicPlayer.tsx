@@ -161,22 +161,29 @@ const MusicPlayer = (props: {
 					}}
 				>
 					<div className="flex flex-row h-full">
-						<Resizable
-							enable={{
-								top: false,
-								right: true,
-								bottom: false,
-								left: false,
-								topRight: false,
-								bottomRight: false,
-								bottomLeft: false,
-								topLeft: false,
-							}}
-						>
-							<div className="overflow-y-auto h-full">
-								<SongList songList={songs} setCurrentSong={setCurrentSong} />
-							</div>
-						</Resizable>
+						<div className="animate-slideRight">
+							{currentAlbum ? (
+								<Resizable
+									enable={{
+										top: false,
+										right: true,
+										bottom: false,
+										left: false,
+										topRight: false,
+										bottomRight: false,
+										bottomLeft: false,
+										topLeft: false,
+									}}
+								>
+									<div className="overflow-y-auto h-full">
+										<SongList
+											songList={songs}
+											setCurrentSong={setCurrentSong}
+										/>
+									</div>
+								</Resizable>
+							) : null}
+						</div>
 						<div className="flex">Spinning Vinyl</div>
 					</div>
 				</Resizable>
