@@ -5,7 +5,6 @@ import Webcam from "react-webcam";
 
 const ScanPage = () => {
 	const [contentHeight, setContentHeight] = useState(window.innerHeight - 240);
-	const [webcamSize, setWebcamSize] = useState({ width: 1280, height: 720 });
 
 	const onResize = () => {
 		setContentHeight(window.innerHeight - 240);

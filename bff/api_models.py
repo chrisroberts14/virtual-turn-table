@@ -29,3 +29,11 @@ class Song(BaseModel):
     artists: list[str]
     uri: str
     album_uri: str
+
+
+class PlaySong(BaseModel):
+    """Play song model."""
+
+    track_uri: str
+    device_id: str
+    spotify_access_token: str

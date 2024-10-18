@@ -8,7 +8,7 @@ from fastapi import FastAPI, UploadFile, Depends, HTTPException
 from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from bff.api_models import User, Album, Song
+from bff.api_models import User, Album, Song, PlaySong
 from bff.config import Settings
 
 app = FastAPI()
@@ -136,21 +136,19 @@ def get_album_details(spotify_access_token: str, album_uri: str) -> Album:
 
 
 @app.post("/play_track/")
-def play_track(track_uri: str, spotify_access_token: str, device_id: str):
+def play_track(data: PlaySong):
     """
     Play a track on the user's device.
 
-    :param device_id:
-    :param track_uri:
-    :param spotify_access_token:
+    :param data:
     :return:
     """
-    endpoint = f"https://api.spotify.com/v1/me/player/play?device_id={device_id}"
+    endpoint = f"https://api.spotify.com/v1/me/player/play?device_id={data.device_id}"
     headers = {
-        "Authorization": f"Bearer {spotify_access_token}",
+        "Authorization": f"Bearer {data.spotify_access_token}",
         "Content-Type": "application/json",
     }
-    data = {"uris": [track_uri]}
+    data = {"uris": [data.track_uri]}
 
     response = requests.put(endpoint, headers=headers, json=data, timeout=5)
     response.raise_for_status()

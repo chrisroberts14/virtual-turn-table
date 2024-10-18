@@ -14,6 +14,7 @@ const SongControls = (props: {
 	songList: Song[];
 	currentSong: Song | null;
 	setCurrentSong: React.Dispatch<SetStateAction<Song | null>>;
+	deviceId: string;
 }) => {
 	const pauseSong = async () => {
 		if (props.player) {
@@ -55,7 +56,7 @@ const SongControls = (props: {
 		<div className={"flex flex-col min-w-96 p-2"}>
 			<div className={"flex flex-row justify-center"}>
 				<Button onClick={prevSong}>Previous</Button>
-				{props.isPaused ? (
+				{!props.isPaused ? (
 					<Button onClick={pauseSong}>Pause</Button>
 				) : (
 					<Button onClick={playSong}>Play</Button>
@@ -68,6 +69,7 @@ const SongControls = (props: {
 					trackPosition={props.trackPosition}
 					trackDuration={props.trackDuration}
 					currentSong={props.currentSong}
+					deviceId={props.deviceId}
 				/>
 			</div>
 			<div className={"flex flex-row justify-center"}>

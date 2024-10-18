@@ -18,6 +18,7 @@ const SongList = (props: {
 	setCurrentSong: React.Dispatch<SetStateAction<Song | null>>;
 }) => {
 	const [selectedKey, setSelectedKey] = useState(new Set());
+
 	const handleSelectionChange = (keys: Selection) => {
 		if (keys === "all") {
 			// Handle "all" selection case if needed, but for single selection, this shouldn't occur
@@ -31,11 +32,12 @@ const SongList = (props: {
 			console.log("Error more than one song selected...");
 		} else if (selectedKey.size < 1) {
 			props.setCurrentSong(null);
+		} else {
+			const newSongIndex = props.songList.findIndex(
+				(song) => song.title === selectedKey.values().next().value,
+			);
+			props.setCurrentSong(props.songList[newSongIndex]);
 		}
-		const newSongIndex = props.songList.findIndex(
-			(song) => song.title === selectedKey.values().next().value,
-		);
-		props.setCurrentSong(props.songList[newSongIndex]);
 	}, [selectedKey, props.songList, props.setCurrentSong]);
 
 	return (

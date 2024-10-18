@@ -50,6 +50,11 @@ const MusicPlayer = (props: {
 
 			player.on("ready", (event: { device_id: string }) => {
 				setDeviceId(event.device_id);
+				setPlayer(player);
+			});
+
+			player.on("not_ready", (event: { device_id: string }) => {
+				console.log("Device ID has gone offline:", event.device_id);
 			});
 
 			player.addListener(
@@ -60,8 +65,6 @@ const MusicPlayer = (props: {
 					setTrackDuration(duration);
 				},
 			);
-
-			setPlayer(player);
 		};
 	}, [props.token]);
 
@@ -197,6 +200,7 @@ const MusicPlayer = (props: {
 									currentSong={currentSong}
 									songList={songs}
 									setCurrentSong={setCurrentSong}
+									deviceId={deviceId}
 								/>
 							</div>
 							<div>

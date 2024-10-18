@@ -3,28 +3,40 @@ import { Slider, type SliderValue } from "@nextui-org/slider";
 import { useEffect, useState } from "react";
 
 const TrackScrubber = (props: {
-	player: SpotifyPlayer | null;
+	player: SpotifyPlayer;
 	trackPosition: number;
 	trackDuration: number;
 	currentSong: Song | null;
+	deviceId: string;
 }) => {
 	const [position, setPosition] = useState(props.trackPosition);
+	const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
 
 	useEffect(() => {
 		setPosition(props.trackPosition);
 	}, [props.trackPosition]);
 
 	useEffect(() => {
-		setInterval(async () => {
-			if (!props.player || !props.currentSong) {
-				return;
-			}
-			const state = await props.player.getCurrentState();
-			if (state) {
-				setPosition(state.position);
-			}
-		}, 1000);
-	}, [props.player, props.currentSong]);
+		if (!props.player || !props.currentSong) {
+			clearInterval(intervalId as NodeJS.Timeout);
+		} else if (props.deviceId) {
+			setIntervalId(
+				setInterval(async () => {
+					if (!props.player || !props.currentSong) {
+						return;
+					}
+					props.player
+						.getCurrentState()
+						.then((state) => {
+							setPosition(state.position);
+						})
+						.catch((err) => {
+							console.error("Error fetching player state:", err);
+						});
+				}, 1000),
+			);
+		}
+	}, [props.player, props.currentSong, props.deviceId, intervalId]);
 
 	const handleChange = (value: SliderValue) => {
 		if (props.player) {
