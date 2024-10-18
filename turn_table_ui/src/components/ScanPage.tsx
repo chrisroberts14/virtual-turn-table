@@ -65,20 +65,20 @@ const ScanPage = () => {
 					>
 						<div className="overflow-y-auto h-full">Song Confirm</div>
 					</Resizable>
-					<div className="flex-grow p-3 max-w-[65%]">
+					<div className="flex-grow p-3 max-w-[65%] relative">
 						{cameras.length === 0 ? (
 							<div>No cameras found</div>
 						) : (
-							<div className="flex justify-center max-h-full p-32 flex-col">
-								<Webcam
-									audio={false}
-									height={1080}
-									screenshotFormat="image/jpeg"
-									width={1920}
-									className="rounded-lg"
-								/>
-								<div className="p-4 text-center min-w-[20%] justify-center">
-									<Button>Upload picture</Button>
+							<div>
+								<div className="flex justify-center max-h-full p-32 flex-col">
+									<Webcam
+										audio={false}
+										screenshotFormat="image/jpeg"
+										className="rounded-lg object-cover absolute top-0 left-0 w-full h-full p-8 pb-16"
+									/>
+									<div className="p-4 text-center absolute bottom-0 w-full left-0">
+										<Button>Upload picture</Button>
+									</div>
 								</div>
 							</div>
 						)}
