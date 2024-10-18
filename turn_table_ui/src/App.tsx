@@ -59,6 +59,14 @@ function App() {
 		}
 	});
 
+	useEffect(() => {
+		if (currentAlbum) {
+			setCurrentPage("play");
+		} else {
+			setCurrentPage("scan");
+		}
+	}, [currentAlbum]);
+
 	return (
 		<div className="flex flex-col h-screen">
 			<NavigationBar
@@ -67,7 +75,7 @@ function App() {
 				setCurrentPage={setCurrentPage}
 			/>
 			{currentPage === "play" ? (
-				<MusicPlayer token={spotifyToken} albumURI={albumUri} />
+				<MusicPlayer token={spotifyToken} album={currentAlbum} />
 			) : (
 				<ScanPage
 					setCurrentAlbum={setCurrentAlbum}

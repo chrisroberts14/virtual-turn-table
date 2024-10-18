@@ -37,3 +37,9 @@ class PlaySong(BaseModel):
     track_uri: str
     device_id: str
     spotify_access_token: str
+
+
+class ImagePayload(BaseModel):
+    """Model for the image payload."""
+
+    image: str  # The image in base64 format

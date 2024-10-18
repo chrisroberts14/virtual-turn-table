@@ -4,9 +4,13 @@ import { Button } from "@nextui-org/button";
 import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
 import { Skeleton } from "@nextui-org/skeleton";
 import { Spacer } from "@nextui-org/spacer";
-import { useEffect, useState } from "react";
+import type React from "react";
+import { type SetStateAction, useEffect, useState } from "react";
 
-const AlbumConfirm = (props: { scannedAlbum: Album | null }) => {
+const AlbumConfirm = (props: {
+	scannedAlbum: Album | null;
+	setCurrentAlbum: React.Dispatch<SetStateAction<Album | null>>;
+}) => {
 	const [buttonsDisabled, setButtonsDisabled] = useState(true);
 
 	useEffect(() => {
@@ -17,23 +21,36 @@ const AlbumConfirm = (props: { scannedAlbum: Album | null }) => {
 		}
 	}, [props.scannedAlbum]);
 
+	const confirmAlbum = () => {
+		props.setCurrentAlbum(props.scannedAlbum);
+	};
+
+	const rejectAlbum = () => {
+		props.setCurrentAlbum(null);
+	};
+
 	return (
-		<div className="h-full flex flex-row">
-			<div className="w-full flex flex-row h-full justify-center">
-				<div className="flex flex-col flex-grow max-w-[100%]">
-					<Card className="flex-shrink max-w-[100%] text-center h-full">
+		<div className="h-full flex flex-row max-h-full">
+			<div className="w-full flex flex-row h-full justify-center max-h-full">
+				<div className="flex flex-col flex-grow max-w-[100%] max-h-full">
+					<Card className="flex-shrink max-w-[100%] text-center h-full min-w-0 max-h-full">
 						<CardHeader className="justify-center">Album selection</CardHeader>
 						<CardBody>
-							{props.scannedAlbum ? (
-								<AlbumDisplay album={props.scannedAlbum} />
-							) : (
-								<Skeleton
-									className="min-h-[30%]"
-									style={{ width: "100%", paddingBottom: "100%" }}
-								>
-									<div />
-								</Skeleton>
-							)}
+							<div
+								className="max-h-[50%]"
+								style={{ width: "80%", paddingBottom: "100%" }}
+							>
+								{props.scannedAlbum ? (
+									<div>
+										<AlbumDisplay album={props.scannedAlbum} />
+									</div>
+								) : (
+									<Skeleton style={{ width: "100%", paddingBottom: "100%" }}>
+										<div />
+									</Skeleton>
+								)}
+							</div>
+
 							<Spacer className="pt-2" />
 							<div className="w-full flex-grow">
 								{props.scannedAlbum ? (
@@ -60,6 +77,7 @@ const AlbumConfirm = (props: { scannedAlbum: Album | null }) => {
 								<Button
 									isDisabled={buttonsDisabled}
 									style={{ background: "#8c0606" }}
+									onClick={rejectAlbum}
 								>
 									No
 								</Button>
@@ -67,6 +85,7 @@ const AlbumConfirm = (props: { scannedAlbum: Album | null }) => {
 								<Button
 									isDisabled={buttonsDisabled}
 									style={{ background: "#0b6b02" }}
+									onClick={confirmAlbum}
 								>
 									Yes
 								</Button>

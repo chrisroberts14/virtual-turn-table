@@ -1,14 +1,15 @@
 """Module creating the bff."""
 
+import base64
 from functools import lru_cache
 from typing import Annotated
 
 import requests
-from fastapi import FastAPI, UploadFile, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException
 from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from bff.api_models import User, Album, Song, PlaySong
+from bff.api_models import User, Album, Song, PlaySong, ImagePayload
 from bff.config import Settings
 
 app = FastAPI()
@@ -58,32 +59,31 @@ def check_health():
     return {"status": "alive"}
 
 
-@app.post("/image_to_uri/")
-def image_to_uri(
-    file: UploadFile, settings: Annotated[Settings, Depends(get_settings)]
-) -> str:
+@app.post("/image_to_album/")
+def image_to_album(
+    img: ImagePayload, settings: Annotated[Settings, Depends(get_settings)]
+) -> Album:
     """
     Take an image and return the best guess of the spotify URI.
 
+    :param img:
     :param settings:
-    :param file:
     :return:
     """
-    print(settings.image_to_album_address)
+    image_data = base64.b64decode(img.image.split(",")[1])
+
     endpoint = f"{settings.image_to_album_address}imgs/reverse_image_search/"
-    files = {"file": ("placeholder.jpg", file.file)}
+    files = {"file": ("placeholder.jpg", image_data)}
 
     # Get best results for image search
     response = requests.post(endpoint, files=files, timeout=5)
     response.raise_for_status()
 
     # Get the URI
-    endpoint = (
-        f"{settings.image_to_album_address}album/get_uri/?image_name={response.json()}"
-    )
+    endpoint = f"{settings.image_to_album_address}album/get_album/?image_name={response.json()}"
     response = requests.post(endpoint, timeout=5)
     response.raise_for_status()
-    return response.json()
+    return Album(**response.json())
 
 
 @app.get("/get_user_info/")

@@ -9,6 +9,7 @@ import requests
 from fastapi import APIRouter, UploadFile, HTTPException, Depends
 from fastapi.responses import JSONResponse
 
+from image_to_album.api_models import Album
 from image_to_album.config import Settings
 
 logger = logging.getLogger(__name__)
@@ -78,10 +79,10 @@ async def reverse_image_search(
         raise HTTPException(status_code=500, detail=str(e)) from e
 
 
-@album_router.post("/get_uri/")
-async def get_uri(
+@album_router.post("/get_album/")
+async def get_album(
     image_name: str, settings: Annotated[Settings, Depends(get_settings)]
-):
+) -> Album:
     """
     Get the spotify URIs for the album(s).
 
@@ -119,4 +120,13 @@ async def get_uri(
     response = requests.get(search_url, headers=headers, params=params, timeout=5)
     response.raise_for_status()
 
-    return response.json()["albums"]["items"][0]["uri"]
+    return Album(
+        title=response.json()["albums"]["items"][0]["name"],
+        artists=[
+            artist["name"]
+            for artist in response.json()["albums"]["items"][0]["artists"]
+        ],
+        image_url=response.json()["albums"]["items"][0]["images"][0]["url"],
+        album_uri=response.json()["albums"]["items"][0]["uri"],
+        tracks_url=response.json()["albums"]["items"][0]["href"],
+    )

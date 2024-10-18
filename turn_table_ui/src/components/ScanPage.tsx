@@ -1,6 +1,7 @@
 import AlbumConfirm from "@/components/AlbumConfirm.tsx";
 import type Album from "@/interfaces/Album.tsx";
 import { Button } from "@nextui-org/button";
+import axios from "axios";
 import { Resizable } from "re-resizable";
 import type React from "react";
 import {
@@ -26,6 +27,8 @@ const ScanPage = (props: {
 	const [contentHeight, setContentHeight] = useState(window.innerHeight - 240);
 	const [cameras, setCameras] = useState<MediaDeviceInfo[]>([]);
 	const webcamRef = useRef<Webcam>(null);
+	const [isUploading, setIsUploading] = useState(false);
+	const [scannedAlbum, setScannedAlbum] = useState<Album | null>(null);
 
 	const onResize = () => {
 		setContentHeight(window.innerHeight - 240);
@@ -44,16 +47,40 @@ const ScanPage = (props: {
 		});
 	}, [getCameras]);
 
-	const getAlbum = useCallback(() => {
+	useEffect(() => {
+		setScannedAlbum(null);
+	}, []);
+
+	const getAlbum = () => {
+		setIsUploading(true);
 		if (webcamRef.current) {
 			const imageSrc = webcamRef.current.getScreenshot();
-			if (imageSrc) {
-				console.log(imageSrc);
-			} else {
+			if (!imageSrc) {
 				console.error("Failed to capture image");
+				setIsUploading(false);
+				return;
 			}
+			axios
+				.post(
+					`${import.meta.env.VITE_BFF_ADDRESS}image_to_album/`,
+					{ image: imageSrc },
+					{
+						headers: {
+							"Content-Type": "application/json",
+						},
+					},
+				)
+				.then((response) => {
+					const newAlbum: Album = response.data;
+					setScannedAlbum(newAlbum);
+					setIsUploading(false);
+				})
+				.catch((error) => {
+					console.log(error);
+				});
 		}
-	}, []);
+		setIsUploading(false);
+	};
 
 	return (
 		<div className="flex flex-col h-full">
@@ -86,9 +113,13 @@ const ScanPage = (props: {
 						}}
 						minWidth={"20%"}
 						maxWidth={"45%"}
+						maxHeight={"100%"}
 					>
-						<div className="overflow-y-auto h-full">
-							<AlbumConfirm scannedAlbum={props.currentAlbum} />
+						<div className="overflow-y-auto h-full max-h-full">
+							<AlbumConfirm
+								scannedAlbum={scannedAlbum}
+								setCurrentAlbum={props.setCurrentAlbum}
+							/>
 						</div>
 					</Resizable>
 					<div className="flex-grow p-3 max-w-[65%] relative">
@@ -104,7 +135,9 @@ const ScanPage = (props: {
 										ref={webcamRef}
 									/>
 									<div className="p-4 text-center absolute bottom-0 w-full left-0">
-										<Button onClick={getAlbum}>Capture</Button>
+										<Button onClick={getAlbum} isDisabled={isUploading}>
+											Capture
+										</Button>
 									</div>
 								</div>
 							</div>

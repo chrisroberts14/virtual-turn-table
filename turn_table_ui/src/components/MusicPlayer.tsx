@@ -11,7 +11,7 @@ import SongList from "@/components/SongList.tsx";
 
 const MusicPlayer = (props: {
 	token: string | null;
-	albumURI: string | null;
+	album: Album | null;
 }) => {
 	const [player, setPlayer] = useState<SpotifyPlayer | null>(null);
 	const [deviceId, setDeviceId] = useState("");
@@ -69,12 +69,12 @@ const MusicPlayer = (props: {
 	}, [props.token]);
 
 	useEffect(() => {
-		if (props.albumURI && props.token) {
+		if (props.album && props.token) {
 			axios
 				.get(`${import.meta.env.VITE_BFF_ADDRESS}album_details/`, {
 					params: {
 						spotify_access_token: props.token,
-						album_uri: props.albumURI,
+						album_uri: props.album.album_uri,
 					},
 				})
 				.then((response) => {
@@ -95,7 +95,7 @@ const MusicPlayer = (props: {
 				.get(`${import.meta.env.VITE_BFF_ADDRESS}get_songs_in_album/`, {
 					params: {
 						spotify_access_token: props.token,
-						album_uri: props.albumURI,
+						album_uri: props.album.album_uri,
 					},
 				})
 				.then((response) => {
@@ -112,7 +112,7 @@ const MusicPlayer = (props: {
 					console.log(error);
 				});
 		}
-	}, [props.albumURI, props.token]);
+	}, [props.album, props.token]);
 
 	useEffect(() => {
 		if (currentSong) {
