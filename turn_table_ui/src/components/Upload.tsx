@@ -8,14 +8,18 @@ import type React from "react";
 import { type Dispatch, type SetStateAction, useState } from "react";
 
 const Upload: React.FC<{
-	setScannedAlbum: Dispatch<SetStateAction<Album>>;
+	setScannedAlbum: Dispatch<SetStateAction<Album | null>>;
 }> = ({ setScannedAlbum }) => {
 	const [file, setFile] = useState<File | null>(null);
 	const [isUploading, setIsUploading] = useState(false);
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		if (e.target.files?.length > 0) {
-			setFile(e.target.files[0]);
+		if (e.target.files) {
+			if (e.target.files?.length > 0) {
+				if (e.target.files[0]) {
+					setFile(e.target.files[0]);
+				}
+			}
 		}
 	};
 

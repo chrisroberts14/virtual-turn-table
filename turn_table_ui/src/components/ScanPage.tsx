@@ -30,7 +30,6 @@ const ScanPage = (props: {
 	const webcamRef = useRef<Webcam | null>(null);
 	const [isUploading, setIsUploading] = useState(false);
 	const [scannedAlbum, setScannedAlbum] = useState<Album | null>(null);
-	const [isConfirmVisible, setIsConfirmVisible] = useState(false);
 
 	const onResize = () => {
 		setContentHeight(window.innerHeight - 240);
