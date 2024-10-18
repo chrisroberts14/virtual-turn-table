@@ -1,10 +1,12 @@
 import MusicPlayer from "@/components/MusicPlayer.tsx";
 import NavigationBar from "@/components/NavigationBar.tsx";
 import ScanPage from "@/components/ScanPage.tsx";
+import type Album from "@/interfaces/Album.tsx";
 import { useEffect, useState } from "react";
 
 function App() {
 	const [isSignedIn, setIsSignedIn] = useState(false);
+	const [currentAlbum, setCurrentAlbum] = useState<Album | null>(null);
 	const [albumUri, setAlbumUri] = useState(
 		"spotify:album:0o5xjCboti8vXhdoUG9LYi",
 	);
@@ -67,7 +69,10 @@ function App() {
 			{currentPage === "play" ? (
 				<MusicPlayer token={spotifyToken} albumURI={albumUri} />
 			) : (
-				<ScanPage />
+				<ScanPage
+					setCurrentAlbum={setCurrentAlbum}
+					currentAlbum={currentAlbum}
+				/>
 			)}
 		</div>
 	);

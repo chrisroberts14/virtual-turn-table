@@ -1,6 +1,15 @@
+import AlbumConfirm from "@/components/AlbumConfirm.tsx";
+import type Album from "@/interfaces/Album.tsx";
 import { Button } from "@nextui-org/button";
 import { Resizable } from "re-resizable";
-import { useCallback, useEffect, useState } from "react";
+import type React from "react";
+import {
+	type SetStateAction,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import Webcam from "react-webcam";
 
 type MediaDeviceInfo = {
@@ -10,9 +19,13 @@ type MediaDeviceInfo = {
 	groupId: string;
 };
 
-const ScanPage = () => {
+const ScanPage = (props: {
+	currentAlbum: Album | null;
+	setCurrentAlbum: React.Dispatch<SetStateAction<Album | null>>;
+}) => {
 	const [contentHeight, setContentHeight] = useState(window.innerHeight - 240);
 	const [cameras, setCameras] = useState<MediaDeviceInfo[]>([]);
+	const webcamRef = useRef<Webcam>(null);
 
 	const onResize = () => {
 		setContentHeight(window.innerHeight - 240);
@@ -30,6 +43,17 @@ const ScanPage = () => {
 			getCameras(devices as MediaDeviceInfo[]);
 		});
 	}, [getCameras]);
+
+	const getAlbum = useCallback(() => {
+		if (webcamRef.current) {
+			const imageSrc = webcamRef.current.getScreenshot();
+			if (imageSrc) {
+				console.log(imageSrc);
+			} else {
+				console.error("Failed to capture image");
+			}
+		}
+	}, []);
 
 	return (
 		<div className="flex flex-col h-full">
@@ -63,7 +87,9 @@ const ScanPage = () => {
 						minWidth={"20%"}
 						maxWidth={"45%"}
 					>
-						<div className="overflow-y-auto h-full">Song Confirm</div>
+						<div className="overflow-y-auto h-full">
+							<AlbumConfirm scannedAlbum={props.currentAlbum} />
+						</div>
 					</Resizable>
 					<div className="flex-grow p-3 max-w-[65%] relative">
 						{cameras.length === 0 ? (
@@ -75,9 +101,10 @@ const ScanPage = () => {
 										audio={false}
 										screenshotFormat="image/jpeg"
 										className="rounded-lg object-cover absolute top-0 left-0 w-full h-full p-8 pb-16"
+										ref={webcamRef}
 									/>
 									<div className="p-4 text-center absolute bottom-0 w-full left-0">
-										<Button>Upload picture</Button>
+										<Button onClick={getAlbum}>Capture</Button>
 									</div>
 								</div>
 							</div>
