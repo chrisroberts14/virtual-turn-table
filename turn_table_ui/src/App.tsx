@@ -77,6 +77,12 @@ function App() {
 		storeStateData({ currentPage: nextPage });
 	}, [nextPage]);
 
+	useEffect(() => {
+		if (currentAlbum) {
+			setNextPage("play");
+		}
+	}, [currentAlbum]);
+
 	const triggerScreenChange = (page: string) => {
 		setDisableTabChange(true);
 		if (page === "play") {

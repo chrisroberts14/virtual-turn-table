@@ -13,11 +13,10 @@ const MusicPlayer = (props: { token: string | null; album: Album | null }) => {
 	const [player, setPlayer] = useState<SpotifyPlayer | null>(null);
 	const [deviceId, setDeviceId] = useState("");
 	// const [isConnected, setIsConnected] = useState(false);
-	const [songs, setSongs] = useState<Song[]>([]);
 	const [currentSong, setCurrentSong] = useState<Song | null>(null);
 	const [nextSong, setNextSong] = useState<Song | null>(null);
 	const [currentAlbum, setCurrentAlbum] = useState<Album | null>(null);
-	const [isPaused, setIsPaused] = useState(false);
+	const [isPaused, setIsPaused] = useState(true);
 	const [trackPosition, setTrackPosition] = useState(0); // In ms
 	const [trackDuration, setTrackDuration] = useState(0);
 	const [contentHeight, setContentHeight] = useState(window.innerHeight - 240);
@@ -82,28 +81,8 @@ const MusicPlayer = (props: { token: string | null; album: Album | null }) => {
 						image_url: album.image_url,
 						album_uri: album.album_uri,
 						tracks_url: album.tracks_url,
+						songs: album.songs,
 					});
-				})
-				.catch((error) => {
-					console.log(error);
-				});
-
-			axios
-				.get(`${import.meta.env.VITE_BFF_ADDRESS}get_songs_in_album/`, {
-					params: {
-						spotify_access_token: props.token,
-						album_uri: props.album.album_uri,
-					},
-				})
-				.then((response) => {
-					setSongs(
-						response.data.map((song: Song) => ({
-							title: song.title,
-							artists: song.artists,
-							uri: song.uri,
-							album_uri: song.album_uri,
-						})),
-					);
 				})
 				.catch((error) => {
 					console.log(error);
@@ -112,12 +91,12 @@ const MusicPlayer = (props: { token: string | null; album: Album | null }) => {
 	}, [props.album, props.token]);
 
 	useEffect(() => {
-		if (currentSong) {
-			const currentSongIndex = songs.findIndex(
+		if (currentSong && currentAlbum) {
+			const currentSongIndex = currentAlbum.songs.findIndex(
 				(song) => song.title === currentSong.title,
 			);
-			if (currentSongIndex < songs.length - 1) {
-				setNextSong(songs[currentSongIndex + 1]);
+			if (currentSongIndex < currentAlbum.songs.length - 1) {
+				setNextSong(currentAlbum.songs[currentSongIndex + 1]);
 			}
 
 			axios
@@ -130,7 +109,7 @@ const MusicPlayer = (props: { token: string | null; album: Album | null }) => {
 					console.log(error);
 				});
 		}
-	}, [currentSong, songs, props.token, deviceId]);
+	}, [currentSong, currentAlbum, props.token, deviceId]);
 
 	const onResize = () => {
 		setContentHeight(window.innerHeight - 240);
@@ -157,7 +136,7 @@ const MusicPlayer = (props: { token: string | null; album: Album | null }) => {
 				}}
 			>
 				<div className="flex flex-row h-full">
-					<div className="animate-slideRight">
+					<div className="animate-slideRight overflow-y-auto overflow-x-hidden max-w-[50%]">
 						{currentAlbum ? (
 							<Resizable
 								enable={{
@@ -170,9 +149,13 @@ const MusicPlayer = (props: { token: string | null; album: Album | null }) => {
 									bottomLeft: false,
 									topLeft: false,
 								}}
+								maxHeight={contentHeight}
 							>
-								<div className="overflow-y-auto h-full">
-									<SongList songList={songs} setCurrentSong={setCurrentSong} />
+								<div className="overflow-y-auto h-full max-w-full">
+									<SongList
+										songList={currentAlbum.songs}
+										setCurrentSong={setCurrentSong}
+									/>
 								</div>
 							</Resizable>
 						) : null}
@@ -183,7 +166,7 @@ const MusicPlayer = (props: { token: string | null; album: Album | null }) => {
 				</div>
 			</Resizable>
 			<div className="flex-grow bg-gray-900 flex justify-center pt-2 pl-2 w-screen h-full">
-				{player ? (
+				{player && currentAlbum ? (
 					<div className="flex flex-row justify-center w-screen">
 						<div>
 							<PlayingAlbum
@@ -200,7 +183,7 @@ const MusicPlayer = (props: { token: string | null; album: Album | null }) => {
 								isPaused={isPaused}
 								setIsPaused={setIsPaused}
 								currentSong={currentSong}
-								songList={songs}
+								songList={currentAlbum.songs}
 								setCurrentSong={setCurrentSong}
 								deviceId={deviceId}
 							/>

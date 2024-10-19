@@ -12,16 +12,6 @@ class User(BaseModel):
     image_url: str
 
 
-class Album(BaseModel):  #
-    """Album model."""
-
-    title: str
-    artists: list[str]
-    image_url: str
-    album_uri: str
-    tracks_url: str
-
-
 class Song(BaseModel):
     """Song model."""
 
@@ -29,6 +19,17 @@ class Song(BaseModel):
     artists: list[str]
     uri: str
     album_uri: str
+
+
+class Album(BaseModel):
+    """Album model."""
+
+    title: str
+    artists: list[str]
+    image_url: str
+    album_uri: str
+    tracks_url: str
+    songs: list[Song]
 
 
 class PlaySong(BaseModel):

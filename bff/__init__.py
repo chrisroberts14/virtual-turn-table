@@ -132,6 +132,15 @@ def get_album_details(spotify_access_token: str, album_uri: str) -> Album:
         image_url=data["images"][0]["url"],
         album_uri=data["uri"],
         tracks_url=data["tracks"]["href"],
+        songs=[
+            Song(
+                title=track["name"],
+                artists=[artist["name"] for artist in track["artists"]],
+                uri=track["uri"],
+                album_uri=data["uri"],
+            )
+            for track in data["tracks"]["items"]
+        ],
     )
 
 
@@ -152,34 +161,3 @@ def play_track(data: PlaySong):
 
     response = requests.put(endpoint, headers=headers, json=data, timeout=5)
     response.raise_for_status()
-
-
-@app.get("/get_songs_in_album/")
-def get_songs_in_album(album_uri: str, spotify_access_token: str) -> list[Song]:
-    """
-    Get the songs on the album.
-
-    :param album_uri:
-    :param spotify_access_token:
-    :return:
-    """
-    endpoint = f"https://api.spotify.com/v1/albums/{album_uri.split(':')[2]}/tracks"
-    headers = {"Authorization": f"Bearer {spotify_access_token}"}
-    response = requests.get(endpoint, headers=headers, timeout=5)
-    response.raise_for_status()
-
-    full_result_url = response.json()["href"]
-    full_result = requests.get(full_result_url, headers=headers, timeout=5)
-    full_result.raise_for_status()
-
-    result = full_result.json()
-
-    return [
-        Song(
-            album_uri=album_uri,
-            title=track["name"],
-            artists=[artist["name"] for artist in track["artists"]],
-            uri=track["uri"],
-        )
-        for track in result["items"]
-    ]

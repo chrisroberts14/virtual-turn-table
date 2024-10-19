@@ -41,28 +41,26 @@ const SongList = (props: {
 	}, [selectedKey, props.songList, props.setCurrentSong]);
 
 	return (
-		<div>
-			<Table
-				isStriped
-				selectionMode="single"
-				aria-label="Song list"
-				onSelectionChange={handleSelectionChange}
-			>
-				<TableHeader>
-					<TableColumn key="title">Title</TableColumn>
-					<TableColumn key="artists">Artists</TableColumn>
-				</TableHeader>
-				<TableBody items={props.songList}>
-					{(item: Song) => (
-						<TableRow key={item.title}>
-							{(columnKey) => (
-								<TableCell>{getKeyValue(item, columnKey)}</TableCell>
-							)}
-						</TableRow>
-					)}
-				</TableBody>
-			</Table>
-		</div>
+		<Table
+			isStriped
+			selectionMode="single"
+			aria-label="Song list"
+			onSelectionChange={handleSelectionChange}
+		>
+			<TableHeader>
+				<TableColumn key="title">Title</TableColumn>
+				<TableColumn key="artists">Artists</TableColumn>
+			</TableHeader>
+			<TableBody items={props.songList}>
+				{(item: Song) => (
+					<TableRow key={item.title}>
+						{(columnKey) => (
+							<TableCell>{getKeyValue(item, columnKey)}</TableCell>
+						)}
+					</TableRow>
+				)}
+			</TableBody>
+		</Table>
 	);
 };
 

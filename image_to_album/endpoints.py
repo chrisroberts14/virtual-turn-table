@@ -9,7 +9,7 @@ import requests
 from fastapi import APIRouter, UploadFile, HTTPException, Depends
 from fastapi.responses import JSONResponse
 
-from image_to_album.api_models import Album
+from image_to_album.api_models import Album, Song
 from image_to_album.config import Settings
 
 logger = logging.getLogger(__name__)
@@ -120,13 +120,29 @@ async def get_album(
     response = requests.get(search_url, headers=headers, params=params, timeout=5)
     response.raise_for_status()
 
+    # Get the album details
+    album_response = requests.get(
+        response.json()["albums"]["items"][0]["href"], headers=headers, timeout=5
+    )
+    album_response.raise_for_status()
+
+    response_json = response.json()
+
     return Album(
-        title=response.json()["albums"]["items"][0]["name"],
+        title=response_json["albums"]["items"][0]["name"],
         artists=[
-            artist["name"]
-            for artist in response.json()["albums"]["items"][0]["artists"]
+            artist["name"] for artist in response_json["albums"]["items"][0]["artists"]
         ],
-        image_url=response.json()["albums"]["items"][0]["images"][0]["url"],
-        album_uri=response.json()["albums"]["items"][0]["uri"],
-        tracks_url=response.json()["albums"]["items"][0]["href"],
+        image_url=response_json["albums"]["items"][0]["images"][0]["url"],
+        album_uri=response_json["albums"]["items"][0]["uri"],
+        tracks_url=response_json["albums"]["items"][0]["href"],
+        songs=[
+            Song(
+                title=track["name"],
+                artists=[artist["name"] for artist in track["artists"]],
+                uri=track["uri"],
+                album_uri=response_json["albums"]["items"][0]["uri"],
+            )
+            for track in album_response.json()["tracks"]["items"]
+        ],
     )

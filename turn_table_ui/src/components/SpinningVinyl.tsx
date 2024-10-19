@@ -1,11 +1,11 @@
 const SpinningVinyl = (props: { isPaused: boolean }) => {
 	return (
 		<svg
-			className={props.isPaused ? "animate-spin" : ""}
+			className={
+				!props.isPaused ? "animate-spin max-h-full p-10" : "max-h-full p-10"
+			}
 			version="1.1"
 			xmlns="http://www.w3.org/2000/svg"
-			width="475"
-			height="475"
 			viewBox="0 0 500 500"
 		>
 			<title>Turn Table Logo</title>
