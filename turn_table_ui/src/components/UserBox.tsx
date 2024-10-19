@@ -1,3 +1,4 @@
+import { getStateData } from "@/interfaces/StateData.tsx";
 import {
 	Dropdown,
 	DropdownItem,
@@ -14,20 +15,23 @@ const UserBox = () => {
 	const [profileImage, setProfileImage] = React.useState();
 
 	useEffect(() => {
-		axios
-			.get(`${import.meta.env.VITE_BFF_ADDRESS}get_user_info/`, {
-				params: {
-					spotify_access_token: localStorage.getItem("spotify_access_token"),
-				},
-			})
-			.then((response) => {
-				setDisplayName(response.data.display_name);
-				setEmail(response.data.email);
-				setProfileImage(response.data.image_url);
-			})
-			.catch((error) => {
-				console.log(error);
-			});
+		const state = getStateData();
+		if ("spotify_access_token" in state) {
+			axios
+				.get(`${import.meta.env.VITE_BFF_ADDRESS}get_user_info/`, {
+					params: {
+						spotify_access_token: state.spotify_access_token,
+					},
+				})
+				.then((response) => {
+					setDisplayName(response.data.display_name);
+					setEmail(response.data.email);
+					setProfileImage(response.data.image_url);
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		}
 	});
 
 	const logout = () => {
