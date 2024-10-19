@@ -101,8 +101,8 @@ function App() {
 		<div className="flex flex-col h-screen">
 			<NavigationBar
 				isSignedIn={isSignedIn}
-				currentPage={currentPage}
-				setCurrentPage={setNextPage}
+				currentPage={nextPage}
+				setNextPage={setNextPage}
 				disableTabChange={disableTabChange}
 			/>
 			<div className="flex flex-row h-full">

@@ -7,16 +7,17 @@ import {
 	NavbarContent,
 	NavbarItem,
 } from "@nextui-org/navbar";
+import { Tab, Tabs } from "@nextui-org/tabs";
 import type { Dispatch, SetStateAction } from "react";
 
 const NavigationBar = (props: {
 	isSignedIn: boolean;
 	currentPage: string;
-	setCurrentPage: Dispatch<SetStateAction<string>>;
+	setNextPage: Dispatch<SetStateAction<string>>;
 	disableTabChange: boolean;
 }) => {
-	const isPlayPageActive = () => {
-		return props.currentPage === "play";
+	const switchPage = (key: string) => {
+		props.setNextPage(key);
 	};
 
 	return (
@@ -28,18 +29,14 @@ const NavigationBar = (props: {
 				</p>
 			</NavbarBrand>
 			<NavbarContent className="hidden sm:flex gap-4 flex-[2]" justify="center">
-				<NavbarItem
-					onClick={() => props.setCurrentPage("play")}
-					isActive={isPlayPageActive()}
+				<Tabs
+					aria-label="Tab control"
+					selectedKey={props.currentPage}
+					onSelectionChange={switchPage}
 				>
-					Play
-				</NavbarItem>
-				<NavbarItem
-					onClick={() => props.setCurrentPage("scan")}
-					isActive={!isPlayPageActive()}
-				>
-					Scan
-				</NavbarItem>
+					<Tab key="play" title="Play" />
+					<Tab key="scan" title="Scan" />
+				</Tabs>
 			</NavbarContent>
 			<NavbarContent justify="end">
 				<NavbarItem>{props.isSignedIn ? <UserBox /> : <Login />}</NavbarItem>
