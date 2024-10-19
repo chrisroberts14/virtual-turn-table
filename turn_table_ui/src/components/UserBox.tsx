@@ -1,4 +1,4 @@
-import { getStateData } from "@/interfaces/StateData.tsx";
+import { getStateData, storeStateData } from "@/interfaces/StateData.tsx";
 import {
 	Dropdown,
 	DropdownItem,
@@ -35,9 +35,11 @@ const UserBox = () => {
 	});
 
 	const logout = () => {
-		localStorage.removeItem("spotify_access_token");
-		localStorage.removeItem("spotify_login_time");
-		localStorage.removeItem("spotify_session_length");
+		storeStateData({
+			spotify_access_token: "",
+			spotify_login_time: "",
+			spotify_session_length: "",
+		});
 		window.location.href = "/";
 	};
 

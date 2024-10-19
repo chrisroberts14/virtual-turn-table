@@ -27,7 +27,7 @@ const NavigationBar = (props: {
 					Virtual Turn Table
 				</p>
 			</NavbarBrand>
-			<NavbarContent className="hidden sm:flex gap-4" justify="center">
+			<NavbarContent className="hidden sm:flex gap-4 flex-[2]" justify="center">
 				<NavbarItem
 					onClick={() => props.setCurrentPage("play")}
 					isActive={isPlayPageActive()}

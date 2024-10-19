@@ -1,6 +1,7 @@
 import PlayingAlbum from "@/components/PlayingAlbum.tsx";
 import SongControls from "@/components/SongControls.tsx";
 import SongList from "@/components/SongList.tsx";
+import SpinningVinyl from "@/components/SpinningVinyl.tsx";
 import VolumeScrubber from "@/components/VolumeScrubber.tsx";
 import type Album from "@/interfaces/Album.tsx";
 import type Song from "@/interfaces/Song.tsx";
@@ -176,10 +177,12 @@ const MusicPlayer = (props: { token: string | null; album: Album | null }) => {
 							</Resizable>
 						) : null}
 					</div>
-					<div className="flex">Spinning Vinyl</div>
+					<div className="flex justify-center items-center bg-gray-700 flex-grow">
+						<SpinningVinyl isPaused={isPaused} />
+					</div>
 				</div>
 			</Resizable>
-			<div className="flex-grow bg-primary-100 flex justify-center pt-2 pl-2 w-screen h-full">
+			<div className="flex-grow bg-gray-900 flex justify-center pt-2 pl-2 w-screen h-full">
 				{player ? (
 					<div className="flex flex-row justify-center w-screen">
 						<div>

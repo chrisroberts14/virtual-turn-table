@@ -7,7 +7,6 @@ import { Resizable } from "re-resizable";
 import type React from "react";
 import {
 	type SetStateAction,
-	forwardRef,
 	useCallback,
 	useEffect,
 	useRef,
@@ -22,12 +21,10 @@ type MediaDeviceInfo = {
 	groupId: string;
 };
 
-interface ScanPageProps {
+const ScanPage = (props: {
 	currentAlbum: Album | null;
 	setCurrentAlbum: React.Dispatch<SetStateAction<Album | null>>;
-}
-
-const ScanPage = forwardRef<HTMLDivElement, ScanPageProps>((props, ref) => {
+}) => {
 	const [contentHeight, setContentHeight] = useState(window.innerHeight - 240);
 	const [cameras, setCameras] = useState<MediaDeviceInfo[]>([]);
 	const webcamRef = useRef<Webcam | null>(null);
@@ -86,7 +83,7 @@ const ScanPage = forwardRef<HTMLDivElement, ScanPageProps>((props, ref) => {
 	};
 
 	return (
-		<div className="flex flex-col h-full" ref={ref}>
+		<div className="flex flex-col h-full">
 			<Resizable
 				defaultSize={{ width: "100%" }}
 				maxHeight={contentHeight}
@@ -129,7 +126,7 @@ const ScanPage = forwardRef<HTMLDivElement, ScanPageProps>((props, ref) => {
 						</Resizable>
 					) : null}
 
-					<div className="flex flex-grow p-3 justify-center relative max-w-full">
+					<div className="flex flex-grow p-3 justify-center relative max-w-full bg-gray-700">
 						{cameras.length === 0 ? (
 							<div className="flex flex-col items-center">
 								No cameras found
@@ -156,7 +153,7 @@ const ScanPage = forwardRef<HTMLDivElement, ScanPageProps>((props, ref) => {
 					</div>
 				</div>
 			</Resizable>
-			<div className="flex-grow bg-primary-100 flex justify-center pt-2 w-screen">
+			<div className="flex-grow bg-gray-900 flex justify-center pt-2 w-screen">
 				<div className="flex flex-col min-w-[30%]">
 					<div>Previously scanned albums:</div>
 					<div>Selected album</div>
@@ -165,6 +162,6 @@ const ScanPage = forwardRef<HTMLDivElement, ScanPageProps>((props, ref) => {
 			</div>
 		</div>
 	);
-});
+};
 
 export default ScanPage;
