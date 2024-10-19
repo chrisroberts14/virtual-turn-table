@@ -10,6 +10,7 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
+		"@headlessui/react": "^2.1.10",
 		"@nextui-org/button": "2.0.38",
 		"@nextui-org/card": "^2.0.34",
 		"@nextui-org/code": "2.0.33",

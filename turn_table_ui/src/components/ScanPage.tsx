@@ -7,6 +7,7 @@ import { Resizable } from "re-resizable";
 import type React from "react";
 import {
 	type SetStateAction,
+	forwardRef,
 	useCallback,
 	useEffect,
 	useRef,
@@ -21,10 +22,12 @@ type MediaDeviceInfo = {
 	groupId: string;
 };
 
-const ScanPage = (props: {
+interface ScanPageProps {
 	currentAlbum: Album | null;
 	setCurrentAlbum: React.Dispatch<SetStateAction<Album | null>>;
-}) => {
+}
+
+const ScanPage = forwardRef<HTMLDivElement, ScanPageProps>((props, ref) => {
 	const [contentHeight, setContentHeight] = useState(window.innerHeight - 240);
 	const [cameras, setCameras] = useState<MediaDeviceInfo[]>([]);
 	const webcamRef = useRef<Webcam | null>(null);
@@ -48,7 +51,7 @@ const ScanPage = (props: {
 		});
 	}, [getCameras]);
 
-	const getAlbum = () => {
+	const getAlbum = async () => {
 		setIsUploading(true);
 		if (webcamRef.current) {
 			if (!(webcamRef.current instanceof Webcam)) {
@@ -61,7 +64,7 @@ const ScanPage = (props: {
 				return;
 			}
 
-			axios
+			await axios
 				.post(
 					`${import.meta.env.VITE_BFF_ADDRESS}image_to_album/`,
 					{ image: imageSrc },
@@ -83,7 +86,7 @@ const ScanPage = (props: {
 	};
 
 	return (
-		<div className="flex flex-col h-full">
+		<div className="flex flex-col h-full" ref={ref}>
 			<Resizable
 				defaultSize={{ width: "100%" }}
 				maxHeight={contentHeight}
@@ -100,7 +103,7 @@ const ScanPage = (props: {
 				}}
 			>
 				<div className="flex flex-row h-full">
-					{scannedAlbum ? (
+					{scannedAlbum || isUploading ? (
 						<Resizable
 							enable={{
 								top: false,
@@ -130,7 +133,10 @@ const ScanPage = (props: {
 						{cameras.length === 0 ? (
 							<div className="flex flex-col items-center">
 								No cameras found
-								<Upload setScannedAlbum={setScannedAlbum} />
+								<Upload
+									setScannedAlbum={setScannedAlbum}
+									setIsUploading={setIsUploading}
+								/>
 							</div>
 						) : (
 							<div>
@@ -159,6 +165,6 @@ const ScanPage = (props: {
 			</div>
 		</div>
 	);
-};
+});
 
 export default ScanPage;

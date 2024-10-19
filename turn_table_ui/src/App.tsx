@@ -2,7 +2,8 @@ import MusicPlayer from "@/components/MusicPlayer.tsx";
 import NavigationBar from "@/components/NavigationBar.tsx";
 import ScanPage from "@/components/ScanPage.tsx";
 import type Album from "@/interfaces/Album.tsx";
-import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState, useTransition } from "react";
 
 function App() {
 	const [isSignedIn, setIsSignedIn] = useState(false);
@@ -11,6 +12,10 @@ function App() {
 
 	// Two pages are defined in the state: "play" and "scan"
 	const [currentPage, setCurrentPage] = useState("play");
+
+	const [fadeScan, setFadeScan] = useState(false);
+	const [fadePlayer, setFadePlayer] = useState(false);
+	const [disableTabChange, setDisableTabChange] = useState(false);
 
 	useEffect(() => {
 		const hash = window.location.hash.substring(1);
@@ -57,28 +62,52 @@ function App() {
 	});
 
 	useEffect(() => {
-		if (currentAlbum) {
-			setCurrentPage("play");
+		triggerScreenChange("play");
+	}, []);
+
+	const triggerScreenChange = (page: string) => {
+		if (page === "play") {
+			setFadeScan(false);
+			setFadePlayer(true);
+			setTimeout(() => setCurrentPage("play"), 500);
 		} else {
-			setCurrentPage("scan");
+			setFadePlayer(false);
+			setFadeScan(true);
+			setTimeout(() => setCurrentPage("scan"), 500);
 		}
-	}, [currentAlbum]);
+	};
 
 	return (
 		<div className="flex flex-col h-screen">
 			<NavigationBar
 				isSignedIn={isSignedIn}
 				currentPage={currentPage}
-				setCurrentPage={setCurrentPage}
+				triggerScreenChange={triggerScreenChange}
+				disableTabChange={disableTabChange}
 			/>
-			{currentPage === "play" ? (
-				<MusicPlayer token={spotifyToken} album={currentAlbum} />
-			) : (
-				<ScanPage
-					setCurrentAlbum={setCurrentAlbum}
-					currentAlbum={currentAlbum}
-				/>
-			)}
+			<div className="flex flex-row h-full">
+				<div
+					style={{
+						transform: fadePlayer ? "translateX(0)" : "translateX(-100%)",
+						transition: "transform 0.5s ease-in-out",
+					}}
+					className="h-full"
+				>
+					<MusicPlayer token={spotifyToken} album={currentAlbum} />
+				</div>
+				<div
+					style={{
+						transform: fadeScan ? "translateX(-100%)" : "translateX(100%)",
+						transition: "transform 0.5s ease-in-out",
+					}}
+					className="h-full"
+				>
+					<ScanPage
+						currentAlbum={currentAlbum}
+						setCurrentAlbum={setCurrentAlbum}
+					/>
+				</div>
+			</div>
 		</div>
 	);
 }

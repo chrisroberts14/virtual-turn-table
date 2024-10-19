@@ -12,10 +12,17 @@ import type { Dispatch, SetStateAction } from "react";
 const NavigationBar = (props: {
 	isSignedIn: boolean;
 	currentPage: string;
-	setCurrentPage: Dispatch<SetStateAction<string>>;
+	triggerScreenChange: (page: string) => void;
+	disableTabChange: boolean;
 }) => {
 	const isPlayPageActive = () => {
 		return props.currentPage === "play";
+	};
+
+	const handleTabClick = (page: string) => {
+		if (!props.disableTabChange) {
+			props.triggerScreenChange(page);
+		}
 	};
 
 	return (
@@ -28,13 +35,13 @@ const NavigationBar = (props: {
 			</NavbarBrand>
 			<NavbarContent className="hidden sm:flex gap-4" justify="center">
 				<NavbarItem
-					onClick={() => props.setCurrentPage("play")}
+					onClick={() => handleTabClick("play")}
 					isActive={isPlayPageActive()}
 				>
 					Play
 				</NavbarItem>
 				<NavbarItem
-					onClick={() => props.setCurrentPage("scan")}
+					onClick={() => handleTabClick("scan")}
 					isActive={!isPlayPageActive()}
 				>
 					Scan

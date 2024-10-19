@@ -24,11 +24,31 @@ module.exports = {
 					"0%": { transform: "translateX(0)", opacity: "1" },
 					"100%": { transform: "translateX(-100%)", opacity: "0" },
 				},
+				slideInFromLeft: {
+					"0%": { transform: "translateX(-100%)", opacity: "0" },
+					"100%": { transform: "translateX(0)", opacity: "1" },
+				},
+				slideOutToRight: {
+					"0%": { transform: "translateX(0)", opacity: "1" },
+					"100%": { transform: "translateX(100%)", opacity: "0" },
+				},
+				slideInFromRight: {
+					"0%": { transform: "translateX(100%)", opacity: "0" },
+					"100%": { transform: "translateX(0)", opacity: "1" },
+				},
+				slideOutToLeft: {
+					"0%": { transform: "translateX(0)", opacity: "1" },
+					"100%": { transform: "translateX(-100%)", opacity: "0" },
+				},
 			},
 			animation: {
 				slideUp: "slideUp 0.5s ease-out",
 				slideRight: "slideRight 0.5s ease-out",
 				slideLeft: "slideLeft 0.5s ease-out",
+				slideInFromLeft: "slideInFromLeft 0.5s ease-out",
+				slideOutToRight: "slideOutToRight 0.5s ease-out",
+				slideInFromRight: "slideInFromRight 0.5s ease-out",
+				slideOutToLeft: "slideOutToLeft 0.5s ease-out",
 			},
 		},
 	},

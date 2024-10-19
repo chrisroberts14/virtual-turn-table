@@ -9,9 +9,9 @@ import { type Dispatch, type SetStateAction, useState } from "react";
 
 const Upload: React.FC<{
 	setScannedAlbum: Dispatch<SetStateAction<Album | null>>;
-}> = ({ setScannedAlbum }) => {
+	setIsUploading: Dispatch<SetStateAction<boolean>>;
+}> = ({ setScannedAlbum, setIsUploading }) => {
 	const [file, setFile] = useState<File | null>(null);
-	const [isUploading, setIsUploading] = useState(false);
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files) {
@@ -36,7 +36,7 @@ const Upload: React.FC<{
 		if (file) {
 			setIsUploading(true);
 			const base64 = await convertToBase64(file);
-			axios
+			await axios
 				.post(
 					`${import.meta.env.VITE_BFF_ADDRESS}image_to_album/`,
 					{ image: base64 },
@@ -59,48 +59,44 @@ const Upload: React.FC<{
 
 	return (
 		<>
-			{isUploading ? (
-				<div>Uploading...</div>
-			) : (
-				<div
-					style={{
-						display: "flex",
-						justifyContent: "center",
-						alignItems: "center",
-						height: "50vh",
-					}}
-				>
-					<Card className="max-w-[400px]">
-						<CardHeader className="flex gap-3">
-							<Input
-								type={"file"}
-								onChange={handleFileChange}
-								accept={".png, .jpg"}
-							/>
-						</CardHeader>
+			<div
+				style={{
+					display: "flex",
+					justifyContent: "center",
+					alignItems: "center",
+					height: "50vh",
+				}}
+			>
+				<Card className="max-w-[400px]">
+					<CardHeader className="flex gap-3">
+						<Input
+							type={"file"}
+							onChange={handleFileChange}
+							accept={".png, .jpg"}
+						/>
+					</CardHeader>
 
-						<Divider />
-						<CardBody>
-							{file && (
-								<section>
-									File details:
-									<ul>
-										<li>Name: {file.name}</li>
-									</ul>
-								</section>
-							)}
-						</CardBody>
-						<Divider />
-						<CardFooter>
-							{file && (
-								<Button onClick={handleUpload} className="submit">
-									Upload a file
-								</Button>
-							)}
-						</CardFooter>
-					</Card>
-				</div>
-			)}
+					<Divider />
+					<CardBody>
+						{file && (
+							<section>
+								File details:
+								<ul>
+									<li>Name: {file.name}</li>
+								</ul>
+							</section>
+						)}
+					</CardBody>
+					<Divider />
+					<CardFooter>
+						{file && (
+							<Button onClick={handleUpload} className="submit">
+								Upload a file
+							</Button>
+						)}
+					</CardFooter>
+				</Card>
+			</div>
 		</>
 	);
 };
