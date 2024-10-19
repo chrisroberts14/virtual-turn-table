@@ -16,7 +16,7 @@ const UserBox = () => {
 
 	useEffect(() => {
 		const state = getStateData();
-		if ("spotify_access_token" in state) {
+		if (state && "spotify_access_token" in state) {
 			axios
 				.get(`${import.meta.env.VITE_BFF_ADDRESS}get_user_info/`, {
 					params: {

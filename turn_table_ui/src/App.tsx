@@ -78,6 +78,7 @@ function App() {
 	}, [nextPage]);
 
 	const triggerScreenChange = (page: string) => {
+		setDisableTabChange(true);
 		if (page === "play") {
 			setFadeScan(false);
 			setFadePlayer(true);
@@ -87,6 +88,7 @@ function App() {
 			setFadeScan(true);
 			setTimeout(() => setCurrentPage("scan"), 500);
 		}
+		setDisableTabChange(false);
 	};
 
 	return (

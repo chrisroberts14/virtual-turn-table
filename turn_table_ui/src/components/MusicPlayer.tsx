@@ -1,13 +1,12 @@
 import PlayingAlbum from "@/components/PlayingAlbum.tsx";
 import SongControls from "@/components/SongControls.tsx";
+import SongList from "@/components/SongList.tsx";
 import VolumeScrubber from "@/components/VolumeScrubber.tsx";
 import type Album from "@/interfaces/Album.tsx";
 import type Song from "@/interfaces/Song.tsx";
 import axios from "axios";
 import { Resizable } from "re-resizable";
-import { forwardRef, useEffect, useState } from "react";
-import "react-resizable/css/styles.css";
-import SongList from "@/components/SongList.tsx";
+import { useEffect, useState } from "react";
 
 const MusicPlayer = (props: { token: string | null; album: Album | null }) => {
 	const [player, setPlayer] = useState<SpotifyPlayer | null>(null);
