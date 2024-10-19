@@ -24,6 +24,7 @@ const AlbumConfirm = (props: {
 
 	const confirmAlbum = () => {
 		props.setCurrentAlbum(props.scannedAlbum);
+		props.setScannedAlbum(null);
 	};
 
 	const rejectAlbum = () => {
