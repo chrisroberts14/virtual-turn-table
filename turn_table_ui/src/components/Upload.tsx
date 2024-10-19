@@ -10,7 +10,8 @@ import { type Dispatch, type SetStateAction, useState } from "react";
 const Upload: React.FC<{
 	setScannedAlbum: Dispatch<SetStateAction<Album | null>>;
 	setIsUploading: Dispatch<SetStateAction<boolean>>;
-}> = ({ setScannedAlbum, setIsUploading }) => {
+	triggerConfirmSlide: () => void;
+}> = ({ setScannedAlbum, setIsUploading, triggerConfirmSlide }) => {
 	const [file, setFile] = useState<File | null>(null);
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,6 +36,7 @@ const Upload: React.FC<{
 
 		if (file) {
 			setIsUploading(true);
+			triggerConfirmSlide();
 			const base64 = await convertToBase64(file);
 			await axios
 				.post(

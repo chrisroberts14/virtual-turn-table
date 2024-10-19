@@ -11,6 +11,7 @@ const AlbumConfirm = (props: {
 	scannedAlbum: Album | null;
 	setScannedAlbum: React.Dispatch<SetStateAction<Album | null>>;
 	setCurrentAlbum: React.Dispatch<SetStateAction<Album | null>>;
+	triggerConfirmSlide: () => void;
 }) => {
 	const [buttonsDisabled, setButtonsDisabled] = useState(true);
 
@@ -23,11 +24,13 @@ const AlbumConfirm = (props: {
 	}, [props.scannedAlbum]);
 
 	const confirmAlbum = () => {
+		props.triggerConfirmSlide();
 		props.setCurrentAlbum(props.scannedAlbum);
 		props.setScannedAlbum(null);
 	};
 
 	const rejectAlbum = () => {
+		props.triggerConfirmSlide();
 		props.setCurrentAlbum(null);
 		props.setScannedAlbum(null);
 	};

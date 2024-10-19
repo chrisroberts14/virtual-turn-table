@@ -30,6 +30,7 @@ const ScanPage = (props: {
 	const webcamRef = useRef<Webcam | null>(null);
 	const [isUploading, setIsUploading] = useState(false);
 	const [scannedAlbum, setScannedAlbum] = useState<Album | null>(null);
+	const [fadeConfirm, setFadeConfirm] = useState(false);
 
 	const onResize = () => {
 		setContentHeight(window.innerHeight - 240);
@@ -50,6 +51,7 @@ const ScanPage = (props: {
 
 	const getAlbum = async () => {
 		setIsUploading(true);
+		triggerConfirmSlide();
 		if (webcamRef.current) {
 			if (!(webcamRef.current instanceof Webcam)) {
 				return;
@@ -82,6 +84,10 @@ const ScanPage = (props: {
 		setIsUploading(false);
 	};
 
+	const triggerConfirmSlide = () => {
+		setFadeConfirm(!fadeConfirm);
+	};
+
 	return (
 		<div className="flex flex-col h-full">
 			<Resizable
@@ -100,39 +106,49 @@ const ScanPage = (props: {
 				}}
 			>
 				<div className="flex flex-row h-full">
-					{scannedAlbum || isUploading ? (
-						<Resizable
-							enable={{
-								top: false,
-								right: true,
-								bottom: false,
-								left: false,
-								topRight: false,
-								bottomRight: false,
-								bottomLeft: false,
-								topLeft: false,
-							}}
-							minWidth={"20%"}
-							maxWidth={"25%"}
-							maxHeight={"100%"}
-						>
-							<div className="overflow-y-auto h-full max-h-full">
-								<AlbumConfirm
-									scannedAlbum={scannedAlbum}
-									setCurrentAlbum={props.setCurrentAlbum}
-									setScannedAlbum={setScannedAlbum}
-								/>
-							</div>
-						</Resizable>
-					) : null}
-
-					<div className="flex flex-grow p-3 justify-center relative max-w-full bg-gray-700">
+					<Resizable
+						enable={{
+							top: false,
+							right: true,
+							bottom: false,
+							left: false,
+							topRight: false,
+							bottomRight: false,
+							bottomLeft: false,
+							topLeft: false,
+						}}
+						maxWidth={"25%"}
+						maxHeight={"100%"}
+						style={{
+							transition: "width 0.5s ease-in-out",
+							overflow: "hidden", // Hide content when collapsed
+						}}
+						size={{
+							width: fadeConfirm ? "25%" : "0%", // Resizes based on the state
+						}}
+						className="bg-gray-700"
+					>
+						<div className="overflow-y-auto h-full max-h-full">
+							<AlbumConfirm
+								scannedAlbum={scannedAlbum}
+								setCurrentAlbum={props.setCurrentAlbum}
+								setScannedAlbum={setScannedAlbum}
+								triggerConfirmSlide={triggerConfirmSlide}
+							/>
+						</div>
+					</Resizable>
+					<div
+						className={`flex p-3 justify-center relative max-w-full bg-gray-700 transition-all duration-500 ease-in-out ${
+							fadeConfirm ? "flex-grow-0 w-3/4" : "flex-grow w-full"
+						}`}
+					>
 						{cameras.length === 0 ? (
 							<div className="flex flex-col items-center">
 								No cameras found
 								<Upload
 									setScannedAlbum={setScannedAlbum}
 									setIsUploading={setIsUploading}
+									triggerConfirmSlide={triggerConfirmSlide}
 								/>
 							</div>
 						) : (
