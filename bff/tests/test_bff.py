@@ -54,6 +54,7 @@ def test_image_to_uri(client, mocker):
                 image_url="test_url",
                 album_uri="spotify:album:4EVnJfjXZjbyb8f2XvIVc2",
                 tracks_url="test_tracks_url",
+                songs=[],
             ).model_dump()
         mock_response = mocker.Mock()
         mock_response.json.return_value = mock_response_data
@@ -75,6 +76,7 @@ def test_image_to_uri(client, mocker):
             image_url="test_url",
             album_uri="spotify:album:4EVnJfjXZjbyb8f2XvIVc2",
             tracks_url="test_tracks_url",
+            songs=[],
         ).model_dump()
     )
 
@@ -138,7 +140,7 @@ def test_get_album_details(client, mocker):
             "artists": [{"name": "test_artist"}],
             "images": [{"url": "test_url"}],
             "uri": "test_uri",
-            "tracks": {"href": "test_tracks_url"},
+            "tracks": {"href": "test_tracks_url", "items": []},
         }
         mock_response = mocker.Mock()
         mock_response.json.return_value = mock_response_data
@@ -158,6 +160,7 @@ def test_get_album_details(client, mocker):
             image_url="test_url",
             album_uri="test_uri",
             tracks_url="test_tracks_url",
+            songs=[],
         ).model_dump()
     )
 
