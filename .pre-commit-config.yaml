@@ -38,6 +38,14 @@ repos:
     - id: pylint
       entry: ./pylint_script.py --disable=R0801
       language: system
+- repo: local
+  hooks:
+      - id: pytest
+        name: Run pytest
+        entry: pytest
+        language: system
+        pass_filenames: false
+        stages: [commit]
 - repo: https://github.com/compilerla/conventional-pre-commit
   rev: v3.2.0
   hooks:
