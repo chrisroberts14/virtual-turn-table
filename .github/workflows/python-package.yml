@@ -31,7 +31,7 @@ jobs:
         if [ -f ./image_to_album/requirements.txt ]; then pip install -r ./image_to_album/requirements.txt; fi
     - name: Test with pytest
       run: |
-        pytest image_to_album --cov-fail-under=100
+        pytest image_to_album --cov-fail-under=100 -n 4
       env:
         PYTHONPATH: ${{ github.workspace }}
         BING_API_KEY: "bing_api_key"
@@ -61,7 +61,7 @@ jobs:
           if [ -f ./bff/requirements.txt ]; then pip install -r ./bff/requirements.txt; fi
       - name: Test with pytest
         run: |
-          pytest bff --cov-fail-under=100
+          pytest bff --cov-fail-under=100 -n 4
         env:
           PYTHONPATH: ${{ github.workspace }}
           BING_API_KEY: "bing_api_key"

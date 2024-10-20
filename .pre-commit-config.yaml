@@ -42,7 +42,7 @@ repos:
   hooks:
       - id: pytest
         name: pytest
-        entry: pytest --cov-fail-under=100
+        entry: pytest --cov-fail-under=100 -n 4
         language: system
         pass_filenames: false
         stages: [commit]
