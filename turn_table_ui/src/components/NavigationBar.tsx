@@ -1,4 +1,3 @@
-import type { Key } from "node:readline";
 import Login from "@/components/Login.tsx";
 import { Logo } from "@/components/Logo.tsx";
 import UserBox from "@/components/UserBox.tsx";
@@ -9,6 +8,7 @@ import {
 	NavbarItem,
 } from "@nextui-org/navbar";
 import { Tab, Tabs } from "@nextui-org/tabs";
+import type { Key } from "@react-types/shared";
 import type { Dispatch, SetStateAction } from "react";
 
 const NavigationBar = (props: {

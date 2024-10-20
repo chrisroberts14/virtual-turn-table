@@ -9,6 +9,7 @@ import {
 	TableRow,
 	getKeyValue,
 } from "@nextui-org/table";
+import type { Key } from "@react-types/shared";
 import type React from "react";
 import type { SetStateAction } from "react";
 import { useEffect, useState } from "react";
@@ -18,7 +19,7 @@ const SongList = (props: {
 	currentSong: Song | null;
 	setCurrentSong: React.Dispatch<SetStateAction<Song | null>>;
 }) => {
-	const [selectedKey, setSelectedKey] = useState(
+	const [selectedKey, setSelectedKey] = useState<Set<Key>>(
 		props.currentSong ? new Set([props.currentSong.title]) : new Set(),
 	);
 
