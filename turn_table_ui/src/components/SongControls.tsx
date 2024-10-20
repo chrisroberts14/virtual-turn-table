@@ -4,6 +4,8 @@ import { Button } from "@nextui-org/button";
 import { Tab, Tabs } from "@nextui-org/tabs";
 import type React from "react";
 import type { SetStateAction } from "react";
+import { FaPause, FaPlay } from "react-icons/fa";
+import { RxTrackNext, RxTrackPrevious } from "react-icons/rx";
 
 const SongControls = (props: {
 	player: SpotifyPlayer;
@@ -55,13 +57,21 @@ const SongControls = (props: {
 	return (
 		<div className={"flex flex-col min-w-96 p-2"}>
 			<div className={"flex flex-row justify-center"}>
-				<Button onClick={prevSong}>Previous</Button>
+				<Button onClick={prevSong}>
+					<RxTrackPrevious />
+				</Button>
 				{!props.isPaused ? (
-					<Button onClick={pauseSong}>Pause</Button>
+					<Button onClick={pauseSong}>
+						<FaPause />
+					</Button>
 				) : (
-					<Button onClick={playSong}>Play</Button>
+					<Button onClick={playSong}>
+						<FaPlay />
+					</Button>
 				)}
-				<Button onClick={nextSong}>Next</Button>
+				<Button onClick={nextSong}>
+					<RxTrackNext />
+				</Button>
 			</div>
 			<div className={"flex flex-row justify-center"}>
 				<TrackScrubber

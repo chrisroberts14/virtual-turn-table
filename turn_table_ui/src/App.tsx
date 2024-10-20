@@ -11,7 +11,6 @@ function App() {
 	const [spotifyToken, setSpotifyToken] = useState("");
 
 	// Two pages are defined in the state: "play" and "scan"
-	const [currentPage, setCurrentPage] = useState("");
 	const [nextPage, setNextPage] = useState("");
 
 	const [fadeScan, setFadeScan] = useState(false);
@@ -88,11 +87,9 @@ function App() {
 		if (page === "play") {
 			setFadeScan(false);
 			setFadePlayer(true);
-			setTimeout(() => setCurrentPage("play"), 500);
 		} else {
 			setFadePlayer(false);
 			setFadeScan(true);
-			setTimeout(() => setCurrentPage("scan"), 500);
 		}
 		setDisableTabChange(false);
 	};

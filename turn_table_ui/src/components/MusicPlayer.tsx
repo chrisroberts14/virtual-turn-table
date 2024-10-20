@@ -136,7 +136,7 @@ const MusicPlayer = (props: { token: string | null; album: Album | null }) => {
 				}}
 			>
 				<div className="flex flex-row h-full">
-					<div className="animate-slideRight overflow-y-auto overflow-x-hidden max-w-[50%]">
+					<div className="animate-slideRight overflow-y-auto overflow-x-hidden max-w-[50%] bg-content1">
 						{currentAlbum ? (
 							<Resizable
 								enable={{

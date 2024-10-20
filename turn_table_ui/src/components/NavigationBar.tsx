@@ -1,3 +1,4 @@
+import type { Key } from "node:readline";
 import Login from "@/components/Login.tsx";
 import { Logo } from "@/components/Logo.tsx";
 import UserBox from "@/components/UserBox.tsx";
@@ -16,8 +17,8 @@ const NavigationBar = (props: {
 	setNextPage: Dispatch<SetStateAction<string>>;
 	disableTabChange: boolean;
 }) => {
-	const switchPage = (key: string) => {
-		props.setNextPage(key);
+	const switchPage = (key: Key) => {
+		props.setNextPage(key.toString());
 	};
 
 	return (
