@@ -4,7 +4,6 @@
 class TestBase:
     """Base tests."""
 
-    # pylint: disable=duplicate-code
     def test_docs_redirect(self, client):
         """
         Test the redirect to the docs.

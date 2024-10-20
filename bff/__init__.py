@@ -25,7 +25,6 @@ def get_settings():
     return Settings()
 
 
-# pylint: disable=duplicate-code
 origins = [
     "http://localhost:5173",
 ]

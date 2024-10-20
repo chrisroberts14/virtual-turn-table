@@ -11,7 +11,6 @@ class APIException(Exception):
         self.message = message
 
 
-# pylint: disable=duplicate-code
 class Song(BaseModel):
     """Song model."""
 

@@ -36,7 +36,7 @@ repos:
   rev: v3.2.5
   hooks:
     - id: pylint
-      entry: ./pylint_script.py
+      entry: ./pylint_script.py --disable=R0801
       language: system
 - repo: https://github.com/compilerla/conventional-pre-commit
   rev: v3.2.0

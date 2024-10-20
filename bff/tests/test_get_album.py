@@ -28,7 +28,6 @@ class TestGetAlbum:
                 "uri": "test_uri",
                 "tracks": {"href": "test_tracks_url", "items": []},
             }
-            # pylint: disable=duplicate-code
             mock_response = mocker.Mock()
             mock_response.json.return_value = mock_response_data
             mock_response.status_code = 200

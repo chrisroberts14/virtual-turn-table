@@ -31,7 +31,6 @@ class TestSpotifySearch:
                 mock_response_data = mock_album_data
             else:
                 mock_response_data = mock_spotify_search_data
-            # pylint: disable=duplicate-code
             mock_response = mocker.Mock()
             mock_response.json.return_value = mock_response_data
             mock_response.status_code = 200
