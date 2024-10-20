@@ -15,9 +15,12 @@ import { useEffect, useState } from "react";
 
 const SongList = (props: {
 	songList: Song[];
+	currentSong: Song | null;
 	setCurrentSong: React.Dispatch<SetStateAction<Song | null>>;
 }) => {
-	const [selectedKey, setSelectedKey] = useState(new Set());
+	const [selectedKey, setSelectedKey] = useState(
+		props.currentSong ? new Set([props.currentSong.title]) : new Set(),
+	);
 
 	const handleSelectionChange = (keys: Selection) => {
 		if (keys === "all") {
@@ -46,6 +49,7 @@ const SongList = (props: {
 			selectionMode="single"
 			aria-label="Song list"
 			onSelectionChange={handleSelectionChange}
+			selectedKeys={selectedKey}
 		>
 			<TableHeader>
 				<TableColumn key="title">Title</TableColumn>

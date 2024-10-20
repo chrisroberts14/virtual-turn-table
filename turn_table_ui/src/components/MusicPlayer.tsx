@@ -5,6 +5,7 @@ import SpinningVinyl from "@/components/SpinningVinyl.tsx";
 import VolumeScrubber from "@/components/VolumeScrubber.tsx";
 import type Album from "@/interfaces/Album.tsx";
 import type Song from "@/interfaces/Song.tsx";
+import { getStateData, storeStateData } from "@/interfaces/StateData.tsx";
 import axios from "axios";
 import { Resizable } from "re-resizable";
 import { useEffect, useState } from "react";
@@ -20,6 +21,19 @@ const MusicPlayer = (props: { token: string | null; album: Album | null }) => {
 	const [trackPosition, setTrackPosition] = useState(0); // In ms
 	const [trackDuration, setTrackDuration] = useState(0);
 	const [contentHeight, setContentHeight] = useState(window.innerHeight - 240);
+
+	useEffect(() => {
+		// Get the state data and set the current song
+		const state = getStateData();
+		if (state) {
+			if (state.currentAlbum) {
+				setCurrentAlbum(state.currentAlbum);
+			}
+			if (state.currentSong) {
+				setCurrentSong(state.currentSong);
+			}
+		}
+	}, []);
 
 	useEffect(() => {
 		const script = document.createElement("script");
@@ -91,7 +105,16 @@ const MusicPlayer = (props: { token: string | null; album: Album | null }) => {
 	}, [props.album, props.token]);
 
 	useEffect(() => {
+		if (currentAlbum) {
+			storeStateData({
+				currentAlbum: currentAlbum,
+			});
+		}
 		if (currentSong && currentAlbum) {
+			storeStateData({
+				currentSong: currentSong,
+			});
+
 			const currentSongIndex = currentAlbum.songs.findIndex(
 				(song) => song.title === currentSong.title,
 			);
@@ -154,6 +177,7 @@ const MusicPlayer = (props: { token: string | null; album: Album | null }) => {
 								<div className="overflow-y-auto h-full max-w-full">
 									<SongList
 										songList={currentAlbum.songs}
+										currentSong={currentSong}
 										setCurrentSong={setCurrentSong}
 									/>
 								</div>
