@@ -3,6 +3,14 @@
 from pydantic import BaseModel
 
 
+class APIException(Exception):
+    """API Exception class."""
+
+    def __init__(self, status_code: int, message: str):
+        self.status_code = status_code
+        self.message = message
+
+
 # pylint: disable=duplicate-code
 class Song(BaseModel):
     """Song model."""

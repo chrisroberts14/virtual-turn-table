@@ -2,10 +2,11 @@
 
 import logging
 
-from fastapi import FastAPI
-from fastapi.responses import RedirectResponse
+from fastapi import FastAPI, Request
+from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
+from image_to_album.api_models import APIException
 from image_to_album.endpoints import imgs_router, album_router
 
 logger = logging.getLogger(__name__)
@@ -28,6 +29,24 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def custom_error_handling_middleware(request: Request, call_next):
+    """
+    Custom error handling middleware.
+
+    :param request:
+    :param call_next:
+    :return:
+    """
+    try:
+        return await call_next(request)
+    except APIException as ex:
+        return JSONResponse(
+            status_code=ex.status_code,
+            content={"status": "error", "message": ex.message},
+        )
 
 
 @app.get("/")

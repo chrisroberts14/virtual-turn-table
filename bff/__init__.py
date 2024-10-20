@@ -5,11 +5,11 @@ from functools import lru_cache
 from typing import Annotated
 
 import requests
-from fastapi import FastAPI, Depends, HTTPException
-from fastapi.responses import RedirectResponse
+from fastapi import FastAPI, Depends, Request
+from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from bff.api_models import User, Album, Song, PlaySong, ImagePayload
+from bff.api_models import User, Album, Song, PlaySong, ImagePayload, APIException
 from bff.config import Settings
 
 app = FastAPI()
@@ -37,6 +37,24 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def custom_error_handling_middleware(request: Request, call_next):
+    """
+    Custom error handling middleware.
+
+    :param request:
+    :param call_next:
+    :return:
+    """
+    try:
+        return await call_next(request)
+    except APIException as ex:
+        return JSONResponse(
+            status_code=ex.status_code,
+            content={"status": "error", "message": ex.message},
+        )
 
 
 @app.get("/")
@@ -77,12 +95,15 @@ def image_to_album(
 
     # Get best results for image search
     response = requests.post(endpoint, files=files, timeout=5)
-    response.raise_for_status()
+    if response.status_code != 200:
+        raise APIException(500, "Image search failed please try again.")
 
     # Get the URI
     endpoint = f"{settings.image_to_album_address}album/get_album/?image_name={response.json()}"
     response = requests.post(endpoint, timeout=5)
-    response.raise_for_status()
+    if response.status_code != 200:
+        raise APIException(500, "Album search failed please try again.")
+
     return Album(**response.json())
 
 
@@ -98,7 +119,8 @@ def get_user_info(spotify_access_token: str) -> User:
     headers = {"Authorization": f"Bearer {spotify_access_token}"}
 
     response = requests.get(endpoint, headers=headers, timeout=5)
-    response.raise_for_status()
+    if response.status_code != 200:
+        raise APIException(401, "Invalid access token please re-authenticate.")
     data = response.json()
 
     return User(
@@ -119,11 +141,12 @@ def get_album_details(spotify_access_token: str, album_uri: str) -> Album:
     :return:
     """
     if not album_uri.startswith("spotify:album:"):
-        raise HTTPException(status_code=400, detail="Invalid album URI")
+        raise APIException(400, "Album URI must start with 'spotify:album:'")
     endpoint = f"https://api.spotify.com/v1/albums/{album_uri.split(':')[2]}"
     headers = {"Authorization": f"Bearer {spotify_access_token}"}
     response = requests.get(endpoint, headers=headers, timeout=5)
-    response.raise_for_status()
+    if response.status_code != 200:
+        raise APIException(500, "Failed to get album details.")
     data = response.json()
 
     return Album(
@@ -160,4 +183,7 @@ def play_track(data: PlaySong):
     data = {"uris": [data.track_uri]}
 
     response = requests.put(endpoint, headers=headers, json=data, timeout=5)
-    response.raise_for_status()
+    if response.status_code != 204:
+        raise APIException(500, "Failed to play track.")
+
+    return {"message": "Track played successfully.", "status": "success"}

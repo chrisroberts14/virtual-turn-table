@@ -48,6 +48,7 @@ def test_reverse_image_search(client, mocker):
         mock_response_data = json.load(f)
     mock_response = mocker.Mock()
     mock_response.json.return_value = mock_response_data
+    mock_response.status_code = 200
     mock_post.return_value = mock_response
 
     with open(Path(__file__).parent / "mock_api_data/mock_image.jpg", "rb") as f:
@@ -87,7 +88,8 @@ def test_bad_file_type(client):
         )
     assert response.status_code == 400
     assert response.json() == {
-        "message": "Invalid file type. Only JPEG and PNG are allowed."
+        "message": "Invalid file type. Please upload a jpg or png.",
+        "status": "error",
     }
 
 
@@ -171,6 +173,7 @@ def test_spotify_search(client, mocker):
                 mock_response_data = json.load(f)
         mock_response = mocker.Mock()
         mock_response.json.return_value = mock_response_data
+        mock_response.status_code = 200
         return mock_response
 
     mocker.patch("requests.post", side_effect=mock_request)
