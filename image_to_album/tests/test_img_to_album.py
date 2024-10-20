@@ -155,6 +155,13 @@ def test_spotify_search(client, mocker):
         """
         if "https://accounts.spotify.com/api/token" == url:
             mock_response_data = {"access_token": "test_token"}
+        elif url.startswith("https://api.spotify.com/v1/albums"):
+            with open(
+                Path(__file__).parent / "mock_api_data/mock_album_data.json",
+                "r",
+                encoding="utf-8",
+            ) as f:
+                mock_response_data = json.load(f)
         else:
             with open(
                 Path(__file__).parent / "mock_api_data/mock_spotify_search_data.json",
