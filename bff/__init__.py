@@ -8,6 +8,7 @@ import requests
 from fastapi import FastAPI, Depends, Request
 from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 
 from bff.api_models import User, Album, Song, PlaySong, ImagePayload, APIException
 from bff.config import Settings
@@ -29,31 +30,46 @@ origins = [
     "http://localhost:5173",
 ]
 
+
+# pylint: disable=too-few-public-methods
+class CustomErrorMiddleware(BaseHTTPMiddleware):
+    """Custom error handling middleware."""
+
+    async def dispatch(self, request: Request, call_next):
+        """
+        Dispatch method for middleware.
+
+        :param request:
+        :param call_next:
+        :return:
+        """
+        try:
+            return await call_next(request)
+        except APIException as ex:
+            return JSONResponse(
+                status_code=ex.status_code,
+                content={"status": "error", "message": ex.message},
+            )
+
+
+app.add_middleware(CustomErrorMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
 
-@app.middleware("http")
-async def custom_error_handling_middleware(request: Request, call_next):
+@app.get("/error_test/")
+def error_test():
     """
-    Custom error handling middleware.
+    Endpoint to test error handling.
 
-    :param request:
-    :param call_next:
     :return:
     """
-    try:
-        return await call_next(request)
-    except APIException as ex:
-        return JSONResponse(
-            status_code=ex.status_code,
-            content={"status": "error", "message": ex.message},
-        )
+    raise APIException(401, "Test error.")
 
 
 @app.get("/")
@@ -174,6 +190,8 @@ def play_track(data: PlaySong):
     :param data:
     :return:
     """
+    if data.device_id is None or data.device_id == "":
+        raise APIException(400, "No device id provided.")
     endpoint = f"https://api.spotify.com/v1/me/player/play?device_id={data.device_id}"
     headers = {
         "Authorization": f"Bearer {data.spotify_access_token}",

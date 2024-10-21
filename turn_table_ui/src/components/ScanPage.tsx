@@ -1,5 +1,6 @@
 import AlbumConfirm from "@/components/AlbumConfirm.tsx";
 import Upload from "@/components/Upload.tsx";
+import { useError } from "@/contexts/ErrorContext.tsx";
 import type Album from "@/interfaces/Album.tsx";
 import { Button } from "@nextui-org/button";
 import axios from "axios";
@@ -31,6 +32,7 @@ const ScanPage = (props: {
 	const [isUploading, setIsUploading] = useState(false);
 	const [scannedAlbum, setScannedAlbum] = useState<Album | null>(null);
 	const [fadeConfirm, setFadeConfirm] = useState(false);
+	const { showError } = useError();
 
 	const onResize = () => {
 		setContentHeight(window.innerHeight - 240);
@@ -53,12 +55,9 @@ const ScanPage = (props: {
 		setIsUploading(true);
 		triggerConfirmSlide();
 		if (webcamRef.current) {
-			if (!(webcamRef.current instanceof Webcam)) {
-				return;
-			}
 			const imageSrc = webcamRef.current.getScreenshot();
 			if (!imageSrc) {
-				console.error("Failed to capture image");
+				showError("Failed to capture image");
 				setIsUploading(false);
 				return;
 			}
@@ -78,7 +77,7 @@ const ScanPage = (props: {
 					setScannedAlbum(newAlbum);
 				})
 				.catch((error) => {
-					console.log(error);
+					showError(error.response.data.message);
 				});
 		}
 		setIsUploading(false);
@@ -160,7 +159,10 @@ const ScanPage = (props: {
 									ref={webcamRef}
 								/>
 								<div className="p-4 text-center absolute bottom-0 w-full left-0">
-									<Button onClick={getAlbum} isDisabled={isUploading}>
+									<Button
+										onClick={getAlbum}
+										isDisabled={scannedAlbum !== null || isUploading}
+									>
 										Capture
 									</Button>
 								</div>

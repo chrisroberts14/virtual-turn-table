@@ -1,3 +1,4 @@
+import { useError } from "@/contexts/ErrorContext.tsx";
 import type Song from "@/interfaces/Song.tsx";
 import { Slider, type SliderValue } from "@nextui-org/slider";
 import { useEffect, useState } from "react";
@@ -10,6 +11,7 @@ const TrackScrubber = (props: {
 	deviceId: string;
 }) => {
 	const [position, setPosition] = useState(props.trackPosition);
+	const { showError } = useError();
 
 	useEffect(() => {
 		setPosition(props.trackPosition);
@@ -26,10 +28,10 @@ const TrackScrubber = (props: {
 					setPosition(state.position);
 				})
 				.catch((err) => {
-					console.error("Error fetching player state:", err);
+					showError(`Failed to get current state: ${err}`);
 				});
 		}, 1000);
-	}, [props.player, props.currentSong]);
+	}, [props.player, props.currentSong, showError]);
 
 	const handleChange = (value: SliderValue) => {
 		if (props.player) {

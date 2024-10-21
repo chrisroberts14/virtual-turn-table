@@ -1,3 +1,4 @@
+import { useError } from "@/contexts/ErrorContext.tsx";
 import type Song from "@/interfaces/Song.tsx";
 import {
 	type Selection,
@@ -22,6 +23,7 @@ const SongList = (props: {
 	const [selectedKey, setSelectedKey] = useState<Set<Key>>(
 		props.currentSong ? new Set([props.currentSong.title]) : new Set(),
 	);
+	const { showError } = useError();
 
 	const handleSelectionChange = (keys: Selection) => {
 		if (keys === "all") {
@@ -33,7 +35,7 @@ const SongList = (props: {
 
 	useEffect(() => {
 		if (selectedKey.size > 1) {
-			console.log("Error more than one song selected...");
+			showError("Error more than one song selected...");
 		} else if (selectedKey.size < 1) {
 			props.setCurrentSong(null);
 		} else {
@@ -42,7 +44,7 @@ const SongList = (props: {
 			);
 			props.setCurrentSong(props.songList[newSongIndex]);
 		}
-	}, [selectedKey, props.songList, props.setCurrentSong]);
+	}, [selectedKey, props.songList, props.setCurrentSong, showError]);
 
 	return (
 		<Table

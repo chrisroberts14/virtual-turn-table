@@ -1,3 +1,4 @@
+import { useError } from "@/contexts/ErrorContext.tsx";
 import { getStateData, storeStateData } from "@/interfaces/StateData.tsx";
 import {
 	Dropdown,
@@ -13,6 +14,7 @@ const UserBox = () => {
 	const [displayName, setDisplayName] = React.useState("");
 	const [email, setEmail] = React.useState("");
 	const [profileImage, setProfileImage] = React.useState();
+	const { showError } = useError();
 
 	useEffect(() => {
 		const state = getStateData();
@@ -29,10 +31,10 @@ const UserBox = () => {
 					setProfileImage(response.data.image_url);
 				})
 				.catch((error) => {
-					console.log(error);
+					showError(error.response.data.message);
 				});
 		}
-	});
+	}, [showError]);
 
 	const logout = () => {
 		storeStateData({

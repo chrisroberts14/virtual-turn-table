@@ -3,6 +3,7 @@ import SongControls from "@/components/SongControls.tsx";
 import SongList from "@/components/SongList.tsx";
 import SpinningVinyl from "@/components/SpinningVinyl.tsx";
 import VolumeScrubber from "@/components/VolumeScrubber.tsx";
+import { useError } from "@/contexts/ErrorContext.tsx";
 import type Album from "@/interfaces/Album.tsx";
 import type Song from "@/interfaces/Song.tsx";
 import { getStateData, storeStateData } from "@/interfaces/StateData.tsx";
@@ -21,6 +22,7 @@ const MusicPlayer = (props: { token: string | null; album: Album | null }) => {
 	const [trackPosition, setTrackPosition] = useState(0); // In ms
 	const [trackDuration, setTrackDuration] = useState(0);
 	const [contentHeight, setContentHeight] = useState(window.innerHeight - 240);
+	const { showError } = useError();
 
 	useEffect(() => {
 		// Get the state data and set the current song
@@ -49,22 +51,24 @@ const MusicPlayer = (props: { token: string | null; album: Album | null }) => {
 				},
 				volume: 0.5,
 			});
-			player.connect().then((success: boolean) => {
-				if (success) {
-					//setIsConnected(true);
-				} else {
-					// TODO: ADD ERROR MESSAGE ON FRONTEND
-					//setIsConnected(false);
-				}
-			});
+			player
+				.connect()
+				.then((success: boolean) => {
+					if (!success) {
+						showError("Failed to connect to Spotify player.");
+					}
+				})
+				.catch((_) => {
+					showError("Failed to connect to Spotify player.");
+				});
 
 			player.on("ready", (event: { device_id: string }) => {
 				setDeviceId(event.device_id);
 				setPlayer(player);
 			});
 
-			player.on("not_ready", (event: { device_id: string }) => {
-				console.log("Device ID has gone offline:", event.device_id);
+			player.on("not_ready", (_: { device_id: string }) => {
+				showError("Device has gone offline unexpectedly.");
 			});
 
 			player.addListener(
@@ -76,7 +80,7 @@ const MusicPlayer = (props: { token: string | null; album: Album | null }) => {
 				},
 			);
 		};
-	}, [props.token]);
+	}, [props.token, showError]);
 
 	useEffect(() => {
 		if (props.album && props.token) {
@@ -99,10 +103,10 @@ const MusicPlayer = (props: { token: string | null; album: Album | null }) => {
 					});
 				})
 				.catch((error) => {
-					console.log(error);
+					showError(error.response.data.message);
 				});
 		}
-	}, [props.album, props.token]);
+	}, [props.album, props.token, showError]);
 
 	useEffect(() => {
 		if (currentAlbum) {
@@ -129,10 +133,12 @@ const MusicPlayer = (props: { token: string | null; album: Album | null }) => {
 					device_id: deviceId,
 				})
 				.catch((error) => {
-					console.log(error);
+					if (error.response) {
+						showError(error.response.message);
+					}
 				});
 		}
-	}, [currentSong, currentAlbum, props.token, deviceId]);
+	}, [currentSong, currentAlbum, props.token, deviceId, showError]);
 
 	const onResize = () => {
 		setContentHeight(window.innerHeight - 240);

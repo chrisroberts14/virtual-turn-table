@@ -120,9 +120,11 @@ async def get_album(
         raise APIException(500, "Failed to get the album details")
 
     # Get the album details
-    album_response = requests.get(
-        response.json()["albums"]["items"][0]["href"], headers=headers, timeout=5
-    )
+    data = response.json()
+    if len(data["albums"]["items"]) == 0:
+        raise APIException(404, "No album found.")
+    first_album_link = response.json()["albums"]["items"][0]["href"]
+    album_response = requests.get(first_album_link, headers=headers, timeout=5)
     if album_response.status_code != 200:
         raise APIException(500, "Failed to get the album details")
 

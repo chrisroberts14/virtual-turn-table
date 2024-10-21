@@ -1,3 +1,4 @@
+import { useError } from "@/contexts/ErrorContext.tsx";
 import type Album from "@/interfaces/Album.tsx";
 import { Button } from "@nextui-org/button";
 import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
@@ -13,6 +14,7 @@ const Upload: React.FC<{
 	triggerConfirmSlide: () => void;
 }> = ({ setScannedAlbum, setIsUploading, triggerConfirmSlide }) => {
 	const [file, setFile] = useState<File | null>(null);
+	const { showError } = useError();
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files) {
@@ -53,7 +55,7 @@ const Upload: React.FC<{
 					setScannedAlbum(newAlbum);
 				})
 				.catch((error) => {
-					console.log(error);
+					showError(error.response.data.message);
 				});
 		}
 		setIsUploading(false);
