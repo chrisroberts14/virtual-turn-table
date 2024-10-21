@@ -32,6 +32,7 @@ const ScanPage = (props: {
 	const [isUploading, setIsUploading] = useState(false);
 	const [scannedAlbum, setScannedAlbum] = useState<Album | null>(null);
 	const [fadeConfirm, setFadeConfirm] = useState(false);
+	const [usingCamera, setUsingCamera] = useState(false);
 	const { showError } = useError();
 
 	const onResize = () => {
@@ -150,7 +151,7 @@ const ScanPage = (props: {
 									triggerConfirmSlide={triggerConfirmSlide}
 								/>
 							</div>
-						) : (
+						) : usingCamera ? (
 							<div>
 								<Webcam
 									audio={false}
@@ -158,14 +159,34 @@ const ScanPage = (props: {
 									className="rounded-lg object-cover w-full h-full p-8 pb-16"
 									ref={webcamRef}
 								/>
-								<div className="p-4 text-center absolute bottom-0 w-full left-0">
+								<div className="p-4 text-center absolute bottom-0 w-full left-0 space-x-2">
 									<Button
 										onClick={getAlbum}
 										isDisabled={scannedAlbum !== null || isUploading}
 									>
 										Capture
 									</Button>
+									<Button
+										onClick={() => setUsingCamera(!usingCamera)}
+										className="mt-4"
+									>
+										Use file upload
+									</Button>
 								</div>
+							</div>
+						) : (
+							<div className="text-center">
+								<Upload
+									setScannedAlbum={setScannedAlbum}
+									setIsUploading={setIsUploading}
+									triggerConfirmSlide={triggerConfirmSlide}
+								/>
+								<Button
+									onClick={() => setUsingCamera(!usingCamera)}
+									className="mt-4"
+								>
+									Use camera
+								</Button>
 							</div>
 						)}
 					</div>

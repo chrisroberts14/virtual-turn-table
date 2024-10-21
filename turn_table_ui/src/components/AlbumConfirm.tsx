@@ -60,7 +60,7 @@ const AlbumConfirm = (props: {
 							<Spacer className="flex pt-2 flex-shrink" />
 							<div className="w-full flex-grow max-h-[10%]">
 								{props.scannedAlbum ? (
-									<Card className="bg-default-200 h-full">
+									<Card className="bg-default-200 h-full overflow-y-auto">
 										<div>
 											<div className="text-center">
 												{props.scannedAlbum.title}
