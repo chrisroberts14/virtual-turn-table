@@ -62,7 +62,7 @@ def check_health():
     return {"status": "alive"}
 
 
-@app.get("/get_user_albums/{username}")
+@app.get("/{username}/albums")
 def get_user_albums(username: str, db: Session = Depends(get_db)) -> list[Album]:
     """
     Get all albums for a user.

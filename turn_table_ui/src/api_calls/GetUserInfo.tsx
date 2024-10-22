@@ -1,3 +1,4 @@
+import { userInfo } from "@/api_calls/BFFEndpoints.tsx";
 import axios from "axios";
 import type { Dispatch, SetStateAction } from "react";
 
@@ -8,7 +9,7 @@ const GetUserInfo = async (
 	setProfileImage: Dispatch<SetStateAction<string>>,
 ) => {
 	axios
-		.get(`${import.meta.env.VITE_BFF_ADDRESS}get_user_info/`, {
+		.get(userInfo, {
 			params: {
 				spotify_access_token: token,
 			},

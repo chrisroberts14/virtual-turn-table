@@ -1,3 +1,4 @@
+import { albumDetails } from "@/api_calls/BFFEndpoints.tsx";
 import type Album from "@/interfaces/Album.tsx";
 import axios from "axios";
 import type { Dispatch, SetStateAction } from "react";
@@ -8,7 +9,7 @@ const GetAlbumDetails = async (
 	setCurrentAlbum: Dispatch<SetStateAction<Album | null>>,
 ) => {
 	axios
-		.get(`${import.meta.env.VITE_BFF_ADDRESS}album_details/`, {
+		.get(albumDetails, {
 			params: {
 				spotify_access_token: accessToken,
 				album_uri: albumURI,

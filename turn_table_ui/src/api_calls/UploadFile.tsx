@@ -1,3 +1,4 @@
+import { imageToAlbum } from "@/api_calls/BFFEndpoints.tsx";
 import type Album from "@/interfaces/Album.tsx";
 import axios from "axios";
 import type { Dispatch, SetStateAction } from "react";
@@ -18,7 +19,7 @@ const UploadFile = async (
 	const base64 = await convertToBase64(file);
 	await axios
 		.post(
-			`${import.meta.env.VITE_BFF_ADDRESS}image_to_album/`,
+			imageToAlbum,
 			{ image: base64 },
 			{
 				headers: {
