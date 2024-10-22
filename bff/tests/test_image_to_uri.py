@@ -2,7 +2,7 @@
 
 import base64
 
-from bff import Album
+from bff.api_models import Album
 
 
 class TestImageToURI:
@@ -43,7 +43,7 @@ class TestImageToURI:
         base_64_image = base64.b64encode(mock_image.read()).decode("utf-8")
 
         response = client.post(
-            "/image_to_album/",
+            "/image_search/image_to_album/",
             json={"image": f"data:image/jpeg;base64,{base_64_image}"},
         )
         assert response.status_code == 200
@@ -83,7 +83,7 @@ class TestImageToURI:
         base_64_image = base64.b64encode(mock_image.read()).decode("utf-8")
 
         response = client.post(
-            "/image_to_album/",
+            "/image_search/image_to_album/",
             json={"image": f"data:image/jpeg;base64,{base_64_image}"},
         )
         assert response.status_code == 500
@@ -130,7 +130,7 @@ class TestImageToURI:
         base_64_image = base64.b64encode(mock_image.read()).decode("utf-8")
 
         response = client.post(
-            "/image_to_album/",
+            "/image_search/image_to_album/",
             json={"image": f"data:image/jpeg;base64,{base_64_image}"},
         )
         assert response.status_code == 500

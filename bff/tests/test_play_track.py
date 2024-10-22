@@ -25,7 +25,7 @@ class TestPlayTrack:
 
         mocker.patch("requests.put", side_effect=mock_request)
         response = client.post(
-            "/play_track/",
+            "/music/play_track/",
             json={
                 "track_uri": "test_uri",
                 "device_id": "test_device_id",
@@ -59,7 +59,7 @@ class TestPlayTrack:
 
         mocker.patch("requests.put", side_effect=mock_request)
         response = client.post(
-            "/play_track/",
+            "/music/play_track/",
             json={
                 "track_uri": "test_uri",
                 "device_id": "test_device_id",

@@ -1,6 +1,6 @@
 """Test the get_album_details endpoint."""
 
-from bff import Album
+from bff.api_models import Album
 
 
 class TestGetAlbum:
@@ -35,7 +35,7 @@ class TestGetAlbum:
 
         mocker.patch("requests.get", side_effect=mock_request)
         response = client.get(
-            "/album_details/",
+            "/music/album_details/",
             params={
                 "spotify_access_token": "test_token",
                 "album_uri": "spotify:album:uri",
@@ -62,7 +62,7 @@ class TestGetAlbum:
         :return:
         """
         response = client.get(
-            "/album_details/",
+            "/music/album_details/",
             params={"spotify_access_token": "test_token", "album_uri": "bad_uri"},
         )
         assert response.status_code == 400
@@ -100,7 +100,7 @@ class TestGetAlbum:
 
         mocker.patch("requests.get", side_effect=mock_request)
         response = client.get(
-            "/album_details/",
+            "/music/album_details/",
             params={
                 "spotify_access_token": "test_token",
                 "album_uri": "spotify:album:uri",

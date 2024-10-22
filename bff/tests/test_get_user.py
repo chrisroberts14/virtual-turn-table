@@ -32,7 +32,7 @@ class TestGetUser:
 
         mocker.patch("requests.get", side_effect=mock_request)
         response = client.get(
-            "/get_user_info/", params={"spotify_access_token": "test_token"}
+            "/user/get_user_info/", params={"spotify_access_token": "test_token"}
         )
         assert response.status_code == 200
         assert response.json() == {
@@ -69,7 +69,7 @@ class TestGetUser:
 
         mocker.patch("requests.get", side_effect=mock_request)
         response = client.get(
-            "/get_user_info/", params={"spotify_access_token": "bad_token"}
+            "/user/get_user_info/", params={"spotify_access_token": "bad_token"}
         )
         assert response.status_code == 401
         assert response.json() == {
