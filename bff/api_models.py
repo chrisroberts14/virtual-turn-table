@@ -20,6 +20,13 @@ class User(BaseModel):
     image_url: str
 
 
+class UserIn(BaseModel):
+    """User model to be stored in the database."""
+
+    username: str
+    email: str
+
+
 class Song(BaseModel):
     """Song model."""
 

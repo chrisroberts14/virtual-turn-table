@@ -1,6 +1,7 @@
+import CreateUser from "@/api_calls/CreateUser.tsx";
 import GetUserInfo from "@/api_calls/GetUserInfo.tsx";
 import { useError } from "@/contexts/ErrorContext.tsx";
-import { getStateData, storeStateData } from "@/interfaces/StateData.tsx";
+import { clearStateData, getStateData } from "@/interfaces/StateData.tsx";
 import {
 	Dropdown,
 	DropdownItem,
@@ -30,12 +31,17 @@ const UserBox = () => {
 		}
 	}, [showError]);
 
-	const logout = () => {
-		storeStateData({
-			spotify_access_token: "",
-			spotify_login_time: "",
-			spotify_session_length: "",
+	useEffect(() => {
+		if (displayName === "" || email === "") {
+			return;
+		}
+		CreateUser(displayName, email).catch((error) => {
+			showError(error.message);
 		});
+	}, [displayName, email, showError]);
+
+	const logout = () => {
+		clearStateData();
 		window.location.href = "/";
 	};
 

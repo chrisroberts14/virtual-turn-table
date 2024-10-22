@@ -32,3 +32,8 @@ export const getStateData = (): StateData | null => {
 	}
 	return null;
 };
+
+export const clearStateData = () => {
+	// Clear the state from local storage
+	localStorage.removeItem("virtual_turn_table_state");
+};

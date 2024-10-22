@@ -3,6 +3,7 @@
 from fastapi import FastAPI, Request, Depends
 from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.status import HTTP_201_CREATED
 from sqlalchemy.orm import Session
 
 from user_data.api_models import APIException, Album, User
@@ -77,7 +78,7 @@ def get_user_albums(username: str, db: Session = Depends(get_db)) -> list[Album]
     return db_user.albums
 
 
-@app.post("/user/")
+@app.post("/user/", status_code=HTTP_201_CREATED)
 def create_or_get_user(user: User, db: Session = Depends(get_db)) -> User:
     """
     Create or get a user.
@@ -89,4 +90,4 @@ def create_or_get_user(user: User, db: Session = Depends(get_db)) -> User:
     db_user = UserDb.get_by_id(db, user.username)
     if db_user is not None:
         return db_user
-    return UserDb.create(db, user)
+    return UserDb.create(db, UserDb(username=user.username, email=user.email))

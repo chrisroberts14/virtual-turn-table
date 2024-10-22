@@ -10,7 +10,15 @@ from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from bff.api_models import User, Album, Song, PlaySong, ImagePayload, APIException
+from bff.api_models import (
+    User,
+    Album,
+    Song,
+    PlaySong,
+    ImagePayload,
+    APIException,
+    UserIn,
+)
 from bff.config import Settings
 
 app = FastAPI()
@@ -204,3 +212,20 @@ def play_track(data: PlaySong):
         raise APIException(500, "Failed to play track.")
 
     return {"message": "Track played successfully.", "status": "success"}
+
+
+@app.post("/create_user/")
+def create_user(user: UserIn, settings: Annotated[Settings, Depends(get_settings)]):
+    """
+    Create a user in the database.
+
+    :param settings:
+    :param user:
+    :return:
+    """
+    endpoint = f"{settings.user_data_address}user/"
+    response = requests.post(endpoint, json=user.model_dump(), timeout=5)
+    result = response.json()
+    if response.status_code != 201:
+        raise APIException(500, "Failed to access user data.")
+    return JSONResponse(content=result, status_code=201)

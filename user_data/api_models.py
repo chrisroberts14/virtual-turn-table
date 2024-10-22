@@ -11,15 +11,16 @@ class APIException(Exception):
         self.message = message
 
 
-class User(BaseModel):
-    """User model."""
-
-    username: str
-    email: str
-
-
 class Album(BaseModel):
     """Album model."""
 
     # We only store the uri of the album we can then pull it later
     album_uri: str
+
+
+class User(BaseModel):
+    """User model."""
+
+    username: str
+    email: str
+    albums: list[Album] = []

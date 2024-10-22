@@ -12,8 +12,8 @@ const CreateUser = async (username: string, email: string) => {
 				},
 			},
 		)
-		.catch((error) => {
-			throw new Error(error.response.data.message);
+		.catch((_) => {
+			throw new Error("Failed to collect user information from database");
 		});
 };
 
