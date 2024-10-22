@@ -40,3 +40,14 @@ jobs:
         run: |
           cd turn_table_ui
           docker build .
+
+  build-user-data-container:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the Docker image
+        run: |
+          cd user_data
+          docker build .
