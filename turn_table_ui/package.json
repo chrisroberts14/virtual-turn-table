@@ -34,7 +34,7 @@
 		"@nextui-org/tabs": "^2.0.37",
 		"@nextui-org/theme": "2.2.11",
 		"@nextui-org/user": "^2.0.34",
-		"@react-aria/visually-hidden": "3.8.12",
+		"@react-aria/visually-hidden": "3.8.17",
 		"@types/node": "^22.7.5",
 		"axios": "^1.7.7",
 		"clsx": "2.1.1",
