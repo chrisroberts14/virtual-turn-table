@@ -1,5 +1,5 @@
 fastapi[standard]
-pydantic_settings~=2.5.2
+pydantic_settings~=2.6.0
 pytest-cov~=5.0.0
 pytest-mock~=3.14.0
 pytest-xdist~=3.6.1
