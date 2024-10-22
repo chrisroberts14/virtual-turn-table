@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.status import HTTP_201_CREATED
 from sqlalchemy.orm import Session
 
-from user_data.api_models import APIException, Album, User
+from user_data.api_models import APIException, Album, User, AlbumUserLinkIn
 from user_data.db import get_db
 from user_data.db_models import UserDb
 
@@ -91,3 +91,35 @@ def create_or_get_user(user: User, db: Session = Depends(get_db)) -> User:
     if db_user is not None:
         return db_user
     return UserDb.create(db, UserDb(username=user.username, email=user.email))
+
+
+@app.post("/create_album/{album_uri}/", status_code=HTTP_201_CREATED)
+def create_album_if_not_exists(album_uri: str, db: Session = Depends(get_db)):
+    """
+    Create an album if it doesn't already exist.
+
+    :param album_uri:
+    :param db:
+    :return:
+    """
+    if UserDb.get_by_id(db, album_uri) is None:
+        UserDb.create(db, UserDb(username=album_uri))
+
+
+@app.post("/add_album_link/", status_code=HTTP_201_CREATED)
+def add_album_link(data: AlbumUserLinkIn, db: Session = Depends(get_db)):
+    """
+    Add a link between a user and an album.
+
+    :param db:
+    :param data:
+    :return:
+    """
+    user = UserDb.get_by_id(db, data.user_id)
+    if user is None:
+        raise APIException(status_code=404, message="User not found")
+    album = UserDb.get_by_id(db, data.album_uri)
+    if album is None:
+        raise APIException(status_code=404, message="Album not found")
+    user.albums.append(album)
+    db.commit()

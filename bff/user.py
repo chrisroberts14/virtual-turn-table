@@ -5,8 +5,9 @@ from typing import Annotated
 import requests
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
+from starlette.status import HTTP_201_CREATED
 
-from bff.api_models import User, APIException, UserIn
+from bff.api_models import User, APIException, UserIn, AlbumUserLinkIn
 from bff.config import get_settings, Settings
 
 user_router = APIRouter()
@@ -51,3 +52,28 @@ def create_user(user: UserIn, settings: Annotated[Settings, Depends(get_settings
     if response.status_code != 201:
         raise APIException(500, "Failed to access user data.")
     return JSONResponse(content=result, status_code=201)
+
+
+@user_router.post("/add_album/", status_code=HTTP_201_CREATED)
+def add_album(
+    data_in: AlbumUserLinkIn, settings: Annotated[Settings, Depends(get_settings)]
+):
+    """
+    Add an album to a user's collection.
+
+    Creates the album if it doesn't already exist
+
+    :param settings:
+    :param data_in:
+    :return:
+    """
+    # Create the album if it doesn't exist
+    endpoint = f"{settings.user_data_address}album/create_album/{data_in.album_uri}/"
+    response = requests.post(endpoint, timeout=5)
+    if response.status_code != 201:
+        raise APIException(500, "Failed to create or find album.")
+    # Create the link between the user and the album
+    endpoint = f"{settings.user_data_address}album/add_album_link/"
+    response = requests.post(endpoint, json=data_in.model_dump(), timeout=5)
+    if response.status_code != 201:
+        raise APIException(500, "Failed to add album link.")

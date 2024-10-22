@@ -3,6 +3,7 @@ import MusicPlayer from "@/components/MusicPlayer.tsx";
 import NavigationBar from "@/components/NavigationBar.tsx";
 import ScanPage from "@/components/ScanPage.tsx";
 import { ErrorProvider } from "@/contexts/ErrorContext.tsx";
+import { UsernameContext } from "@/contexts/UsernameContext.tsx";
 import type Album from "@/interfaces/Album.tsx";
 import { getStateData, storeStateData } from "@/interfaces/StateData.tsx";
 import { useEffect, useState } from "react";
@@ -18,6 +19,8 @@ function App() {
 	const [fadeScan, setFadeScan] = useState(false);
 	const [fadePlayer, setFadePlayer] = useState(false);
 	const [disableTabChange, setDisableTabChange] = useState(false);
+
+	const [username, setUsername] = useState<string | null>(null);
 
 	useEffect(() => {
 		// Set to the correct page
@@ -98,38 +101,40 @@ function App() {
 
 	return (
 		<ErrorProvider>
-			<div className="flex flex-col h-screen">
-				<NavigationBar
-					isSignedIn={isSignedIn}
-					currentPage={nextPage}
-					setNextPage={setNextPage}
-					disableTabChange={disableTabChange}
-				/>
-				<div className="flex flex-row h-full">
-					<div
-						style={{
-							transform: fadePlayer ? "translateX(0)" : "translateX(-100%)",
-							transition: "transform 0.5s ease-in-out",
-						}}
-						className="h-full"
-					>
-						<MusicPlayer token={spotifyToken} album={currentAlbum} />
-					</div>
-					<div
-						style={{
-							transform: fadeScan ? "translateX(-100%)" : "translateX(100%)",
-							transition: "transform 0.5s ease-in-out",
-						}}
-						className="h-full"
-					>
-						<ScanPage
-							currentAlbum={currentAlbum}
-							setCurrentAlbum={setCurrentAlbum}
-						/>
+			<UsernameContext.Provider value={{ username, setUsername }}>
+				<div className="flex flex-col h-screen">
+					<NavigationBar
+						isSignedIn={isSignedIn}
+						currentPage={nextPage}
+						setNextPage={setNextPage}
+						disableTabChange={disableTabChange}
+					/>
+					<div className="flex flex-row h-full">
+						<div
+							style={{
+								transform: fadePlayer ? "translateX(0)" : "translateX(-100%)",
+								transition: "transform 0.5s ease-in-out",
+							}}
+							className="h-full"
+						>
+							<MusicPlayer token={spotifyToken} album={currentAlbum} />
+						</div>
+						<div
+							style={{
+								transform: fadeScan ? "translateX(-100%)" : "translateX(100%)",
+								transition: "transform 0.5s ease-in-out",
+							}}
+							className="h-full"
+						>
+							<ScanPage
+								currentAlbum={currentAlbum}
+								setCurrentAlbum={setCurrentAlbum}
+							/>
+						</div>
 					</div>
 				</div>
-			</div>
-			<ErrorDisplay />
+				<ErrorDisplay />
+			</UsernameContext.Provider>
 		</ErrorProvider>
 	);
 }

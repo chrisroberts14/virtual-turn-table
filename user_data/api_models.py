@@ -24,3 +24,10 @@ class User(BaseModel):
     username: str
     email: str
     albums: list[Album] = []
+
+
+class AlbumUserLinkIn(BaseModel):
+    """Model for the album user link."""
+
+    album_uri: str
+    user_id: str

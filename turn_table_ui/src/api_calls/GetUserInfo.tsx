@@ -1,27 +1,23 @@
 import { userInfo } from "@/api_calls/BFFEndpoints.tsx";
 import axios from "axios";
-import type { Dispatch, SetStateAction } from "react";
 
-const GetUserInfo = async (
-	token: string | undefined,
-	setDisplayName: Dispatch<SetStateAction<string>>,
-	setEmail: Dispatch<SetStateAction<string>>,
-	setProfileImage: Dispatch<SetStateAction<string>>,
-) => {
-	axios
-		.get(userInfo, {
+const GetUserInfo = async (token: string | undefined) => {
+	try {
+		const response = await axios.get(userInfo, {
 			params: {
 				spotify_access_token: token,
 			},
-		})
-		.then((response) => {
-			setDisplayName(response.data.display_name);
-			setEmail(response.data.email);
-			setProfileImage(response.data.image_url);
-		})
-		.catch((error) => {
-			throw new Error(error.response.data.message);
 		});
+		return response.data;
+	} catch (error: unknown) {
+		// Check if the error is an AxiosError (has a response)
+		if (axios.isAxiosError(error)) {
+			// Handle Axios errors (network errors)
+			throw new Error(error.response?.data?.message || "An error occurred");
+		}
+		// Handle non-Axios errors (e.g., programming errors)
+		throw new Error("An unexpected error occurred");
+	}
 };
 
 export default GetUserInfo;

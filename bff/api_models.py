@@ -59,3 +59,10 @@ class ImagePayload(BaseModel):
     """Model for the image payload."""
 
     image: str  # The image in base64 format
+
+
+class AlbumUserLinkIn(BaseModel):
+    """Model for the album user link."""
+
+    album_uri: str
+    user_id: str

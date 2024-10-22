@@ -1,6 +1,7 @@
 import CreateUser from "@/api_calls/CreateUser.tsx";
 import GetUserInfo from "@/api_calls/GetUserInfo.tsx";
 import { useError } from "@/contexts/ErrorContext.tsx";
+import { useUsername } from "@/contexts/UsernameContext.tsx";
 import { clearStateData, getStateData } from "@/interfaces/StateData.tsx";
 import {
 	Dropdown,
@@ -9,36 +10,42 @@ import {
 	DropdownTrigger,
 } from "@nextui-org/dropdown";
 import { User } from "@nextui-org/user";
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const UserBox = () => {
-	const [displayName, setDisplayName] = React.useState("");
-	const [email, setEmail] = React.useState("");
-	const [profileImage, setProfileImage] = React.useState("");
+	const [email, setEmail] = useState("");
+	const [profileImage, setProfileImage] = useState("");
 	const { showError } = useError();
+	const { username, setUsername } = useUsername();
 
 	useEffect(() => {
 		const state = getStateData();
 		if (state && "spotify_access_token" in state) {
-			GetUserInfo(
-				state.spotify_access_token,
-				setDisplayName,
-				setEmail,
-				setProfileImage,
-			).catch((error) => {
-				showError(error.message);
-			});
+			GetUserInfo(state.spotify_access_token)
+				.then((response) => {
+					if (response) {
+						setUsername(response.display_name);
+						setEmail(response.email);
+						setProfileImage(response.image_url);
+					}
+				})
+				.catch((error) => {
+					showError(error.message);
+				});
 		}
-	}, [showError]);
+	}, [showError, setUsername]);
 
 	useEffect(() => {
-		if (displayName === "" || email === "") {
+		if (username === "" || email === "") {
 			return;
 		}
-		CreateUser(displayName, email).catch((error) => {
+		if (username === null || email === null) {
+			return;
+		}
+		CreateUser(username, email).catch((error) => {
 			showError(error.message);
 		});
-	}, [displayName, email, showError]);
+	}, [username, email, showError]);
 
 	const logout = () => {
 		clearStateData();
@@ -49,7 +56,7 @@ const UserBox = () => {
 		<Dropdown>
 			<DropdownTrigger>
 				<User
-					name={displayName}
+					name={username}
 					description={email}
 					avatarProps={{
 						src: profileImage,
