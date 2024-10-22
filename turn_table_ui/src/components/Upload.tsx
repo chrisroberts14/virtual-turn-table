@@ -1,10 +1,10 @@
+import UploadFile from "@/api_calls/UploadFile.tsx";
 import { useError } from "@/contexts/ErrorContext.tsx";
 import type Album from "@/interfaces/Album.tsx";
 import { Button } from "@nextui-org/button";
 import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
 import { Divider } from "@nextui-org/divider";
 import { Input } from "@nextui-org/input";
-import axios from "axios";
 import type React from "react";
 import { type Dispatch, type SetStateAction, useState } from "react";
 
@@ -27,36 +27,12 @@ const Upload: React.FC<{
 	};
 
 	const handleUpload = async () => {
-		const convertToBase64 = (file: File) => {
-			return new Promise((resolve, reject) => {
-				const reader = new FileReader();
-				reader.readAsDataURL(file);
-				reader.onload = () => resolve(reader.result);
-				reader.onerror = (error) => reject(error);
-			});
-		};
-
 		if (file) {
 			setIsUploading(true);
 			triggerConfirmSlide();
-			const base64 = await convertToBase64(file);
-			await axios
-				.post(
-					`${import.meta.env.VITE_BFF_ADDRESS}image_to_album/`,
-					{ image: base64 },
-					{
-						headers: {
-							"Content-Type": "application/json",
-						},
-					},
-				)
-				.then((response) => {
-					const newAlbum: Album = response.data;
-					setScannedAlbum(newAlbum);
-				})
-				.catch((error) => {
-					showError(error.response.data.message);
-				});
+			await UploadFile(file, setScannedAlbum).catch((error) => {
+				showError(error.message);
+			});
 		}
 		setIsUploading(false);
 	};

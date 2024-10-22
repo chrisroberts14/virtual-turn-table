@@ -1,9 +1,9 @@
+import ImageToAlbum from "@/api_calls/ImageToAlbum.tsx";
 import AlbumConfirm from "@/components/AlbumConfirm.tsx";
 import Upload from "@/components/Upload.tsx";
 import { useError } from "@/contexts/ErrorContext.tsx";
 import type Album from "@/interfaces/Album.tsx";
 import { Button } from "@nextui-org/button";
-import axios from "axios";
 import { Resizable } from "re-resizable";
 import type React from "react";
 import {
@@ -63,23 +63,9 @@ const ScanPage = (props: {
 				return;
 			}
 
-			await axios
-				.post(
-					`${import.meta.env.VITE_BFF_ADDRESS}image_to_album/`,
-					{ image: imageSrc },
-					{
-						headers: {
-							"Content-Type": "application/json",
-						},
-					},
-				)
-				.then((response) => {
-					const newAlbum: Album = response.data;
-					setScannedAlbum(newAlbum);
-				})
-				.catch((error) => {
-					showError(error.response.data.message);
-				});
+			await ImageToAlbum(imageSrc, setScannedAlbum).catch((error) => {
+				showError(error.message);
+			});
 		}
 		setIsUploading(false);
 	};

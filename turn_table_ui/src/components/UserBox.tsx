@@ -1,3 +1,4 @@
+import GetUserInfo from "@/api_calls/GetUserInfo.tsx";
 import { useError } from "@/contexts/ErrorContext.tsx";
 import { getStateData, storeStateData } from "@/interfaces/StateData.tsx";
 import {
@@ -7,7 +8,6 @@ import {
 	DropdownTrigger,
 } from "@nextui-org/dropdown";
 import { User } from "@nextui-org/user";
-import axios from "axios";
 import React, { useEffect } from "react";
 
 const UserBox = () => {
@@ -19,20 +19,14 @@ const UserBox = () => {
 	useEffect(() => {
 		const state = getStateData();
 		if (state && "spotify_access_token" in state) {
-			axios
-				.get(`${import.meta.env.VITE_BFF_ADDRESS}get_user_info/`, {
-					params: {
-						spotify_access_token: state.spotify_access_token,
-					},
-				})
-				.then((response) => {
-					setDisplayName(response.data.display_name);
-					setEmail(response.data.email);
-					setProfileImage(response.data.image_url);
-				})
-				.catch((error) => {
-					showError(error.response.data.message);
-				});
+			GetUserInfo(
+				state.spotify_access_token,
+				setDisplayName,
+				setEmail,
+				setProfileImage,
+			).catch((error) => {
+				showError(error.message);
+			});
 		}
 	}, [showError]);
 

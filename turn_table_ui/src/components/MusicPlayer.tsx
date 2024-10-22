@@ -1,3 +1,6 @@
+import GetAlbumDetails from "@/api_calls/GetAlbumDetails.tsx";
+import PlayTrack from "@/api_calls/PlayTrack.tsx";
+import PlayerSetup from "@/api_calls/PlayerSetup.tsx";
 import PlayingAlbum from "@/components/PlayingAlbum.tsx";
 import SongControls from "@/components/SongControls.tsx";
 import SongList from "@/components/SongList.tsx";
@@ -7,14 +10,12 @@ import { useError } from "@/contexts/ErrorContext.tsx";
 import type Album from "@/interfaces/Album.tsx";
 import type Song from "@/interfaces/Song.tsx";
 import { getStateData, storeStateData } from "@/interfaces/StateData.tsx";
-import axios from "axios";
 import { Resizable } from "re-resizable";
 import { useEffect, useState } from "react";
 
 const MusicPlayer = (props: { token: string | null; album: Album | null }) => {
 	const [player, setPlayer] = useState<SpotifyPlayer | null>(null);
 	const [deviceId, setDeviceId] = useState("");
-	// const [isConnected, setIsConnected] = useState(false);
 	const [currentSong, setCurrentSong] = useState<Song | null>(null);
 	const [nextSong, setNextSong] = useState<Song | null>(null);
 	const [currentAlbum, setCurrentAlbum] = useState<Album | null>(null);
@@ -51,62 +52,28 @@ const MusicPlayer = (props: { token: string | null; album: Album | null }) => {
 				},
 				volume: 0.5,
 			});
-			player
-				.connect()
-				.then((success: boolean) => {
-					if (!success) {
-						showError("Failed to connect to Spotify player.");
-					}
-				})
-				.catch((_) => {
-					showError("Failed to connect to Spotify player.");
-				});
-
-			player.on("ready", (event: { device_id: string }) => {
-				setDeviceId(event.device_id);
-				setPlayer(player);
+			await PlayerSetup(
+				player,
+				setDeviceId,
+				setPlayer,
+				setIsPaused,
+				setTrackPosition,
+				setTrackDuration,
+			).catch((error) => {
+				showError(error.message);
 			});
-
-			player.on("not_ready", (_: { device_id: string }) => {
-				showError("Device has gone offline unexpectedly.");
-			});
-
-			player.addListener(
-				"player_state_changed",
-				({ position, duration, paused }) => {
-					setIsPaused(paused);
-					setTrackPosition(position);
-					setTrackDuration(duration);
-				},
-			);
 		};
 	}, [props.token, showError]);
 
 	useEffect(() => {
 		if (props.album && props.token) {
-			axios
-				.get(`${import.meta.env.VITE_BFF_ADDRESS}album_details/`, {
-					params: {
-						spotify_access_token: props.token,
-						album_uri: props.album.album_uri,
-					},
-				})
-				.then((response) => {
-					const album: Album = response.data;
-					setCurrentAlbum({
-						title: album.title,
-						artists: album.artists,
-						image_url: album.image_url,
-						album_uri: album.album_uri,
-						tracks_url: album.tracks_url,
-						songs: album.songs,
-					});
-				})
-				.catch((error) => {
-					showError(error.response.data.message);
-				});
+			GetAlbumDetails(props.album.album_uri, props.token, setCurrentAlbum).then(
+				() => {
+					return;
+				},
+			);
 		}
-	}, [props.album, props.token, showError]);
+	}, [props.album, props.token]);
 
 	useEffect(() => {
 		if (currentAlbum) {
@@ -114,7 +81,7 @@ const MusicPlayer = (props: { token: string | null; album: Album | null }) => {
 				currentAlbum: currentAlbum,
 			});
 		}
-		if (currentSong && currentAlbum) {
+		if (currentSong && currentAlbum && props.token) {
 			storeStateData({
 				currentSong: currentSong,
 			});
@@ -126,17 +93,9 @@ const MusicPlayer = (props: { token: string | null; album: Album | null }) => {
 				setNextSong(currentAlbum.songs[currentSongIndex + 1]);
 			}
 
-			axios
-				.post(`${import.meta.env.VITE_BFF_ADDRESS}play_track/`, {
-					spotify_access_token: props.token,
-					track_uri: currentSong.uri,
-					device_id: deviceId,
-				})
-				.catch((error) => {
-					if (error.response) {
-						showError(error.response.message);
-					}
-				});
+			PlayTrack(props.token, currentSong.uri, deviceId).catch((error) => {
+				showError(error.message);
+			});
 		}
 	}, [currentSong, currentAlbum, props.token, deviceId, showError]);
 

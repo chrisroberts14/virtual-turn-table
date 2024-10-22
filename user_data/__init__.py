@@ -5,7 +5,7 @@ from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
-from user_data.api_models import APIException, Album
+from user_data.api_models import APIException, Album, User
 from user_data.db import get_db
 from user_data.db_models import UserDb
 
@@ -75,3 +75,18 @@ def get_user_albums(username: str, db: Session = Depends(get_db)) -> list[Album]
     if db_user is None:
         raise APIException(status_code=404, message="User not found")
     return db_user.albums
+
+
+@app.post("/user/")
+def create_or_get_user(user: User, db: Session = Depends(get_db)) -> User:
+    """
+    Create or get a user.
+
+    :param user:
+    :param db:
+    :return:
+    """
+    db_user = UserDb.get_by_id(db, user.username)
+    if db_user is not None:
+        return db_user
+    return UserDb.create(db, user)
