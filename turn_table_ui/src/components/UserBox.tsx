@@ -13,7 +13,7 @@ import React, { useEffect } from "react";
 const UserBox = () => {
 	const [displayName, setDisplayName] = React.useState("");
 	const [email, setEmail] = React.useState("");
-	const [profileImage, setProfileImage] = React.useState();
+	const [profileImage, setProfileImage] = React.useState("");
 	const { showError } = useError();
 
 	useEffect(() => {
