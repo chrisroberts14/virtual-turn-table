@@ -69,3 +69,4 @@ jobs:
           SPOTIFY_CLIENT_SECRET: "spotify_client_secret"
           SPOTIFY_REDIRECT_URI: "spotify_redirect_uri"
           IMAGE_TO_ALBUM_ADDRESS: "img_to_album_address"
+          USER_DATA_ADDRESS: "user_data_address"
