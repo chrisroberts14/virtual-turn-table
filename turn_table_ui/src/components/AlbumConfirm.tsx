@@ -1,44 +1,46 @@
 import AddAlbum from "@/api_calls/AddAlbum.tsx";
 import AlbumDisplay from "@/components/AlbumDisplay.tsx";
+import { useUpload } from "@/contexts/CaptureContext.tsx";
+import { useMusic } from "@/contexts/MusicContext.tsx";
 import { useUsername } from "@/contexts/UsernameContext.tsx";
-import type Album from "@/interfaces/Album.tsx";
 import { Button } from "@nextui-org/button";
 import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
 import { Skeleton } from "@nextui-org/skeleton";
 import { Spacer } from "@nextui-org/spacer";
-import type React from "react";
-import { type SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-const AlbumConfirm = (props: {
-	scannedAlbum: Album | null;
-	setScannedAlbum: React.Dispatch<SetStateAction<Album | null>>;
-	setCurrentAlbum: React.Dispatch<SetStateAction<Album | null>>;
-	triggerConfirmSlide: () => void;
-}) => {
+const AlbumConfirm = () => {
 	const [buttonsDisabled, setButtonsDisabled] = useState(true);
 	const { username } = useUsername();
+	const { scannedAlbum, setScannedAlbum, fadeConfirm, setFadeConfirm } =
+		useUpload();
+	const { setCurrentAlbum } = useMusic();
+
+	const triggerConfirmSlide = () => {
+		setFadeConfirm(!fadeConfirm);
+	};
 
 	useEffect(() => {
-		if (props.scannedAlbum) {
+		if (scannedAlbum) {
 			setButtonsDisabled(false);
 		} else {
 			setButtonsDisabled(true);
 		}
-	}, [props.scannedAlbum]);
+	}, [scannedAlbum]);
 
 	const confirmAlbum = () => {
-		props.triggerConfirmSlide();
-		props.setCurrentAlbum(props.scannedAlbum);
-		if (username && props.scannedAlbum) {
-			AddAlbum(username, props.scannedAlbum.album_uri);
+		triggerConfirmSlide();
+		setCurrentAlbum(scannedAlbum);
+		if (username && scannedAlbum) {
+			AddAlbum(username, scannedAlbum.album_uri);
 		}
-		props.setScannedAlbum(null);
+		setScannedAlbum(null);
 	};
 
 	const rejectAlbum = () => {
-		props.triggerConfirmSlide();
-		props.setCurrentAlbum(null);
-		props.setScannedAlbum(null);
+		triggerConfirmSlide();
+		setCurrentAlbum(null);
+		setScannedAlbum(null);
 	};
 
 	return (
@@ -52,9 +54,9 @@ const AlbumConfirm = (props: {
 								className="max-h-[50%] flex-grow"
 								style={{ width: "100%", paddingBottom: "100%" }}
 							>
-								{props.scannedAlbum ? (
+								{scannedAlbum ? (
 									<div>
-										<AlbumDisplay album={props.scannedAlbum} />
+										<AlbumDisplay album={scannedAlbum} />
 									</div>
 								) : (
 									<Skeleton style={{ width: "100%", paddingBottom: "100%" }}>
@@ -65,14 +67,12 @@ const AlbumConfirm = (props: {
 
 							<Spacer className="flex pt-2 flex-shrink" />
 							<div className="w-full flex-grow max-h-[10%]">
-								{props.scannedAlbum ? (
+								{scannedAlbum ? (
 									<Card className="bg-default-200 h-full overflow-y-auto">
 										<div>
+											<div className="text-center">{scannedAlbum.title}</div>
 											<div className="text-center">
-												{props.scannedAlbum.title}
-											</div>
-											<div className="text-center">
-												{props.scannedAlbum.artists.join(", ")}
+												{scannedAlbum.artists.join(", ")}
 											</div>
 										</div>
 									</Card>

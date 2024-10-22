@@ -1,43 +1,33 @@
 import { useError } from "@/contexts/ErrorContext.tsx";
-import type Song from "@/interfaces/Song.tsx";
+import { useSongControl } from "@/contexts/SongControlContext.tsx";
 import { Slider, type SliderValue } from "@nextui-org/slider";
-import { useEffect, useState } from "react";
 
-const TrackScrubber = (props: {
-	player: SpotifyPlayer;
-	trackPosition: number;
-	trackDuration: number;
-	currentSong: Song | null;
-	deviceId: string;
-}) => {
-	const [position, setPosition] = useState(props.trackPosition);
+const TrackScrubber = () => {
+	const {
+		player,
+		trackPosition,
+		setTrackPosition,
+		currentSong,
+		trackDuration,
+	} = useSongControl();
 	const { showError } = useError();
 
-	useEffect(() => {
-		setPosition(props.trackPosition);
-	}, [props.trackPosition]);
-
-	useEffect(() => {
-		setInterval(async () => {
-			if (!props.player || !props.currentSong) {
-				return;
-			}
-			props.player
-				.getCurrentState()
-				.then((state) => {
-					setPosition(state.position);
-				})
-				.catch((err) => {
-					showError(`Failed to get current state: ${err}`);
-				});
-		}, 1000);
-	}, [props.player, props.currentSong, showError]);
+	setInterval(async () => {
+		if (!player || !currentSong) {
+			return;
+		}
+		const state = await player.getCurrentState();
+		if (!state) {
+			showError("Failed to get current state");
+		} else {
+			setTrackPosition(state.position);
+		}
+	}, 1000);
 
 	const handleChange = (value: SliderValue) => {
-		if (props.player) {
+		if (player) {
 			const newPosition = Number(value);
-			setPosition(newPosition);
-			props.player.seek(newPosition).then((_) => {
+			player.seek(newPosition).then((_) => {
 				return;
 			});
 		}
@@ -53,10 +43,10 @@ const TrackScrubber = (props: {
 			(time % 60000) / 1000,
 		).toLocaleString("en-US", { minimumIntegerDigits: 2, useGrouping: false });
 		const durationMinutes: string = Math.floor(
-			props.trackDuration / 60000,
+			trackDuration / 60000,
 		).toLocaleString("en-US", { minimumIntegerDigits: 2, useGrouping: false });
 		const durationSeconds: string = Math.floor(
-			(props.trackDuration % 60000) / 1000,
+			(trackDuration % 60000) / 1000,
 		).toLocaleString("en-US", { minimumIntegerDigits: 2, useGrouping: false });
 		return `${currentMinutes}:${currentSeconds} / ${durationMinutes}:${durationSeconds}`;
 	};
@@ -64,11 +54,11 @@ const TrackScrubber = (props: {
 	return (
 		<Slider
 			label={"Track Position"}
-			maxValue={props.trackDuration}
+			maxValue={trackDuration}
 			minValue={0}
 			defaultValue={0}
 			className="max-w-full pl-5 pr-5"
-			value={position}
+			value={trackPosition}
 			getValue={formatTime}
 			onChange={handleChange}
 		/>

@@ -3,15 +3,22 @@ import MusicPlayer from "@/components/MusicPlayer.tsx";
 import NavigationBar from "@/components/NavigationBar.tsx";
 import ScanPage from "@/components/ScanPage.tsx";
 import { ErrorProvider } from "@/contexts/ErrorContext.tsx";
+import { MusicContext } from "@/contexts/MusicContext.tsx";
+import { NavigationContext } from "@/contexts/NavigationContext.tsx";
+import { SpotifyTokenContext } from "@/contexts/SpotifyTokenContext.tsx";
 import { UsernameContext } from "@/contexts/UsernameContext.tsx";
 import type Album from "@/interfaces/Album.tsx";
-import { getStateData, storeStateData } from "@/interfaces/StateData.tsx";
+import {
+	clearStateData,
+	getStateData,
+	storeStateData,
+} from "@/interfaces/StateData.tsx";
 import { useEffect, useState } from "react";
 
 function App() {
 	const [isSignedIn, setIsSignedIn] = useState(false);
 	const [currentAlbum, setCurrentAlbum] = useState<Album | null>(null);
-	const [spotifyToken, setSpotifyToken] = useState("");
+	const [token, setToken] = useState<string | null>(null);
 
 	// Two pages are defined in the state: "play" and "scan"
 	const [nextPage, setNextPage] = useState("");
@@ -40,7 +47,7 @@ function App() {
 				spotify_session_length: params.get("expires_in") as string,
 			});
 			setIsSignedIn(true);
-			setSpotifyToken(token);
+			setToken(token);
 			window.location.href = "/";
 		} else {
 			const currentState = getStateData();
@@ -57,21 +64,17 @@ function App() {
 					if (
 						currentSessionLength > Number(currentState.spotify_session_length)
 					) {
-						storeStateData({
-							spotify_access_token: "",
-							spotify_login_time: "",
-							spotify_session_length: "",
-						});
+						clearStateData();
 						setIsSignedIn(false);
-						setSpotifyToken("");
+						setToken(null);
 					} else {
 						setIsSignedIn(true);
-						setSpotifyToken(currentState.spotify_access_token);
+						setToken(currentState.spotify_access_token);
 					}
 				}
 			} else {
 				setIsSignedIn(false);
-				setSpotifyToken("");
+				setToken(null);
 			}
 		}
 	}, []);
@@ -102,38 +105,49 @@ function App() {
 	return (
 		<ErrorProvider>
 			<UsernameContext.Provider value={{ username, setUsername }}>
-				<div className="flex flex-col h-screen">
-					<NavigationBar
-						isSignedIn={isSignedIn}
-						currentPage={nextPage}
-						setNextPage={setNextPage}
-						disableTabChange={disableTabChange}
-					/>
-					<div className="flex flex-row h-full">
-						<div
-							style={{
-								transform: fadePlayer ? "translateX(0)" : "translateX(-100%)",
-								transition: "transform 0.5s ease-in-out",
+				<SpotifyTokenContext.Provider value={{ token, setToken }}>
+					<div className="flex flex-col h-screen">
+						<NavigationContext.Provider
+							value={{
+								isSignedIn,
+								setIsSignedIn,
+								nextPage,
+								setNextPage,
+								disableTabChange,
+								setDisableTabChange,
 							}}
-							className="h-full"
 						>
-							<MusicPlayer token={spotifyToken} album={currentAlbum} />
-						</div>
-						<div
-							style={{
-								transform: fadeScan ? "translateX(-100%)" : "translateX(100%)",
-								transition: "transform 0.5s ease-in-out",
-							}}
-							className="h-full"
-						>
-							<ScanPage
-								currentAlbum={currentAlbum}
-								setCurrentAlbum={setCurrentAlbum}
-							/>
-						</div>
+							<NavigationBar />
+						</NavigationContext.Provider>
+						<MusicContext.Provider value={{ currentAlbum, setCurrentAlbum }}>
+							<div className="flex flex-row h-full">
+								<div
+									style={{
+										transform: fadePlayer
+											? "translateX(0)"
+											: "translateX(-100%)",
+										transition: "transform 0.5s ease-in-out",
+									}}
+									className="h-full"
+								>
+									<MusicPlayer />
+								</div>
+								<div
+									style={{
+										transform: fadeScan
+											? "translateX(-100%)"
+											: "translateX(100%)",
+										transition: "transform 0.5s ease-in-out",
+									}}
+									className="h-full"
+								>
+									<ScanPage />
+								</div>
+							</div>
+						</MusicContext.Provider>
 					</div>
-				</div>
-				<ErrorDisplay />
+					<ErrorDisplay />
+				</SpotifyTokenContext.Provider>
 			</UsernameContext.Provider>
 		</ErrorProvider>
 	);

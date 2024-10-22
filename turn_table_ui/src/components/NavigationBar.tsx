@@ -1,6 +1,7 @@
 import Login from "@/components/Login.tsx";
 import { Logo } from "@/components/Logo.tsx";
 import UserBox from "@/components/UserBox.tsx";
+import { useNavigation } from "@/contexts/NavigationContext.tsx";
 import {
 	Navbar,
 	NavbarBrand,
@@ -9,16 +10,12 @@ import {
 } from "@nextui-org/navbar";
 import { Tab, Tabs } from "@nextui-org/tabs";
 import type { Key } from "@react-types/shared";
-import type { Dispatch, SetStateAction } from "react";
 
-const NavigationBar = (props: {
-	isSignedIn: boolean;
-	currentPage: string;
-	setNextPage: Dispatch<SetStateAction<string>>;
-	disableTabChange: boolean;
-}) => {
+const NavigationBar = () => {
+	const { nextPage, setNextPage, isSignedIn } = useNavigation();
+
 	const switchPage = (key: Key) => {
-		props.setNextPage(key.toString());
+		setNextPage(key.toString());
 	};
 
 	return (
@@ -32,7 +29,7 @@ const NavigationBar = (props: {
 			<NavbarContent className="hidden sm:flex gap-4 flex-[2]" justify="center">
 				<Tabs
 					aria-label="Tab control"
-					selectedKey={props.currentPage}
+					selectedKey={nextPage}
 					onSelectionChange={switchPage}
 				>
 					<Tab key="play" title="Play" />
@@ -40,7 +37,7 @@ const NavigationBar = (props: {
 				</Tabs>
 			</NavbarContent>
 			<NavbarContent justify="end">
-				<NavbarItem>{props.isSignedIn ? <UserBox /> : <Login />}</NavbarItem>
+				<NavbarItem>{isSignedIn ? <UserBox /> : <Login />}</NavbarItem>
 			</NavbarContent>
 		</Navbar>
 	);

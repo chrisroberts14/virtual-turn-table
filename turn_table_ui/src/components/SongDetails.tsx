@@ -1,7 +1,9 @@
-import type Song from "@/interfaces/Song.tsx";
+import { useSongControl } from "@/contexts/SongControlContext.tsx";
 import { Card, CardBody } from "@nextui-org/card";
 
-const SongDetails = (props: { currentSong: Song }) => {
+const SongDetails = () => {
+	const { currentSong } = useSongControl();
+
 	return (
 		<Card
 			isBlurred={true}
@@ -10,8 +12,8 @@ const SongDetails = (props: { currentSong: Song }) => {
 		>
 			<CardBody>
 				<div className="flex flex-col items-center justify-center">
-					<h1>{props.currentSong.title}</h1>
-					<h2>{props.currentSong.artists}</h2>
+					<h1>{currentSong?.title}</h1>
+					<h2>{currentSong?.artists}</h2>
 				</div>
 			</CardBody>
 		</Card>

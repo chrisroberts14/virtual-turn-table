@@ -36,3 +36,18 @@ services:
       - .env
     depends_on:
       - bff
+
+  user-data:
+    build: user_data
+    command: fastapi run user_data --port 8002
+    ports:
+      - "8002:8002"
+    healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+        interval: 10s
+        timeout: 5s
+        retries: 3
+    env_file:
+      - .env
+    depends_on:
+      - bff

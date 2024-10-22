@@ -1,4 +1,3 @@
-import GetAlbumDetails from "@/api_calls/GetAlbumDetails.tsx";
 import PlayTrack from "@/api_calls/PlayTrack.tsx";
 import PlayerSetup from "@/api_calls/PlayerSetup.tsx";
 import PlayingAlbum from "@/components/PlayingAlbum.tsx";
@@ -7,23 +6,26 @@ import SongList from "@/components/SongList.tsx";
 import SpinningVinyl from "@/components/SpinningVinyl.tsx";
 import VolumeScrubber from "@/components/VolumeScrubber.tsx";
 import { useError } from "@/contexts/ErrorContext.tsx";
-import type Album from "@/interfaces/Album.tsx";
+import { useMusic } from "@/contexts/MusicContext.tsx";
+import { SongControlContext } from "@/contexts/SongControlContext.tsx";
+import { useSpotifyToken } from "@/contexts/SpotifyTokenContext.tsx";
 import type Song from "@/interfaces/Song.tsx";
 import { getStateData, storeStateData } from "@/interfaces/StateData.tsx";
 import { Resizable } from "re-resizable";
 import { useEffect, useState } from "react";
 
-const MusicPlayer = (props: { token: string | null; album: Album | null }) => {
+const MusicPlayer = () => {
 	const [player, setPlayer] = useState<SpotifyPlayer | null>(null);
 	const [deviceId, setDeviceId] = useState("");
 	const [currentSong, setCurrentSong] = useState<Song | null>(null);
 	const [nextSong, setNextSong] = useState<Song | null>(null);
-	const [currentAlbum, setCurrentAlbum] = useState<Album | null>(null);
 	const [isPaused, setIsPaused] = useState(true);
 	const [trackPosition, setTrackPosition] = useState(0); // In ms
 	const [trackDuration, setTrackDuration] = useState(0);
 	const [contentHeight, setContentHeight] = useState(window.innerHeight - 240);
 	const { showError } = useError();
+	const { token } = useSpotifyToken();
+	const { currentAlbum, setCurrentAlbum } = useMusic();
 
 	useEffect(() => {
 		// Get the state data and set the current song
@@ -36,7 +38,7 @@ const MusicPlayer = (props: { token: string | null; album: Album | null }) => {
 				setCurrentSong(state.currentSong);
 			}
 		}
-	}, []);
+	}, [setCurrentAlbum]);
 
 	useEffect(() => {
 		const script = document.createElement("script");
@@ -48,32 +50,24 @@ const MusicPlayer = (props: { token: string | null; album: Album | null }) => {
 			const player = new window.Spotify.Player({
 				name: "Vinyl Scanner",
 				getOAuthToken: (cb: (token: string) => void) => {
-					cb(props.token as string);
+					cb(token as string);
 				},
 				volume: 0.5,
 			});
-			await PlayerSetup(
-				player,
-				setDeviceId,
-				setPlayer,
-				setIsPaused,
-				setTrackPosition,
-				setTrackDuration,
-			).catch((error) => {
+			await PlayerSetup(player, setDeviceId, setPlayer).catch((error) => {
 				showError(error.message);
 			});
-		};
-	}, [props.token, showError]);
 
-	useEffect(() => {
-		if (props.album && props.token) {
-			GetAlbumDetails(props.album.album_uri, props.token, setCurrentAlbum).then(
-				() => {
-					return;
+			player.addListener(
+				"player_state_changed",
+				({ position, duration, paused }) => {
+					setIsPaused(paused);
+					setTrackPosition(position);
+					setTrackDuration(duration);
 				},
 			);
-		}
-	}, [props.album, props.token]);
+		};
+	}, [token, showError]);
 
 	useEffect(() => {
 		if (currentAlbum) {
@@ -81,7 +75,7 @@ const MusicPlayer = (props: { token: string | null; album: Album | null }) => {
 				currentAlbum: currentAlbum,
 			});
 		}
-		if (currentSong && currentAlbum && props.token) {
+		if (currentSong && currentAlbum && token && deviceId) {
 			storeStateData({
 				currentSong: currentSong,
 			});
@@ -93,11 +87,11 @@ const MusicPlayer = (props: { token: string | null; album: Album | null }) => {
 				setNextSong(currentAlbum.songs[currentSongIndex + 1]);
 			}
 
-			PlayTrack(props.token, currentSong.uri, deviceId).catch((error) => {
+			PlayTrack(token, currentSong.uri, deviceId).catch((error) => {
 				showError(error.message);
 			});
 		}
-	}, [currentSong, currentAlbum, props.token, deviceId, showError]);
+	}, [currentSong, currentAlbum, token, deviceId, showError]);
 
 	const onResize = () => {
 		setContentHeight(window.innerHeight - 240);
@@ -107,84 +101,85 @@ const MusicPlayer = (props: { token: string | null; album: Album | null }) => {
 
 	return (
 		<div className="flex flex-col h-full">
-			<Resizable
-				defaultSize={{ width: "100%", height: contentHeight }}
-				maxHeight={contentHeight}
-				minHeight={contentHeight}
-				onResize={onResize}
-				enable={{
-					top: false,
-					right: false,
-					bottom: false,
-					left: false,
-					topRight: false,
-					bottomRight: false,
-					bottomLeft: false,
-					topLeft: false,
+			<SongControlContext.Provider
+				value={{
+					isPaused,
+					setIsPaused,
+					currentSong,
+					setCurrentSong,
+					deviceId,
+					setDeviceId,
+					player,
+					setPlayer,
+					trackPosition,
+					setTrackPosition,
+					trackDuration,
+					setTrackDuration,
+					nextSong,
+					setNextSong,
 				}}
 			>
-				<div className="flex flex-row h-full">
-					<div className="animate-slideRight overflow-y-auto overflow-x-hidden max-w-[50%] bg-content1">
-						{currentAlbum ? (
-							<Resizable
-								enable={{
-									top: false,
-									right: true,
-									bottom: false,
-									left: false,
-									topRight: false,
-									bottomRight: false,
-									bottomLeft: false,
-									topLeft: false,
-								}}
-								maxHeight={contentHeight}
-							>
-								<div className="overflow-y-auto h-full max-w-full">
-									<SongList
-										songList={currentAlbum.songs}
-										currentSong={currentSong}
-										setCurrentSong={setCurrentSong}
-									/>
-								</div>
-							</Resizable>
-						) : null}
+				<Resizable
+					defaultSize={{ width: "100%", height: contentHeight }}
+					maxHeight={contentHeight}
+					minHeight={contentHeight}
+					onResize={onResize}
+					enable={{
+						top: false,
+						right: false,
+						bottom: false,
+						left: false,
+						topRight: false,
+						bottomRight: false,
+						bottomLeft: false,
+						topLeft: false,
+					}}
+				>
+					<div className="flex flex-row h-full">
+						<div className="animate-slideRight overflow-y-auto overflow-x-hidden max-w-[50%] bg-content1">
+							{currentAlbum ? (
+								<Resizable
+									enable={{
+										top: false,
+										right: true,
+										bottom: false,
+										left: false,
+										topRight: false,
+										bottomRight: false,
+										bottomLeft: false,
+										topLeft: false,
+									}}
+									maxHeight={contentHeight}
+								>
+									<div className="overflow-y-auto h-full max-w-full">
+										<SongList />
+									</div>
+								</Resizable>
+							) : null}
+						</div>
+						<div className="flex justify-center items-center bg-gray-700 flex-grow">
+							<SpinningVinyl isPaused={isPaused} />
+						</div>
 					</div>
-					<div className="flex justify-center items-center bg-gray-700 flex-grow">
-						<SpinningVinyl isPaused={isPaused} />
-					</div>
+				</Resizable>
+				<div className="flex-grow bg-gray-900 flex justify-center pt-2 pl-2 w-screen h-full">
+					{player && currentAlbum ? (
+						<div className="flex flex-row justify-center w-screen">
+							<div>
+								<PlayingAlbum />
+							</div>
+							<div className="flex-[2]">
+								<SongControls />
+							</div>
+							<div>
+								<VolumeScrubber />
+							</div>
+						</div>
+					) : (
+						<div className="flex flex-row justify-center w-screen h-full" />
+					)}
 				</div>
-			</Resizable>
-			<div className="flex-grow bg-gray-900 flex justify-center pt-2 pl-2 w-screen h-full">
-				{player && currentAlbum ? (
-					<div className="flex flex-row justify-center w-screen">
-						<div>
-							<PlayingAlbum
-								currentAlbum={currentAlbum}
-								currentSong={currentSong}
-								nextSong={nextSong}
-							/>
-						</div>
-						<div className="flex-[2]">
-							<SongControls
-								player={player}
-								trackPosition={trackPosition}
-								trackDuration={trackDuration}
-								isPaused={isPaused}
-								setIsPaused={setIsPaused}
-								currentSong={currentSong}
-								songList={currentAlbum.songs}
-								setCurrentSong={setCurrentSong}
-								deviceId={deviceId}
-							/>
-						</div>
-						<div>
-							<VolumeScrubber player={player} />
-						</div>
-					</div>
-				) : (
-					<div className="flex flex-row justify-center w-screen h-full" />
-				)}
-			</div>
+			</SongControlContext.Provider>
 		</div>
 	);
 };

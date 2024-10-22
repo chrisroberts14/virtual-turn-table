@@ -77,3 +77,22 @@ def add_album(
     response = requests.post(endpoint, json=data_in.model_dump(), timeout=5)
     if response.status_code != 201:
         raise APIException(500, "Failed to add album link.")
+
+
+@user_router.get("/get_user_albums/{user_name}")
+def get_users_albums(
+    user_name: str, settings: Annotated[Settings, Depends(get_settings)]
+) -> list[str]:
+    """
+    Get all albums for a user.
+
+    :param settings:
+    :param user_name:
+    :return:
+    """
+    endpoint = f"{settings.user_data_address}{user_name}/albums"
+    response = requests.get(endpoint, timeout=5)
+    if response.status_code != 200:
+        raise APIException(500, "Failed to access user data.")
+    data = response.json()
+    return [album["album_uri"] for album in data]

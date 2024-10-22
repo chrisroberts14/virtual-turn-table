@@ -1,48 +1,43 @@
-import type Album from "@/interfaces/Album.tsx";
-import type Song from "@/interfaces/Song.tsx";
+import { useMusic } from "@/contexts/MusicContext.tsx";
+import { useSongControl } from "@/contexts/SongControlContext.tsx";
 import { Card, CardBody } from "@nextui-org/card";
 import { Divider } from "@nextui-org/divider";
 import { Image } from "@nextui-org/image";
 
-const PlayingAlbum = (props: {
-	currentAlbum: Album | null;
-	currentSong: Song | null;
-	nextSong: Song | null;
-}) => {
+const PlayingAlbum = () => {
+	const { currentAlbum } = useMusic();
+	const { currentSong, nextSong } = useSongControl();
+
 	return (
 		<div className={"flex flex-row items-center"}>
-			{props.currentAlbum ? (
+			{currentAlbum ? (
 				<Image
 					style={{ width: "10em", height: "10em" }}
 					className="rounded-lg"
-					src={props.currentAlbum.image_url}
+					src={currentAlbum.image_url}
 					alt="album cover"
 				/>
 			) : (
 				<div>No Album</div>
 			)}
 
-			{props.currentAlbum ? (
+			{currentAlbum ? (
 				<div className={"flex flex-col pl-2 justify-center"}>
 					<p className="text-[0.7rem]">Currently Playing:</p>
 					<Card>
 						<CardBody className="max-h-16">
 							<p className="text-[0.75rem]">
-								{props.currentSong
-									? props.currentSong.title
-									: "No song selected"}
+								{currentSong ? currentSong.title : "No song selected"}
 							</p>
 							<p className="text-[0.75rem]">
-								{props.currentSong ? `By ${props.currentSong.artists}` : ""}
+								{currentSong ? `By ${currentSong.artists}` : ""}
 							</p>
 						</CardBody>
 						<Divider />
 						<CardBody className="max-h-16">
+							<p className="text-[0.75rem]">{nextSong ? nextSong.title : ""}</p>
 							<p className="text-[0.75rem]">
-								{props.nextSong ? props.nextSong.title : ""}
-							</p>
-							<p className="text-[0.75rem]">
-								{props.nextSong ? `By ${props.nextSong.artists}` : ""}
+								{nextSong ? `By ${nextSong.artists}` : ""}
 							</p>
 						</CardBody>
 					</Card>

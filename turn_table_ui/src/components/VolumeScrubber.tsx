@@ -1,19 +1,21 @@
 import { useError } from "@/contexts/ErrorContext.tsx";
+import { useSongControl } from "@/contexts/SongControlContext.tsx";
 import { Slider, type SliderValue } from "@nextui-org/slider";
 import { useState } from "react";
 
-const VolumeScrubber = (props: { player: SpotifyPlayer | null }) => {
+const VolumeScrubber = () => {
 	const [volume, setVolume] = useState(0.5);
 	const { showError } = useError();
+	const { player } = useSongControl();
 
 	const handleChange = (value: number | number[]) => {
 		if (Array.isArray(value)) {
 			showError("VolumeScrubber: value is an array");
 			return;
 		}
-		if (props.player) {
+		if (player) {
 			setVolume(value);
-			props.player.setVolume(value).then((_) => {
+			player.setVolume(value).then((_) => {
 				return;
 			});
 		}

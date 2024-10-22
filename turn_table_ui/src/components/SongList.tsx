@@ -1,4 +1,6 @@
 import { useError } from "@/contexts/ErrorContext.tsx";
+import { useMusic } from "@/contexts/MusicContext.tsx";
+import { useSongControl } from "@/contexts/SongControlContext.tsx";
 import type Song from "@/interfaces/Song.tsx";
 import {
 	type Selection,
@@ -11,17 +13,13 @@ import {
 	getKeyValue,
 } from "@nextui-org/table";
 import type { Key } from "@react-types/shared";
-import type React from "react";
-import type { SetStateAction } from "react";
 import { useEffect, useState } from "react";
 
-const SongList = (props: {
-	songList: Song[];
-	currentSong: Song | null;
-	setCurrentSong: React.Dispatch<SetStateAction<Song | null>>;
-}) => {
+const SongList = () => {
+	const { currentAlbum } = useMusic();
+	const { currentSong, setCurrentSong } = useSongControl();
 	const [selectedKey, setSelectedKey] = useState<Set<Key>>(
-		props.currentSong ? new Set([props.currentSong.title]) : new Set(),
+		currentSong ? new Set([currentSong.title]) : new Set(),
 	);
 	const { showError } = useError();
 
@@ -37,14 +35,16 @@ const SongList = (props: {
 		if (selectedKey.size > 1) {
 			showError("Error more than one song selected...");
 		} else if (selectedKey.size < 1) {
-			props.setCurrentSong(null);
+			setCurrentSong(null);
 		} else {
-			const newSongIndex = props.songList.findIndex(
-				(song) => song.title === selectedKey.values().next().value,
-			);
-			props.setCurrentSong(props.songList[newSongIndex]);
+			if (currentAlbum) {
+				const newSongIndex = currentAlbum.songs.findIndex(
+					(song) => song.title === selectedKey.values().next().value,
+				);
+				setCurrentSong(currentAlbum.songs[newSongIndex]);
+			}
 		}
-	}, [selectedKey, props.songList, props.setCurrentSong, showError]);
+	}, [selectedKey, currentAlbum, setCurrentSong, showError]);
 
 	return (
 		<Table
@@ -58,7 +58,7 @@ const SongList = (props: {
 				<TableColumn key="title">Title</TableColumn>
 				<TableColumn key="artists">Artists</TableColumn>
 			</TableHeader>
-			<TableBody items={props.songList}>
+			<TableBody items={currentAlbum?.songs}>
 				{(item: Song) => (
 					<TableRow key={item.title}>
 						{(columnKey) => (

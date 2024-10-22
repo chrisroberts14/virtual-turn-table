@@ -1,34 +1,21 @@
 import { albumDetails } from "@/api_calls/BFFEndpoints.tsx";
-import type Album from "@/interfaces/Album.tsx";
 import axios from "axios";
-import type { Dispatch, SetStateAction } from "react";
 
-const GetAlbumDetails = async (
-	albumURI: string,
-	accessToken: string,
-	setCurrentAlbum: Dispatch<SetStateAction<Album | null>>,
-) => {
-	axios
-		.get(albumDetails, {
+const GetAlbumDetails = async (albumURI: string, accessToken: string) => {
+	try {
+		const response = await axios.get(albumDetails, {
 			params: {
 				spotify_access_token: accessToken,
 				album_uri: albumURI,
 			},
-		})
-		.then((response) => {
-			const album: Album = response.data;
-			setCurrentAlbum({
-				title: album.title,
-				artists: album.artists,
-				image_url: album.image_url,
-				album_uri: album.album_uri,
-				tracks_url: album.tracks_url,
-				songs: album.songs,
-			});
-		})
-		.catch((error) => {
-			throw new Error(error.response.data.message);
 		});
+		return response.data;
+	} catch (error: unknown) {
+		if (axios.isAxiosError(error)) {
+			throw new Error(error.response?.data?.message || "An error occurred");
+		}
+		throw new Error("An unexpected error occurred");
+	}
 };
 
 export default GetAlbumDetails;

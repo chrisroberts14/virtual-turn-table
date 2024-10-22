@@ -3,9 +3,6 @@ const PlayerSetup = async (
 	player: SpotifyPlayer,
 	setDeviceId: Dispatch<SetStateAction<string>>,
 	setPlayer: Dispatch<SetStateAction<SpotifyPlayer | null>>,
-	setIsPaused: Dispatch<SetStateAction<boolean>>,
-	setTrackPosition: Dispatch<SetStateAction<number>>,
-	setTrackDuration: Dispatch<SetStateAction<number>>,
 ) => {
 	player
 		.connect()
@@ -26,15 +23,6 @@ const PlayerSetup = async (
 	player.on("not_ready", (_: { device_id: string }) => {
 		throw new Error("Device has gone offline unexpectedly.");
 	});
-
-	player.addListener(
-		"player_state_changed",
-		({ position, duration, paused }) => {
-			setIsPaused(paused);
-			setTrackPosition(position);
-			setTrackDuration(duration);
-		},
-	);
 };
 
 export default PlayerSetup;

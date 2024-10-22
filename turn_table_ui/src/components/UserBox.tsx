@@ -33,7 +33,7 @@ const UserBox = () => {
 					showError(error.message);
 				});
 		}
-	}, [showError, setUsername]);
+	}, [setUsername, showError]);
 
 	useEffect(() => {
 		if (username === "" || email === "") {

@@ -1,55 +1,49 @@
 import TrackScrubber from "@/components/TrackScrubber.tsx";
+import { useMusic } from "@/contexts/MusicContext.tsx";
+import { useSongControl } from "@/contexts/SongControlContext.tsx";
 import type Song from "@/interfaces/Song.tsx";
 import { Button } from "@nextui-org/button";
 import { Tab, Tabs } from "@nextui-org/tabs";
-import type React from "react";
-import type { SetStateAction } from "react";
 import { FaPause, FaPlay } from "react-icons/fa";
 import { RxTrackNext, RxTrackPrevious } from "react-icons/rx";
 
-const SongControls = (props: {
-	player: SpotifyPlayer;
-	trackPosition: number;
-	trackDuration: number;
-	isPaused: boolean;
-	setIsPaused: React.Dispatch<SetStateAction<boolean>>;
-	songList: Song[];
-	currentSong: Song | null;
-	setCurrentSong: React.Dispatch<SetStateAction<Song | null>>;
-	deviceId: string;
-}) => {
+const SongControls = () => {
+	const { player, isPaused, setIsPaused, currentSong, setCurrentSong } =
+		useSongControl();
+	const { currentAlbum } = useMusic();
+
 	const pauseSong = async () => {
-		if (props.player) {
-			await props.player.pause();
-			props.setIsPaused(true);
+		if (player) {
+			await player.pause();
+			setIsPaused(true);
 		}
 	};
 
 	const playSong = async () => {
-		if (props.player) {
-			await props.player.resume();
-			props.setIsPaused(false);
+		if (player) {
+			await player.resume();
+			setIsPaused(false);
 		}
 	};
 
 	const nextSong = () => {
-		if (props.player) {
-			const currentSongIndex = props.songList.findIndex(
-				(song) => song.title === props.currentSong?.title,
+		if (player && currentAlbum) {
+			const currentSongIndex = currentAlbum.songs.findIndex(
+				(song: Song) => song.title === currentSong?.title,
 			);
-			if (currentSongIndex < props.songList.length - 1) {
-				props.setCurrentSong(props.songList[currentSongIndex + 1]);
+			if (currentSongIndex < currentAlbum.songs.length - 1) {
+				setCurrentSong(currentAlbum.songs[currentSongIndex + 1]);
 			}
 		}
 	};
 
 	const prevSong = () => {
-		if (props.player) {
-			const currentSongIndex = props.songList.findIndex(
-				(song) => song.title === props.currentSong?.title,
+		if (player && currentAlbum) {
+			const currentSongIndex = currentAlbum.songs.findIndex(
+				(song: Song) => song.title === currentSong?.title,
 			);
 			if (currentSongIndex > 0) {
-				props.setCurrentSong(props.songList[currentSongIndex - 1]);
+				setCurrentSong(currentAlbum.songs[currentSongIndex - 1]);
 			}
 		}
 	};
@@ -60,7 +54,7 @@ const SongControls = (props: {
 				<Button onClick={prevSong}>
 					<RxTrackPrevious />
 				</Button>
-				{!props.isPaused ? (
+				{!isPaused ? (
 					<Button onClick={pauseSong}>
 						<FaPause />
 					</Button>
@@ -74,13 +68,7 @@ const SongControls = (props: {
 				</Button>
 			</div>
 			<div className={"flex flex-row justify-center"}>
-				<TrackScrubber
-					player={props.player}
-					trackPosition={props.trackPosition}
-					trackDuration={props.trackDuration}
-					currentSong={props.currentSong}
-					deviceId={props.deviceId}
-				/>
+				<TrackScrubber />
 			</div>
 			<div className={"flex flex-row justify-center"}>
 				<Tabs aria-label="Track or Album Controls">
