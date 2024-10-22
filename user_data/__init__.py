@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from user_data.api_models import APIException, Album, User, AlbumUserLinkIn
 from user_data.db import get_db
-from user_data.db_models import UserDb
+from user_data.db_models import UserDb, AlbumDb
 
 app = FastAPI()
 
@@ -102,8 +102,8 @@ def create_album_if_not_exists(album_uri: str, db: Session = Depends(get_db)):
     :param db:
     :return:
     """
-    if UserDb.get_by_id(db, album_uri) is None:
-        UserDb.create(db, UserDb(username=album_uri))
+    if AlbumDb.get_by_id(db, album_uri) is None:
+        AlbumDb.create(db, AlbumDb(album_uri=album_uri))
 
 
 @app.post("/add_album_link/", status_code=HTTP_201_CREATED)
@@ -118,7 +118,7 @@ def add_album_link(data: AlbumUserLinkIn, db: Session = Depends(get_db)):
     user = UserDb.get_by_id(db, data.user_id)
     if user is None:
         raise APIException(status_code=404, message="User not found")
-    album = UserDb.get_by_id(db, data.album_uri)
+    album = AlbumDb.get_by_id(db, data.album_uri)
     if album is None:
         raise APIException(status_code=404, message="Album not found")
     user.albums.append(album)

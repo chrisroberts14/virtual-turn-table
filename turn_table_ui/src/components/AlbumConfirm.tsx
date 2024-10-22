@@ -1,4 +1,6 @@
+import AddAlbum from "@/api_calls/AddAlbum.tsx";
 import AlbumDisplay from "@/components/AlbumDisplay.tsx";
+import { useUsername } from "@/contexts/UsernameContext.tsx";
 import type Album from "@/interfaces/Album.tsx";
 import { Button } from "@nextui-org/button";
 import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
@@ -14,6 +16,7 @@ const AlbumConfirm = (props: {
 	triggerConfirmSlide: () => void;
 }) => {
 	const [buttonsDisabled, setButtonsDisabled] = useState(true);
+	const { username } = useUsername();
 
 	useEffect(() => {
 		if (props.scannedAlbum) {
@@ -26,6 +29,9 @@ const AlbumConfirm = (props: {
 	const confirmAlbum = () => {
 		props.triggerConfirmSlide();
 		props.setCurrentAlbum(props.scannedAlbum);
+		if (username && props.scannedAlbum) {
+			AddAlbum(username, props.scannedAlbum.album_uri);
+		}
 		props.setScannedAlbum(null);
 	};
 
