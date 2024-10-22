@@ -1,10 +1,13 @@
 """Module creating the image to user_data API."""
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Depends
 from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
 
-from user_data.api_models import APIException
+from user_data.api_models import APIException, Album
+from user_data.db import get_db
+from user_data.db_models import UserDb
 
 app = FastAPI()
 
@@ -57,3 +60,18 @@ def check_health():
     :return:
     """
     return {"status": "alive"}
+
+
+@app.get("/get_user_albums/{username}")
+def get_user_albums(username: str, db: Session = Depends(get_db)) -> list[Album]:
+    """
+    Get all albums for a user.
+
+    :param db:
+    :param username:
+    :return:
+    """
+    db_user = UserDb.get_by_id(db, username)
+    if db_user is None:
+        raise APIException(status_code=404, message="User not found")
+    return db_user.albums

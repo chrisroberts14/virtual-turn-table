@@ -36,7 +36,7 @@ repos:
   rev: v3.2.5
   hooks:
     - id: pylint
-      entry: ./pylint_script.py --disable=R0801
+      entry: ./pylint_script.py --disable=R0801 --ignore-paths=user_data/alembic/.*$
       language: system
 - repo: https://github.com/compilerla/conventional-pre-commit
   rev: v3.2.0

@@ -1,5 +1,7 @@
 """Database models for user data."""
 
+from typing import List
+
 from sqlalchemy import Column, String, ForeignKey, Table
 from sqlalchemy.orm import Mapped, relationship
 from sqlalchemy.testing.schema import mapped_column
@@ -9,8 +11,8 @@ from user_data.db import Base
 user_album_link_table = Table(
     "user_album_link_table",
     Base.metadata,
-    Column("username", String, ForeignKey("users.id")),
-    Column("album_uri", String, ForeignKey("albums.id")),
+    Column("username", String, ForeignKey("users.username"), primary_key=True),
+    Column("album_uri", String, ForeignKey("albums.album_uri"), primary_key=True),
 )
 
 
@@ -77,19 +79,24 @@ class Crud:  # pylint: disable=too-few-public-methods
         db.commit()
 
 
-class UserDb(Crud, Base):
+class UserDb(Base, Crud):
     """User database model."""
 
     __tablename__ = "users"
 
     username: Mapped[str] = mapped_column(primary_key=True, unique=True)
     email: Mapped[str] = mapped_column(unique=True)
-    albums: Mapped[list["AlbumDb"]] = relationship()
+    albums: Mapped[List["AlbumDb"]] = relationship(
+        "AlbumDb", secondary=user_album_link_table, back_populates="users"
+    )
 
 
-class AlbumDb(Crud, Base):
+class AlbumDb(Base, Crud):
     """Album database model."""
 
     __tablename__ = "albums"
 
     album_uri: Mapped[str] = mapped_column(primary_key=True, unique=True)
+    users: Mapped[List[UserDb]] = relationship(
+        "UserDb", secondary=user_album_link_table, back_populates="albums"
+    )
