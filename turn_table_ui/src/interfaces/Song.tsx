@@ -3,6 +3,7 @@ interface Song {
 	artists: string[];
 	uri: string;
 	album_uri: string;
+	duration_ms: number;
 }
 
 export default Song;

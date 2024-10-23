@@ -18,6 +18,7 @@ class Song(BaseModel):
     artists: list[str]
     uri: str
     album_uri: str
+    duration_ms: int
 
 
 class Album(BaseModel):

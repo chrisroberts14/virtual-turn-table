@@ -126,6 +126,7 @@ async def get_album(
                 artists=[artist["name"] for artist in track["artists"]],
                 uri=track["uri"],
                 album_uri=response_json["albums"]["items"][0]["uri"],
+                duration_ms=track["duration_ms"],
             )
             for track in album_response.json()["tracks"]["items"]
         ],

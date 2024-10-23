@@ -46,6 +46,7 @@ const MusicPlayer = () => {
 		}
 		if (state.currentSong) {
 			setCurrentSong(state.currentSong);
+			setTrackDuration(state.currentSong.duration_ms);
 		}
 	};
 
@@ -57,7 +58,6 @@ const MusicPlayer = () => {
 				setPlayer,
 				setIsPlayerReady,
 				setTrackPosition,
-				setTrackDuration,
 			)
 				.then(() => {
 					return;
@@ -117,6 +117,7 @@ const MusicPlayer = () => {
 			PlayTrack(token, currentSong.uri, deviceId).catch((error) => {
 				showError(error.message);
 			});
+			setTrackDuration(currentSong.duration_ms);
 		}
 	};
 

@@ -5,7 +5,6 @@ const PlayerSetup = async (
 	setPlayer: Dispatch<SetStateAction<SpotifyPlayer | null>>,
 	setIsPlayerReady: Dispatch<SetStateAction<boolean>>,
 	setTrackPosition: Dispatch<SetStateAction<number>>,
-	setTrackDuration: Dispatch<SetStateAction<number>>,
 ) => {
 	let intervalId: NodeJS.Timeout | null = null;
 
@@ -39,7 +38,6 @@ const PlayerSetup = async (
 				"player_state_changed",
 				(state: { position: number; duration: number; paused: boolean }) => {
 					setTrackPosition(state.position);
-					setTrackDuration(state.duration);
 				},
 			);
 		})

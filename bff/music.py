@@ -38,6 +38,7 @@ def get_album_details(spotify_access_token: str, album_uri: str) -> Album:
                 artists=[artist["name"] for artist in track["artists"]],
                 uri=track["uri"],
                 album_uri=data["uri"],
+                duration_ms=track["duration_ms"],
             )
             for track in data["tracks"]["items"]
         ],

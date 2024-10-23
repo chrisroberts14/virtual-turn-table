@@ -15,6 +15,7 @@ const SongControls = () => {
 		currentSong,
 		setCurrentSong,
 		isPlayerReady,
+		setTrackDuration,
 	} = useSongControl();
 	const { currentAlbum } = useMusic();
 
@@ -39,6 +40,7 @@ const SongControls = () => {
 			);
 			if (currentSongIndex < currentAlbum.songs.length - 1) {
 				setCurrentSong(currentAlbum.songs[currentSongIndex + 1]);
+				setTrackDuration(currentAlbum.songs[currentSongIndex + 1].duration_ms);
 			}
 		}
 	};
@@ -50,6 +52,7 @@ const SongControls = () => {
 			);
 			if (currentSongIndex > 0) {
 				setCurrentSong(currentAlbum.songs[currentSongIndex - 1]);
+				setTrackDuration(currentAlbum.songs[currentSongIndex - 1].duration_ms);
 			}
 		}
 	};
