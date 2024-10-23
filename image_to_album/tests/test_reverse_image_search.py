@@ -1,6 +1,7 @@
 """Tests for the reverse image search endpoint."""
 
 from pathlib import Path
+from unittest.mock import MagicMock
 
 
 class TestReverseImageSearch:
@@ -14,12 +15,13 @@ class TestReverseImageSearch:
         :return:
         """
         # Mock the response from the image search api
-        mock = mocker.patch("google.cloud.vision.ImageAnnotatorClient.web_detection")
-        mock_response = mocker.Mock()
-        mock_image_data = mocker.Mock()
-        mock_image_data.label = "Arcade Fire We"
-        mock_response.web_detection.best_guess_labels = [mock_image_data]
-        mock.return_value = mock_response
+        mock_creds = mocker.patch("google.cloud.vision.ImageAnnotatorClient")
+        mock_instance = mock_creds.return_value
+        mock_response = MagicMock()
+        mock_response.web_detection.best_guess_labels = [
+            MagicMock(label="Arcade Fire We")
+        ]
+        mock_instance.web_detection.return_value = mock_response
 
         response = client.post(
             "/imgs/reverse_image_search/",

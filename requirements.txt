@@ -1,9 +1,10 @@
 alembic~=1.13.3
 fastapi[standard]~=0.115.0
 filelock~=3.16.1
+
+google-cloud-vision~=3.7.4
 Jinja2~=3.1.4
 pip~=23.3
-
 pydantic-settings~=2.5.2
 pydantic_settings~=2.5.2
 pydantic~=2.9.2
