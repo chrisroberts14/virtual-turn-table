@@ -7,6 +7,7 @@ from typing import Annotated
 
 import requests
 from fastapi import APIRouter, UploadFile, Depends
+from google.cloud import vision
 
 from image_to_album.api_models import Album, Song, APIException
 from image_to_album.config import Settings
@@ -31,14 +32,14 @@ def get_settings():
 @imgs_router.post("/reverse_image_search/")
 async def reverse_image_search(
     file: UploadFile, settings: Annotated[Settings, Depends(get_settings)]
-):
+) -> str:
     """
     Upload an image to the API.
 
     Then do the reverse image search
     :param settings:
     :param file:
-    :return A list of the top 5 image names from the reverse image search:
+    :return The best query guess for the image:
     """
     logger.info(settings.model_dump())
     logger.info("Received image: %s", file.filename)
@@ -49,31 +50,12 @@ async def reverse_image_search(
     ):
         raise APIException(400, "Invalid file type. Please upload a jpg or png.")
 
-    endpoint = "https://api.bing.microsoft.com/v7.0/images/visualsearch"
-
-    headers = {"Ocp-Apim-Subscription-Key": settings.bing_api_key}
-
-    # This contains the image data
-    files = {"image": ("placeholder.jpg", file.file)}
-
-    try:
-        # Call the Bing Visual Search API
-        response = requests.post(endpoint, headers=headers, files=files, timeout=5)
-        if response.status_code != 200:
-            raise APIException(500, "Image search failed please try again.")
-
-        results = response.json()
-
-        # Extract the image names from the response
-        for tag in results.get("tags", []):
-            for action in tag.get("actions", []):
-                if action["actionType"] == "BestRepresentativeQuery":
-                    best_guess = action["displayName"]
-                    return best_guess
-
-    except requests.exceptions.RequestException as e:
-        logger.error("Error with API: %s", e)
-        raise APIException(500, "Error with API") from e
+    # Get the best response query from google cloud web detection
+    client = vision.ImageAnnotatorClient()
+    # pylint: disable=no-member
+    image = vision.Image(content=file.file.read())
+    response = client.web_detection(image=image)
+    return response.web_detection.best_guess_labels[0].label
 
 
 @album_router.post("/get_album/")
