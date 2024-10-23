@@ -47,7 +47,7 @@ def create_user(user: UserIn, settings: Annotated[Settings, Depends(get_settings
     :return:
     """
     endpoint = f"{settings.user_data_address}user/"
-    response = requests.post(endpoint, json=user.model_dump(), timeout=5)
+    response = requests.post(endpoint, json=user.model_dump(), timeout=10)
     result = response.json()
     if response.status_code != 201:
         raise APIException(500, "Failed to access user data.")

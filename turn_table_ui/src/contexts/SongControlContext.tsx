@@ -21,6 +21,8 @@ interface SongControlContextType {
 	setTrackDuration: Dispatch<SetStateAction<number>>;
 	nextSong: Song | null;
 	setNextSong: Dispatch<SetStateAction<Song | null>>;
+	isPlayerReady: boolean;
+	setIsPlayerReady: Dispatch<SetStateAction<boolean>>;
 }
 
 export const SongControlContext = createContext<

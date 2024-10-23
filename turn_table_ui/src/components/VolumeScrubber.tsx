@@ -6,14 +6,14 @@ import { useState } from "react";
 const VolumeScrubber = () => {
 	const [volume, setVolume] = useState(0.5);
 	const { showError } = useError();
-	const { player } = useSongControl();
+	const { player, isPlayerReady } = useSongControl();
 
 	const handleChange = (value: number | number[]) => {
 		if (Array.isArray(value)) {
 			showError("VolumeScrubber: value is an array");
 			return;
 		}
-		if (player) {
+		if (player && isPlayerReady) {
 			setVolume(value);
 			player.setVolume(value).then((_) => {
 				return;

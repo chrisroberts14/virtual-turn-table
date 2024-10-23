@@ -66,4 +66,5 @@ interface SpotifyPlayer {
 	) => void;
 	on: (event: string, callback: (eventData: any) => void) => void;
 	getCurrentState: () => Promise<SpotifyPlayerState>;
+    destroy: () => void;
 }

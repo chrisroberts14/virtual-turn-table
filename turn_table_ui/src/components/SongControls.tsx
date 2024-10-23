@@ -8,26 +8,32 @@ import { FaPause, FaPlay } from "react-icons/fa";
 import { RxTrackNext, RxTrackPrevious } from "react-icons/rx";
 
 const SongControls = () => {
-	const { player, isPaused, setIsPaused, currentSong, setCurrentSong } =
-		useSongControl();
+	const {
+		player,
+		isPaused,
+		setIsPaused,
+		currentSong,
+		setCurrentSong,
+		isPlayerReady,
+	} = useSongControl();
 	const { currentAlbum } = useMusic();
 
 	const pauseSong = async () => {
-		if (player) {
+		if (player && isPlayerReady) {
 			await player.pause();
 			setIsPaused(true);
 		}
 	};
 
 	const playSong = async () => {
-		if (player) {
+		if (player && isPlayerReady) {
 			await player.resume();
 			setIsPaused(false);
 		}
 	};
 
 	const nextSong = () => {
-		if (player && currentAlbum) {
+		if (player && currentAlbum && isPlayerReady) {
 			const currentSongIndex = currentAlbum.songs.findIndex(
 				(song: Song) => song.title === currentSong?.title,
 			);
@@ -38,7 +44,7 @@ const SongControls = () => {
 	};
 
 	const prevSong = () => {
-		if (player && currentAlbum) {
+		if (player && currentAlbum && isPlayerReady) {
 			const currentSongIndex = currentAlbum.songs.findIndex(
 				(song: Song) => song.title === currentSong?.title,
 			);

@@ -10,9 +10,13 @@ import { useMusic } from "@/contexts/MusicContext.tsx";
 import { SongControlContext } from "@/contexts/SongControlContext.tsx";
 import { useSpotifyToken } from "@/contexts/SpotifyTokenContext.tsx";
 import type Song from "@/interfaces/Song.tsx";
-import { getStateData, storeStateData } from "@/interfaces/StateData.tsx";
+import {
+	type StateData,
+	getStateData,
+	storeStateData,
+} from "@/interfaces/StateData.tsx";
 import { Resizable } from "re-resizable";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const MusicPlayer = () => {
 	const [player, setPlayer] = useState<SpotifyPlayer | null>(null);
@@ -26,48 +30,64 @@ const MusicPlayer = () => {
 	const { showError } = useError();
 	const { token } = useSpotifyToken();
 	const { currentAlbum, setCurrentAlbum } = useMusic();
+	const [isPlayerReady, setIsPlayerReady] = useState(false);
 
 	useEffect(() => {
 		// Get the state data and set the current song
 		const state = getStateData();
 		if (state) {
-			if (state.currentAlbum) {
-				setCurrentAlbum(state.currentAlbum);
-			}
-			if (state.currentSong) {
-				setCurrentSong(state.currentSong);
-			}
+			setCurrentSongAndAlbum(state);
 		}
-	}, [setCurrentAlbum]);
+	}, []);
+
+	const setCurrentSongAndAlbum = (state: StateData) => {
+		if (state.currentAlbum) {
+			setCurrentAlbum(state.currentAlbum);
+		}
+		if (state.currentSong) {
+			setCurrentSong(state.currentSong);
+		}
+	};
+
+	const playerCreation = useCallback((spotifyPlayer: SpotifyPlayer) => {
+		if (spotifyPlayer) {
+			PlayerSetup(
+				spotifyPlayer,
+				setDeviceId,
+				setPlayer,
+				setIsPlayerReady,
+				setTrackPosition,
+				setTrackDuration,
+			)
+				.then(() => {
+					return;
+				})
+				.catch((error) => {
+					console.error(error.message);
+				});
+		}
+	}, []);
 
 	useEffect(() => {
-		const script = document.createElement("script");
-		script.src = "https://sdk.scdn.co/spotify-player.js";
-		script.async = true;
-		document.body.appendChild(script);
+		if (token && !player) {
+			const script = document.createElement("script");
+			script.src = "https://sdk.scdn.co/spotify-player.js";
+			script.async = true;
+			document.body.appendChild(script);
 
-		window.onSpotifyWebPlaybackSDKReady = async () => {
-			const player = new window.Spotify.Player({
-				name: "Vinyl Scanner",
-				getOAuthToken: (cb: (token: string) => void) => {
-					cb(token as string);
-				},
-				volume: 0.5,
-			});
-			await PlayerSetup(player, setDeviceId, setPlayer).catch((error) => {
-				showError(error.message);
-			});
-
-			player.addListener(
-				"player_state_changed",
-				({ position, duration, paused }) => {
-					setIsPaused(paused);
-					setTrackPosition(position);
-					setTrackDuration(duration);
-				},
-			);
-		};
-	}, [token, showError]);
+			window.onSpotifyWebPlaybackSDKReady = async () => {
+				const player = new window.Spotify.Player({
+					name: "Vinyl Scanner",
+					getOAuthToken: (cb: (token: string) => void) => {
+						cb(token as string);
+					},
+					volume: 0.5,
+				});
+				setPlayer(player);
+				playerCreation(player);
+			};
+		}
+	}, [token, player, playerCreation]);
 
 	useEffect(() => {
 		if (currentAlbum) {
@@ -75,7 +95,7 @@ const MusicPlayer = () => {
 				currentAlbum: currentAlbum,
 			});
 		}
-		if (currentSong && currentAlbum && token && deviceId) {
+		if (currentSong && currentAlbum && token && deviceId && isPlayerReady) {
 			storeStateData({
 				currentSong: currentSong,
 			});
@@ -86,12 +106,19 @@ const MusicPlayer = () => {
 			if (currentSongIndex < currentAlbum.songs.length - 1) {
 				setNextSong(currentAlbum.songs[currentSongIndex + 1]);
 			}
+			playTrackWithHandling().then(() => {
+				return;
+			});
+		}
+	}, [currentSong, currentAlbum, token, deviceId, isPlayerReady]);
 
+	const playTrackWithHandling = async () => {
+		if (currentSong && currentAlbum && token && deviceId) {
 			PlayTrack(token, currentSong.uri, deviceId).catch((error) => {
 				showError(error.message);
 			});
 		}
-	}, [currentSong, currentAlbum, token, deviceId, showError]);
+	};
 
 	const onResize = () => {
 		setContentHeight(window.innerHeight - 240);
@@ -117,6 +144,8 @@ const MusicPlayer = () => {
 					setTrackDuration,
 					nextSong,
 					setNextSong,
+					isPlayerReady,
+					setIsPlayerReady,
 				}}
 			>
 				<Resizable

@@ -40,12 +40,9 @@ const AlbumCollectionDisplay = () => {
 	}, [username, token, showError]);
 
 	return (
-		<div className="flex h-full w-full">
+		<div className="flex h-full w-full overflow-y-hidden overflow-x-auto">
 			{albums.map((album) => (
-				<div
-					key={album.album_uri}
-					className="flex-shrink-0 h-full w-auto m-2 overflow-x-auto"
-				>
+				<div key={album.album_uri} className="flex-shrink-0 h-full w-auto m-2">
 					<Image
 						className="rounded-lg h-full object-cover" // Use h-full to make it fill the parent's height and object-cover to maintain aspect ratio
 						src={album.image_url}

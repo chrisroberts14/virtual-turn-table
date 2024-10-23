@@ -1,6 +1,6 @@
-import { useError } from "@/contexts/ErrorContext.tsx";
 import { useSongControl } from "@/contexts/SongControlContext.tsx";
 import { Slider, type SliderValue } from "@nextui-org/slider";
+import { useEffect, useState } from "react";
 
 const TrackScrubber = () => {
 	const {
@@ -9,23 +9,36 @@ const TrackScrubber = () => {
 		setTrackPosition,
 		currentSong,
 		trackDuration,
+		isPlayerReady,
 	} = useSongControl();
-	const { showError } = useError();
+	const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
 
-	setInterval(async () => {
-		if (!player || !currentSong) {
+	useEffect(() => {
+		if (!isPlayerReady) {
 			return;
 		}
-		const state = await player.getCurrentState();
-		if (!state) {
-			showError("Failed to get current state");
-		} else {
-			setTrackPosition(state.position);
+		if (!intervalId) {
+			setIntervalId(
+				setInterval(async () => {
+					if (!player || !currentSong || !isPlayerReady) {
+						return;
+					}
+					const state = await player.getCurrentState();
+					if (state) {
+						setTrackPosition(state.position);
+					}
+				}, 1000),
+			);
 		}
-	}, 1000);
+
+		// Cleanup interval on component unmount
+		if (intervalId) {
+			return () => clearInterval(intervalId);
+		}
+	}, [isPlayerReady, player, setTrackPosition, intervalId, currentSong]);
 
 	const handleChange = (value: SliderValue) => {
-		if (player) {
+		if (player && isPlayerReady) {
 			const newPosition = Number(value);
 			player.seek(newPosition).then((_) => {
 				return;
