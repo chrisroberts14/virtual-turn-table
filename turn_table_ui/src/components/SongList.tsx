@@ -45,7 +45,9 @@ const SongList = () => {
 					(song) => song.title === selectedKey.values().next().value,
 				);
 				setCurrentSong(currentAlbum.songs[newSongIndex]);
-				setTrackDuration(currentAlbum.songs[newSongIndex].duration_ms);
+				if (newSongIndex !== -1) {
+					setTrackDuration(currentAlbum.songs[newSongIndex].duration_ms);
+				}
 				setIsPaused(false);
 			}
 		}
