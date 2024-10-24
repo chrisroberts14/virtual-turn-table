@@ -50,23 +50,29 @@ const MusicPlayer = () => {
 		}
 	};
 
-	const playerCreation = useCallback((spotifyPlayer: SpotifyPlayer) => {
-		if (spotifyPlayer) {
-			PlayerSetup(
-				spotifyPlayer,
-				setDeviceId,
-				setPlayer,
-				setIsPlayerReady,
-				setTrackPosition,
-			)
-				.then(() => {
-					return;
-				})
-				.catch((error) => {
-					console.error(error.message);
-				});
-		}
-	}, []);
+	const playerCreation = useCallback(
+		(spotifyPlayer: SpotifyPlayer) => {
+			if (spotifyPlayer) {
+				PlayerSetup(
+					spotifyPlayer,
+					setDeviceId,
+					setPlayer,
+					setIsPlayerReady,
+					setTrackPosition,
+					setCurrentSong,
+					currentAlbum,
+					setIsPaused,
+				)
+					.then(() => {
+						return;
+					})
+					.catch((error) => {
+						console.error(error.message);
+					});
+			}
+		},
+		[currentAlbum],
+	);
 
 	useEffect(() => {
 		if (token && !player) {
@@ -105,6 +111,8 @@ const MusicPlayer = () => {
 			);
 			if (currentSongIndex < currentAlbum.songs.length - 1) {
 				setNextSong(currentAlbum.songs[currentSongIndex + 1]);
+			} else {
+				setNextSong(null);
 			}
 			playTrackWithHandling().then(() => {
 				return;

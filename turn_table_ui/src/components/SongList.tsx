@@ -17,8 +17,7 @@ import { useEffect, useState } from "react";
 
 const SongList = () => {
 	const { currentAlbum } = useMusic();
-	const { currentSong, setCurrentSong, setIsPaused, setTrackDuration } =
-		useSongControl();
+	const { currentSong, setCurrentSong, setTrackDuration } = useSongControl();
 	const [selectedKey, setSelectedKey] = useState<Set<Key>>(
 		currentSong ? new Set([currentSong.title]) : new Set(),
 	);
@@ -38,7 +37,6 @@ const SongList = () => {
 		} else if (selectedKey.size < 1) {
 			setCurrentSong(null);
 			setTrackDuration(0);
-			setIsPaused(true);
 		} else {
 			if (currentAlbum) {
 				const newSongIndex = currentAlbum.songs.findIndex(
@@ -48,17 +46,9 @@ const SongList = () => {
 				if (newSongIndex !== -1) {
 					setTrackDuration(currentAlbum.songs[newSongIndex].duration_ms);
 				}
-				setIsPaused(false);
 			}
 		}
-	}, [
-		selectedKey,
-		currentAlbum,
-		setCurrentSong,
-		showError,
-		setIsPaused,
-		setTrackDuration,
-	]);
+	}, [selectedKey, currentAlbum, setCurrentSong, showError, setTrackDuration]);
 
 	return (
 		<Table

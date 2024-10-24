@@ -11,7 +11,6 @@ const SongControls = () => {
 	const {
 		player,
 		isPaused,
-		setIsPaused,
 		currentSong,
 		setCurrentSong,
 		isPlayerReady,
@@ -22,14 +21,12 @@ const SongControls = () => {
 	const pauseSong = async () => {
 		if (player && isPlayerReady) {
 			await player.pause();
-			setIsPaused(true);
 		}
 	};
 
 	const playSong = async () => {
 		if (player && isPlayerReady) {
 			await player.resume();
-			setIsPaused(false);
 		}
 	};
 

@@ -1,3 +1,5 @@
+import type Album from "@/interfaces/Album.tsx";
+import type Song from "@/interfaces/Song.tsx";
 import type { Dispatch, SetStateAction } from "react";
 const PlayerSetup = async (
 	player: SpotifyPlayer,
@@ -5,6 +7,9 @@ const PlayerSetup = async (
 	setPlayer: Dispatch<SetStateAction<SpotifyPlayer | null>>,
 	setIsPlayerReady: Dispatch<SetStateAction<boolean>>,
 	setTrackPosition: Dispatch<SetStateAction<number>>,
+	setCurrentSong: Dispatch<SetStateAction<Song | null>>,
+	currentAlbum: Album | null,
+	setIsPaused: Dispatch<SetStateAction<boolean>>,
 ) => {
 	let intervalId: NodeJS.Timeout | null = null;
 
@@ -24,8 +29,24 @@ const PlayerSetup = async (
 					if (state) {
 						setTrackPosition(state.position);
 						console.log("Player state updated.");
+						if (
+							state.position >= state.duration - 1000 &&
+							!state.paused &&
+							currentAlbum
+						) {
+							const currentSongIndex = currentAlbum.songs.findIndex(
+								(song) => song.title === state.track_window.current_track.name,
+							);
+							setCurrentSong(currentAlbum.songs[currentSongIndex + 1]);
+						}
+						// Catch to make sure the pause state is updated
+						if (state.paused) {
+							setIsPaused(true);
+						} else {
+							setIsPaused(false);
+						}
 					}
-				}, 1000);
+				}, 500);
 			});
 
 			player.on("not_ready", (_: { device_id: string }) => {
