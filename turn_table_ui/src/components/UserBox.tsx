@@ -36,10 +36,7 @@ const UserBox = () => {
 	}, [setUsername, showError]);
 
 	useEffect(() => {
-		if (username === "" || email === "") {
-			return;
-		}
-		if (username === null || email === null) {
+		if (!username || !email) {
 			return;
 		}
 		CreateUser(username, email).catch((error) => {

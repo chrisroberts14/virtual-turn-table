@@ -17,5 +17,10 @@ export default defineConfig(({ mode }) => {
 
 	return {
 		plugins: [react(), tsconfigPaths()],
+		test: {
+			environment: "jsdom",
+			globals: true,
+			setupFiles: "./__tests__/setupTests.ts",
+		},
 	};
 });

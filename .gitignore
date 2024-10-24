@@ -162,3 +162,5 @@ cython_debug/
 #.idea/
 
 *.env
+*.db
+turn_table_ui/coverage/*

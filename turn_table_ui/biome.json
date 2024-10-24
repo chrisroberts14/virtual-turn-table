@@ -7,7 +7,13 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"ignore": ["src/vite-env.d.ts", "src/main.tsx", "node_modules/*", "dist/*"]
+		"ignore": [
+			"src/vite-env.d.ts",
+			"src/main.tsx",
+			"node_modules/*",
+			"dist/*",
+			"coverage/*"
+		]
 	},
 	"formatter": {
 		"enabled": true,
