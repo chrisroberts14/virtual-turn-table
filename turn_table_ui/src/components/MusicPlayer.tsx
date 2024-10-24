@@ -101,6 +101,12 @@ const MusicPlayer = () => {
 				currentAlbum: currentAlbum,
 			});
 		}
+		if (!currentSong) {
+			setNextSong(null);
+			setTrackPosition(0);
+			setTrackDuration(0);
+			setIsPaused(true);
+		}
 		if (currentSong && currentAlbum && token && deviceId && isPlayerReady) {
 			storeStateData({
 				currentSong: currentSong,

@@ -50,6 +50,15 @@ const SongList = () => {
 		}
 	}, [selectedKey, currentAlbum, setCurrentSong, showError, setTrackDuration]);
 
+	useEffect(() => {
+		// Update the selected item in the list
+		if (currentSong) {
+			setSelectedKey(new Set([currentSong.title]));
+		} else {
+			setSelectedKey(new Set());
+		}
+	}, [currentSong]);
+
 	return (
 		<Table
 			isStriped

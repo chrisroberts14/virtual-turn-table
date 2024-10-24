@@ -57,19 +57,19 @@ const SongControls = () => {
 	return (
 		<div className={"flex flex-col min-w-96 p-2"}>
 			<div className={"flex flex-row justify-center"}>
-				<Button onClick={prevSong}>
+				<Button onClick={prevSong} isDisabled={!currentSong}>
 					<RxTrackPrevious />
 				</Button>
 				{!isPaused ? (
-					<Button onClick={pauseSong}>
+					<Button onClick={pauseSong} isDisabled={!currentSong}>
 						<FaPause />
 					</Button>
 				) : (
-					<Button onClick={playSong}>
+					<Button onClick={playSong} isDisabled={!currentSong}>
 						<FaPlay />
 					</Button>
 				)}
-				<Button onClick={nextSong}>
+				<Button onClick={nextSong} isDisabled={!currentSong}>
 					<RxTrackNext />
 				</Button>
 			</div>

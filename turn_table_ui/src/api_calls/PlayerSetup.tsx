@@ -40,7 +40,7 @@ const PlayerSetup = async (
 							setCurrentSong(currentAlbum.songs[currentSongIndex + 1]);
 						}
 						// Catch to make sure the pause state is updated
-						if (state.paused) {
+						if (state.paused || !state.track_window.current_track) {
 							setIsPaused(true);
 						} else {
 							setIsPaused(false);

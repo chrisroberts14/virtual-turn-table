@@ -119,32 +119,34 @@ function App() {
 						>
 							<NavigationBar />
 						</NavigationContext.Provider>
-						<MusicContext.Provider value={{ currentAlbum, setCurrentAlbum }}>
-							<div className="flex flex-row h-full">
-								<div
-									style={{
-										transform: fadePlayer
-											? "translateX(0)"
-											: "translateX(-100%)",
-										transition: "transform 0.5s ease-in-out",
-									}}
-									className="h-full"
-								>
-									<MusicPlayer />
+						{isSignedIn ? (
+							<MusicContext.Provider value={{ currentAlbum, setCurrentAlbum }}>
+								<div className="flex flex-row h-full">
+									<div
+										style={{
+											transform: fadePlayer
+												? "translateX(0)"
+												: "translateX(-100%)",
+											transition: "transform 0.5s ease-in-out",
+										}}
+										className="h-full"
+									>
+										<MusicPlayer />
+									</div>
+									<div
+										style={{
+											transform: fadeScan
+												? "translateX(-100%)"
+												: "translateX(100%)",
+											transition: "transform 0.5s ease-in-out",
+										}}
+										className="h-full"
+									>
+										<ScanPage />
+									</div>
 								</div>
-								<div
-									style={{
-										transform: fadeScan
-											? "translateX(-100%)"
-											: "translateX(100%)",
-										transition: "transform 0.5s ease-in-out",
-									}}
-									className="h-full"
-								>
-									<ScanPage />
-								</div>
-							</div>
-						</MusicContext.Provider>
+							</MusicContext.Provider>
+						) : null}
 					</div>
 					<ErrorDisplay />
 				</SpotifyTokenContext.Provider>
