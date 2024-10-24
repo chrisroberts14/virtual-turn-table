@@ -68,3 +68,31 @@ jobs:
           SPOTIFY_REDIRECT_URI: "spotify_redirect_uri"
           IMAGE_TO_ALBUM_ADDRESS: "img_to_album_address"
           USER_DATA_ADDRESS: "user_data_address"
+
+  build_user_data:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ "3.13", "3.11", "3.12" ]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest
+          if [ -f ./user_data/requirements.txt ]; then pip install -r ./user_data/requirements.txt; fi
+      - name: Test with pytest
+        run: |
+          pytest user_data --cov-fail-under=100 -n 4
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+          SPOTIFY_CLIENT_ID: "spotify_client_id"
+          SPOTIFY_CLIENT_SECRET: "spotify_client_secret"
+          SPOTIFY_REDIRECT_URI: "spotify_redirect_uri"
+          USER_DATA_ADDRESS: "user_data_address"

@@ -46,38 +46,6 @@ class Crud:  # pylint: disable=too-few-public-methods
         """
         return db.get(cls, id_)
 
-    @classmethod
-    def update(cls, db, obj, id_):
-        """
-        Update an object.
-
-        :param db:
-        :param obj:
-        :param id_:
-        :return:
-        """
-        db_obj = db.query(cls).filter(cls.id == id_).first()
-
-        for key, value in obj.model_dump().items():
-            if value is not None:
-                setattr(db_obj, key, value)
-
-        db.commit()
-        return db.get(cls, id_)
-
-    @classmethod
-    def delete(cls, db, id_):
-        """
-        Delete an object.
-
-        :param db: database session
-        :param id_: id of the object
-        :return: None
-        """
-        db_obj = db.get(cls, id_)
-        db.delete(db_obj)
-        db.commit()
-
 
 class UserDb(Base, Crud):
     """User database model."""

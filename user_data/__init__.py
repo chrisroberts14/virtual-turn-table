@@ -94,7 +94,7 @@ def create_or_get_user(user: User, db: Session = Depends(get_db)) -> User:
 
 
 @app.post("/create_album/{album_uri}/", status_code=HTTP_201_CREATED)
-def create_album_if_not_exists(album_uri: str, db: Session = Depends(get_db)):
+def create_album_if_not_exists(album_uri: str, db: Session = Depends(get_db)) -> Album:
     """
     Create an album if it doesn't already exist.
 
@@ -102,8 +102,10 @@ def create_album_if_not_exists(album_uri: str, db: Session = Depends(get_db)):
     :param db:
     :return:
     """
-    if AlbumDb.get_by_id(db, album_uri) is None:
-        AlbumDb.create(db, AlbumDb(album_uri=album_uri))
+    album = AlbumDb.get_by_id(db, album_uri)
+    if album is None:
+        return AlbumDb.create(db, AlbumDb(album_uri=album_uri))
+    return album
 
 
 @app.post("/add_album_link/", status_code=HTTP_201_CREATED)
