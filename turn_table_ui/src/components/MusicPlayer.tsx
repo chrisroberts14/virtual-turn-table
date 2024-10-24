@@ -16,7 +16,7 @@ import {
 	storeStateData,
 } from "@/interfaces/StateData.tsx";
 import { Resizable } from "re-resizable";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const MusicPlayer = () => {
 	const [player, setPlayer] = useState<SpotifyPlayer | null>(null);
@@ -50,31 +50,8 @@ const MusicPlayer = () => {
 		}
 	};
 
-	const playerCreation = useCallback(
-		(spotifyPlayer: SpotifyPlayer) => {
-			if (spotifyPlayer) {
-				PlayerSetup(
-					spotifyPlayer,
-					setDeviceId,
-					setPlayer,
-					setIsPlayerReady,
-					setTrackPosition,
-					setCurrentSong,
-					currentAlbum,
-				)
-					.then(() => {
-						return;
-					})
-					.catch((error) => {
-						console.error(error.message);
-					});
-			}
-		},
-		[currentAlbum],
-	);
-
 	useEffect(() => {
-		if (token && !player) {
+		if (token && !player && !currentAlbum) {
 			const script = document.createElement("script");
 			script.src = "https://sdk.scdn.co/spotify-player.js";
 			script.async = true;
@@ -89,28 +66,49 @@ const MusicPlayer = () => {
 					volume: 0.5,
 				});
 				setPlayer(player);
-				playerCreation(player);
+				PlayerSetup(
+					player,
+					setDeviceId,
+					setPlayer,
+					setIsPlayerReady,
+					setTrackPosition,
+					setCurrentSong,
+					currentAlbum,
+				)
+					.then(() => {
+						return;
+					})
+					.catch((error) => {
+						console.error(error.message);
+					});
 			};
 		}
-	}, [token, player, playerCreation]);
+	}, [token, player, currentAlbum]);
 
 	useEffect(() => {
 		if (currentAlbum) {
 			storeStateData({
 				currentAlbum: currentAlbum,
+				currentSong: undefined,
 			});
 		}
-		if (!currentSong) {
+		if (currentAlbum && isPlayerReady) {
+			setCurrentSong(currentAlbum.songs[0]);
+			setNextSong(currentAlbum.songs[1]);
+			playTrackWithHandling().then(() => {
+				return;
+			});
+		} else {
+			setCurrentSong(null);
 			setNextSong(null);
 			setTrackPosition(0);
 			setTrackDuration(0);
 			setIsPaused(true);
 		}
-		if (currentSong && currentAlbum && token && deviceId && isPlayerReady) {
-			storeStateData({
-				currentSong: currentSong,
-			});
+	}, [currentAlbum, isPlayerReady]);
 
+	useEffect(() => {
+		if (currentAlbum && isPlayerReady && currentSong) {
 			const currentSongIndex = currentAlbum.songs.findIndex(
 				(song) => song.title === currentSong.title,
 			);
@@ -123,7 +121,7 @@ const MusicPlayer = () => {
 				return;
 			});
 		}
-	}, [currentSong, currentAlbum, token, deviceId, isPlayerReady]);
+	}, [currentSong, currentAlbum, isPlayerReady]);
 
 	const playTrackWithHandling = async () => {
 		if (currentSong && currentAlbum && token && deviceId) {

@@ -1,4 +1,3 @@
-import { useError } from "@/contexts/ErrorContext.tsx";
 import { useMusic } from "@/contexts/MusicContext.tsx";
 import { useSongControl } from "@/contexts/SongControlContext.tsx";
 import type Song from "@/interfaces/Song.tsx";
@@ -22,7 +21,6 @@ const SongList = () => {
 	const [selectedKey, setSelectedKey] = useState<Set<Key>>(
 		currentSong ? new Set([currentSong.title]) : new Set(),
 	);
-	const { showError } = useError();
 
 	const handleSelectionChange = (keys: Selection) => {
 		if (keys === "all") {
@@ -33,9 +31,7 @@ const SongList = () => {
 	};
 
 	useEffect(() => {
-		if (selectedKey.size > 1) {
-			showError("Error more than one song selected...");
-		} else if (selectedKey.size < 1) {
+		if (selectedKey.size < 1) {
 			setCurrentSong(null);
 			setTrackDuration(0);
 		} else {
@@ -49,7 +45,7 @@ const SongList = () => {
 				}
 			}
 		}
-	}, [selectedKey, currentAlbum, setCurrentSong, showError, setTrackDuration]);
+	}, [selectedKey, currentAlbum, setCurrentSong, setTrackDuration]);
 
 	useEffect(() => {
 		// Update the selected item in the list
@@ -77,7 +73,11 @@ const SongList = () => {
 				{(item: Song) => (
 					<TableRow key={item.title}>
 						{(columnKey) => (
-							<TableCell>{getKeyValue(item, columnKey)}</TableCell>
+							<TableCell>
+								{columnKey === "artists"
+									? item.artists.join(", ")
+									: getKeyValue(item, columnKey)}
+							</TableCell>
 						)}
 					</TableRow>
 				)}
