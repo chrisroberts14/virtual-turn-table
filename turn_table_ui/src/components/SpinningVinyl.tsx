@@ -1,13 +1,13 @@
 import { useMusic } from "@/contexts/MusicContext.tsx";
+import { useSongControl } from "@/contexts/SongControlContext.tsx";
 
-const SpinningVinyl = (props: { isPaused: boolean }) => {
+const SpinningVinyl = () => {
 	const { currentAlbum } = useMusic();
+	const { isPaused } = useSongControl();
 
 	return (
 		<svg
-			className={
-				!props.isPaused ? "animate-spin max-h-full p-10" : "max-h-full p-10"
-			}
+			className={!isPaused ? "animate-spin max-h-full p-10" : "max-h-full p-10"}
 			version="1.1"
 			xmlns="http://www.w3.org/2000/svg"
 			viewBox="0 0 500 500"

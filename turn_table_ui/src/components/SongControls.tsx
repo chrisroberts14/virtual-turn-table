@@ -15,17 +15,20 @@ const SongControls = () => {
 		setCurrentSong,
 		isPlayerReady,
 		setTrackDuration,
+		setIsPaused,
 	} = useSongControl();
 	const { currentAlbum } = useMusic();
 
 	const pauseSong = async () => {
 		if (player && isPlayerReady) {
+			setIsPaused(true);
 			await player.pause();
 		}
 	};
 
 	const playSong = async () => {
 		if (player && isPlayerReady) {
+			setIsPaused(false);
 			await player.resume();
 		}
 	};
@@ -36,6 +39,7 @@ const SongControls = () => {
 				(song: Song) => song.title === currentSong?.title,
 			);
 			if (currentSongIndex < currentAlbum.songs.length - 1) {
+				setIsPaused(false);
 				setCurrentSong(currentAlbum.songs[currentSongIndex + 1]);
 				setTrackDuration(currentAlbum.songs[currentSongIndex + 1].duration_ms);
 			}
@@ -48,6 +52,7 @@ const SongControls = () => {
 				(song: Song) => song.title === currentSong?.title,
 			);
 			if (currentSongIndex > 0) {
+				setIsPaused(false);
 				setCurrentSong(currentAlbum.songs[currentSongIndex - 1]);
 				setTrackDuration(currentAlbum.songs[currentSongIndex - 1].duration_ms);
 			}

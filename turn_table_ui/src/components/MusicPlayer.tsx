@@ -61,7 +61,6 @@ const MusicPlayer = () => {
 					setTrackPosition,
 					setCurrentSong,
 					currentAlbum,
-					setIsPaused,
 				)
 					.then(() => {
 						return;
@@ -202,7 +201,7 @@ const MusicPlayer = () => {
 							) : null}
 						</div>
 						<div className="flex justify-center items-center bg-gray-700 flex-grow">
-							<SpinningVinyl isPaused={isPaused} />
+							<SpinningVinyl />
 						</div>
 					</div>
 				</Resizable>

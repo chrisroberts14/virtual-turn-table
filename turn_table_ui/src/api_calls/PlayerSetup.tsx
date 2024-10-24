@@ -9,7 +9,6 @@ const PlayerSetup = async (
 	setTrackPosition: Dispatch<SetStateAction<number>>,
 	setCurrentSong: Dispatch<SetStateAction<Song | null>>,
 	currentAlbum: Album | null,
-	setIsPaused: Dispatch<SetStateAction<boolean>>,
 ) => {
 	let intervalId: NodeJS.Timeout | null = null;
 
@@ -38,12 +37,6 @@ const PlayerSetup = async (
 								(song) => song.title === state.track_window.current_track.name,
 							);
 							setCurrentSong(currentAlbum.songs[currentSongIndex + 1]);
-						}
-						// Catch to make sure the pause state is updated
-						if (state.paused || !state.track_window.current_track) {
-							setIsPaused(true);
-						} else {
-							setIsPaused(false);
 						}
 					}
 				}, 500);

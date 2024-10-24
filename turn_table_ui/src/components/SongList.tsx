@@ -17,7 +17,8 @@ import { useEffect, useState } from "react";
 
 const SongList = () => {
 	const { currentAlbum } = useMusic();
-	const { currentSong, setCurrentSong, setTrackDuration } = useSongControl();
+	const { currentSong, setCurrentSong, setTrackDuration, setIsPaused } =
+		useSongControl();
 	const [selectedKey, setSelectedKey] = useState<Set<Key>>(
 		currentSong ? new Set([currentSong.title]) : new Set(),
 	);
@@ -52,12 +53,13 @@ const SongList = () => {
 
 	useEffect(() => {
 		// Update the selected item in the list
+		setIsPaused(false);
 		if (currentSong) {
 			setSelectedKey(new Set([currentSong.title]));
 		} else {
 			setSelectedKey(new Set());
 		}
-	}, [currentSong]);
+	}, [currentSong, setIsPaused]);
 
 	return (
 		<Table

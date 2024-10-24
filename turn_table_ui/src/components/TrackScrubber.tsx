@@ -1,41 +1,9 @@
 import { useSongControl } from "@/contexts/SongControlContext.tsx";
 import { Slider, type SliderValue } from "@nextui-org/slider";
-import { useEffect, useState } from "react";
 
 const TrackScrubber = () => {
-	const {
-		player,
-		trackPosition,
-		setTrackPosition,
-		currentSong,
-		trackDuration,
-		isPlayerReady,
-	} = useSongControl();
-	const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
-
-	useEffect(() => {
-		if (!isPlayerReady) {
-			return;
-		}
-		if (!intervalId) {
-			setIntervalId(
-				setInterval(async () => {
-					if (!player || !currentSong || !isPlayerReady) {
-						return;
-					}
-					const state = await player.getCurrentState();
-					if (state) {
-						setTrackPosition(state.position);
-					}
-				}, 1000),
-			);
-		}
-
-		// Cleanup interval on component unmount
-		if (intervalId) {
-			return () => clearInterval(intervalId);
-		}
-	}, [isPlayerReady, player, setTrackPosition, intervalId, currentSong]);
+	const { player, trackPosition, trackDuration, isPlayerReady } =
+		useSongControl();
 
 	const handleChange = (value: SliderValue) => {
 		if (player && isPlayerReady) {
