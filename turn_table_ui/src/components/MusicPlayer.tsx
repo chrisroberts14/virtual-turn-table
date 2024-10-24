@@ -95,9 +95,6 @@ const MusicPlayer = () => {
 		if (currentAlbum && isPlayerReady) {
 			setCurrentSong(currentAlbum.songs[0]);
 			setNextSong(currentAlbum.songs[1]);
-			playTrackWithHandling().then(() => {
-				return;
-			});
 		} else {
 			setCurrentSong(null);
 			setNextSong(null);

@@ -58,13 +58,11 @@ interface SpotifyPlayer {
 	disconnect: () => void;
 	setVolume: (volume: number) => Promise<void>;
 	seek: (positionMs: number) => Promise<void>;
-	pause: () => Promise<void>;
-	resume: () => Promise<void>;
 	addListener: (
 		event: string,
 		callback: (state: SpotifyPlayerState) => void,
 	) => void;
 	on: (event: string, callback: (eventData: any) => void) => void;
 	getCurrentState: () => Promise<SpotifyPlayerState>;
-    destroy: () => void;
+	togglePlay: () => Promise<void>;
 }

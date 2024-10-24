@@ -19,17 +19,10 @@ const SongControls = () => {
 	} = useSongControl();
 	const { currentAlbum } = useMusic();
 
-	const pauseSong = async () => {
+	const togglePlayPause = async () => {
 		if (player && isPlayerReady) {
-			setIsPaused(true);
-			await player.pause();
-		}
-	};
-
-	const playSong = async () => {
-		if (player && isPlayerReady) {
-			setIsPaused(false);
-			await player.resume();
+			await player.togglePlay();
+			setIsPaused(!isPaused);
 		}
 	};
 
@@ -65,15 +58,9 @@ const SongControls = () => {
 				<Button onClick={prevSong} isDisabled={!currentSong}>
 					<RxTrackPrevious />
 				</Button>
-				{!isPaused ? (
-					<Button onClick={pauseSong} isDisabled={!currentSong}>
-						<FaPause />
-					</Button>
-				) : (
-					<Button onClick={playSong} isDisabled={!currentSong}>
-						<FaPlay />
-					</Button>
-				)}
+				<Button onClick={togglePlayPause} isDisabled={!currentSong}>
+					{isPaused ? <FaPlay /> : <FaPause />}
+				</Button>
 				<Button onClick={nextSong} isDisabled={!currentSong}>
 					<RxTrackNext />
 				</Button>
