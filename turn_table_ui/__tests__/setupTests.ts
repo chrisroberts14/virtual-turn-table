@@ -2,6 +2,7 @@ import "@testing-library/jest-dom";
 import { vi } from "vitest";
 
 // Mock useNavigation
+/*
 vi.mock("../src/contexts/NavigationContext", () => ({
 	useNavigation: vi.fn(),
 }));
@@ -9,6 +10,8 @@ vi.mock("../src/contexts/NavigationContext", () => ({
 // Mock useError
 vi.mock("../src/contexts/ErrorContext", () => ({
 	useError: vi.fn(),
+	ErrorProvider: vi.fn(),
+	showError: vi.fn(),
 }));
 
 // Mock useUsername
@@ -22,4 +25,4 @@ vi.mock("@/interfaces/StateData", () => ({
 }));
 
 vi.mock("@/api_calls/GetUserInfo", () => vi.fn());
-vi.mock("@/api_calls/CreateUser", () => vi.fn());
+vi.mock("@/api_calls/CreateUser", () => vi.fn());*/
