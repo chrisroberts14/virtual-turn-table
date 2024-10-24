@@ -1,17 +1,20 @@
 import GetAlbumDetails from "@/api_calls/GetAlbumDetails.tsx";
 import GetUserAlbums from "@/api_calls/GetUserAlbums.tsx";
+import { useAlbumSelection } from "@/contexts/AlbumSelectionContext.tsx";
 import { useError } from "@/contexts/ErrorContext.tsx";
+import { useMusic } from "@/contexts/MusicContext.tsx";
 import { useSpotifyToken } from "@/contexts/SpotifyTokenContext.tsx";
 import { useUsername } from "@/contexts/UsernameContext.tsx";
 import type Album from "@/interfaces/Album.tsx";
 import { Image } from "@nextui-org/image";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 const AlbumCollectionDisplay = () => {
 	const { username } = useUsername();
-	const [albums, setAlbums] = useState<Album[]>([]);
 	const { showError } = useError();
 	const { token } = useSpotifyToken();
+	const { setCurrentAlbum } = useMusic();
+	const { albums, setAlbums, setHoveredAlbum } = useAlbumSelection();
 
 	useEffect(() => {
 		// Get the users album collection
@@ -37,19 +40,36 @@ const AlbumCollectionDisplay = () => {
 					showError(error.message);
 				});
 		}
-	}, [username, token, showError]);
+	}, [username, token, showError, setAlbums]);
+
+	const handleClick = (album: Album) => {
+		setCurrentAlbum(album);
+	};
+
+	const handleMouseOver = (album: Album) => {
+		setHoveredAlbum(album);
+	};
 
 	return (
-		<div className="flex h-full w-full overflow-y-hidden overflow-x-auto">
+		<div className="flex h-full w-full overflow-y-hidden overflow-x-auto bg-gray-900">
 			{albums.map((album) => (
-				<div key={album.album_uri} className="flex-shrink-0 h-full w-auto m-2">
+				<div
+					key={album.album_uri}
+					className="flex-shrink-0 h-full w-auto m-2 transition-transform duration-300 transform hover:scale-110"
+					onClick={() => handleClick(album)}
+					onMouseOver={() => handleMouseOver(album)}
+					onFocus={() => handleMouseOver(album)}
+					onMouseOut={() => setHoveredAlbum(null)}
+					onBlur={() => setHoveredAlbum(null)}
+					onKeyDown={() => handleClick(album)}
+				>
 					<Image
-						className="rounded-lg h-full object-cover" // Use h-full to make it fill the parent's height and object-cover to maintain aspect ratio
+						className="rounded-lg h-full object-cover"
 						src={album.image_url}
 						alt="album cover"
 						shadow="md"
-						width={150} // Width can remain as is
-						height={150} // Optional: specify height for consistent aspect ratio
+						width={150}
+						height={150}
 					/>
 				</div>
 			))}
