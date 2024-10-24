@@ -12,8 +12,13 @@ import { useEffect, useState } from "react";
 const AlbumConfirm = () => {
 	const [buttonsDisabled, setButtonsDisabled] = useState(true);
 	const { username } = useUsername();
-	const { scannedAlbum, setScannedAlbum, fadeConfirm, setFadeConfirm } =
-		useUpload();
+	const {
+		scannedAlbum,
+		setScannedAlbum,
+		fadeConfirm,
+		setFadeConfirm,
+		setCurrentImage,
+	} = useUpload();
 	const { setCurrentAlbum } = useMusic();
 
 	const triggerConfirmSlide = () => {
@@ -41,6 +46,7 @@ const AlbumConfirm = () => {
 		triggerConfirmSlide();
 		setCurrentAlbum(null);
 		setScannedAlbum(null);
+		setCurrentImage(null);
 	};
 
 	return (

@@ -13,6 +13,8 @@ interface UploadContextType {
 	setScannedAlbum: Dispatch<SetStateAction<Album | null>>;
 	fadeConfirm: boolean;
 	setFadeConfirm: Dispatch<SetStateAction<boolean>>;
+	currentImage: string | null;
+	setCurrentImage: Dispatch<SetStateAction<string | null>>;
 }
 
 export const UploadContext = createContext<UploadContextType | undefined>(

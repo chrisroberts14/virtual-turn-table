@@ -11,6 +11,7 @@ const ScanPage = () => {
 	const [isUploading, setIsUploading] = useState(false);
 	const [scannedAlbum, setScannedAlbum] = useState<Album | null>(null);
 	const [fadeConfirm, setFadeConfirm] = useState(false);
+	const [currentImage, setCurrentImage] = useState<string | null>(null);
 
 	const onResize = () => {
 		setContentHeight(window.innerHeight - 240);
@@ -27,6 +28,8 @@ const ScanPage = () => {
 				setScannedAlbum,
 				fadeConfirm,
 				setFadeConfirm,
+				currentImage,
+				setCurrentImage,
 			}}
 		>
 			<div className="flex flex-col h-full">

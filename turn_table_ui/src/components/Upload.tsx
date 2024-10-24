@@ -1,20 +1,19 @@
 import UploadFile from "@/api_calls/UploadFile.tsx";
+import { useUpload } from "@/contexts/CaptureContext.tsx";
 import { useError } from "@/contexts/ErrorContext.tsx";
-import type Album from "@/interfaces/Album.tsx";
 import { Button } from "@nextui-org/button";
 import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
 import { Divider } from "@nextui-org/divider";
 import { Input } from "@nextui-org/input";
 import type React from "react";
-import { type Dispatch, type SetStateAction, useState } from "react";
+import { useState } from "react";
 
-const Upload: React.FC<{
-	setScannedAlbum: Dispatch<SetStateAction<Album | null>>;
-	setIsUploading: Dispatch<SetStateAction<boolean>>;
-	triggerConfirmSlide: () => void;
-}> = ({ setScannedAlbum, setIsUploading, triggerConfirmSlide }) => {
+const Upload: React.FC<{ triggerConfirmSlide: () => void }> = ({
+	triggerConfirmSlide,
+}) => {
 	const [file, setFile] = useState<File | null>(null);
 	const { showError } = useError();
+	const { setIsUploading, setScannedAlbum, isUploading } = useUpload();
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files) {
@@ -70,7 +69,11 @@ const Upload: React.FC<{
 					<Divider />
 					<CardFooter>
 						{file && (
-							<Button onClick={handleUpload} className="submit">
+							<Button
+								onClick={handleUpload}
+								className="submit"
+								isDisabled={isUploading}
+							>
 								Upload a file
 							</Button>
 						)}

@@ -3,6 +3,7 @@ import Upload from "@/components/Upload.tsx";
 import { useUpload } from "@/contexts/CaptureContext.tsx";
 import { useError } from "@/contexts/ErrorContext.tsx";
 import { Button } from "@nextui-org/button";
+import { Image } from "@nextui-org/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
 
@@ -14,6 +15,8 @@ const ImageCapture = () => {
 		setIsUploading,
 		fadeConfirm,
 		setFadeConfirm,
+		currentImage,
+		setCurrentImage,
 	} = useUpload();
 	const webcamRef = useRef<Webcam | null>(null);
 	const { showError } = useError();
@@ -45,6 +48,7 @@ const ImageCapture = () => {
 				setIsUploading(false);
 				return;
 			}
+			setCurrentImage(imageSrc);
 
 			await ImageToAlbum(imageSrc, setScannedAlbum).catch((error) => {
 				showError(error.message);
@@ -62,20 +66,20 @@ const ImageCapture = () => {
 			{cameras.length === 0 ? (
 				<div className="flex flex-col items-center">
 					No cameras found
-					<Upload
-						setScannedAlbum={setScannedAlbum}
-						setIsUploading={setIsUploading}
-						triggerConfirmSlide={triggerConfirmSlide}
-					/>
+					<Upload triggerConfirmSlide={triggerConfirmSlide} />
 				</div>
 			) : usingCamera ? (
 				<div>
-					<Webcam
-						audio={false}
-						screenshotFormat="image/jpeg"
-						className="rounded-lg object-cover w-full h-full p-8 pb-16"
-						ref={webcamRef}
-					/>
+					{!currentImage ? (
+						<Webcam
+							audio={false}
+							screenshotFormat="image/jpeg"
+							className="rounded-lg object-cover w-full h-full p-8 pb-16"
+							ref={webcamRef}
+						/>
+					) : (
+						<Image src={currentImage} />
+					)}
 					<div className="p-4 text-center absolute bottom-0 w-full left-0 space-x-2">
 						<Button
 							onClick={getAlbum}
@@ -93,11 +97,7 @@ const ImageCapture = () => {
 				</div>
 			) : (
 				<div className="text-center">
-					<Upload
-						setScannedAlbum={setScannedAlbum}
-						setIsUploading={setIsUploading}
-						triggerConfirmSlide={triggerConfirmSlide}
-					/>
+					<Upload triggerConfirmSlide={triggerConfirmSlide} />
 					<Button onClick={() => setUsingCamera(!usingCamera)} className="mt-4">
 						Use camera
 					</Button>
