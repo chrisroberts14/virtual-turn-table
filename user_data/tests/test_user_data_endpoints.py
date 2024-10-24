@@ -37,7 +37,7 @@ class TestUserDataEndpoints:
         assert response.status_code == 201
         assert response.json() == {"username": "user1", "email": "test", "albums": []}
 
-    def test_create_user_already_exists(self, client):
+    def test_create_user_already_exists(self, client, mock_user):
         """
         Test the create user endpoint when the user already exists.
 
@@ -47,8 +47,8 @@ class TestUserDataEndpoints:
         response = client.post("/user/", json={"username": "user1", "email": "test"})
         assert response.status_code == 201
         assert response.json() == {
-            "username": "user1",
-            "email": "test",
+            "username": mock_user.username,
+            "email": mock_user.email,
             "albums": [{"album_uri": "album1"}],
         }
 
