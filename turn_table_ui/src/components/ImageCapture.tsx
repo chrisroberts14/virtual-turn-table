@@ -50,9 +50,10 @@ const ImageCapture = () => {
 			}
 			setCurrentImage(imageSrc);
 
-			await ImageToAlbum(imageSrc, setScannedAlbum).catch((error) => {
+			const album = await ImageToAlbum(imageSrc).catch((error) => {
 				showError(error.message);
 			});
+			setScannedAlbum(album);
 		}
 		setIsUploading(false);
 	};
@@ -73,9 +74,11 @@ const ImageCapture = () => {
 					{!currentImage ? (
 						<Webcam
 							audio={false}
-							screenshotFormat="image/jpeg"
+							screenshotFormat="image/png"
 							className="rounded-lg object-cover w-full h-full p-8 pb-16"
 							ref={webcamRef}
+							width={1920}
+							height={1080}
 						/>
 					) : (
 						<Image src={currentImage} />

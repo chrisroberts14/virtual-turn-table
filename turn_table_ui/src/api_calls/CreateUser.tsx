@@ -2,7 +2,7 @@ import { createUser } from "@/api_calls/BFFEndpoints.tsx";
 import axios from "axios";
 
 const CreateUser = async (username: string, email: string) => {
-	axios
+	return axios
 		.post(
 			createUser,
 			{ username: username, email: email },

@@ -1,14 +1,9 @@
 import { imageToAlbum } from "@/api_calls/BFFEndpoints.tsx";
-import type Album from "@/interfaces/Album.tsx";
 import axios from "axios";
-import type { Dispatch, SetStateAction } from "react";
 
-const ImageToAlbum = async (
-	image: string,
-	setScannedAlbum: Dispatch<SetStateAction<Album | null>>,
-) => {
-	axios
-		.post(
+const ImageToAlbum = async (image: string) => {
+	try {
+		const response = await axios.post(
 			imageToAlbum,
 			{ image: image },
 			{
@@ -16,14 +11,17 @@ const ImageToAlbum = async (
 					"Content-Type": "application/json",
 				},
 			},
-		)
-		.then((response) => {
-			const newAlbum: Album = response.data;
-			setScannedAlbum(newAlbum);
-		})
-		.catch((error) => {
-			throw new Error(error.response.data.message);
-		});
+		);
+		return response.data;
+	} catch (error: unknown) {
+		// Check if the error is an AxiosError (has a response)
+		if (axios.isAxiosError(error)) {
+			// Handle Axios errors (network errors)
+			throw new Error(error.response?.data?.message || "An error occurred");
+		}
+		// Handle non-Axios errors (e.g., programming errors)
+		throw new Error("An unexpected error occurred");
+	}
 };
 
 export default ImageToAlbum;

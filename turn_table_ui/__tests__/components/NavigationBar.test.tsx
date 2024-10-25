@@ -1,9 +1,14 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import NavigationBar from "../src/components/NavigationBar";
-import { useError } from "../src/contexts/ErrorContext";
-import { useNavigation } from "../src/contexts/NavigationContext";
-import { useUsername } from "../src/contexts/UsernameContext";
+import NavigationBar from "../../src/components/NavigationBar";
+import { useError } from "../../src/contexts/ErrorContext";
+import { useNavigation } from "../../src/contexts/NavigationContext";
+import { useUsername } from "../../src/contexts/UsernameContext";
+import "@testing-library/jest-dom";
+
+vi.mock("../../src/contexts/NavigationContext");
+vi.mock("../../src/contexts/ErrorContext");
+vi.mock("../../src/contexts/UsernameContext");
 
 describe("Navigation Bar", () => {
 	it("renders the navigation bar with the logo and title", () => {

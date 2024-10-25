@@ -1,8 +1,8 @@
 import { addAlbum } from "@/api_calls/BFFEndpoints";
 import axios from "axios";
 
-const AddAlbum = (username: string, albumURI: string) => {
-	axios
+const AddAlbum = async (username: string, albumURI: string) => {
+	return axios
 		.post(
 			addAlbum,
 			{
