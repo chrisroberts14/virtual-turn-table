@@ -21,7 +21,7 @@ const AlbumCollectionDisplay = () => {
 		if (username && token) {
 			GetUserAlbums(username)
 				.then((albums) => {
-					if (albums) {
+					if (albums.length > 0) {
 						// Get all album details and create a list of them
 						const albumPromises = albums.map((album_uri: string) => {
 							return GetAlbumDetails(album_uri, token);
@@ -66,7 +66,7 @@ const AlbumCollectionDisplay = () => {
 					<Image
 						className="rounded-lg h-full object-cover"
 						src={album.image_url}
-						alt="album cover"
+						alt={album.title}
 						shadow="md"
 						width={150}
 						height={150}

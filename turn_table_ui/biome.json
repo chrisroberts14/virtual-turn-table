@@ -12,7 +12,8 @@
 			"src/main.tsx",
 			"node_modules/*",
 			"dist/*",
-			"coverage/*"
+			"coverage/*",
+			"__tests__/api_calls/PlayerSetup.test.tsx"
 		]
 	},
 	"formatter": {

@@ -2,7 +2,7 @@ import { playTrack } from "@/api_calls/BFFEndpoints.tsx";
 import axios from "axios";
 
 const PlayTrack = async (token: string, trackURI: string, deviceId: string) => {
-	axios
+	return axios
 		.post(playTrack, {
 			spotify_access_token: token,
 			track_uri: trackURI,

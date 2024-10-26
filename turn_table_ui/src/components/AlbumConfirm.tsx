@@ -40,6 +40,7 @@ const AlbumConfirm = () => {
 			AddAlbum(username, scannedAlbum.album_uri);
 		}
 		setScannedAlbum(null);
+		setCurrentImage(null);
 	};
 
 	const rejectAlbum = () => {

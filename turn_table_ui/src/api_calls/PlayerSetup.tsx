@@ -12,10 +12,11 @@ const PlayerSetup = async (
 ) => {
 	let intervalId: NodeJS.Timeout | null = null;
 
-	player
+	return player
 		.connect()
 		.then((success: boolean) => {
 			if (!success) {
+				setIsPlayerReady(false);
 				throw new Error("Failed to connect to Spotify player.");
 			}
 			player.on("ready", (event: { device_id: string }) => {
@@ -45,7 +46,7 @@ const PlayerSetup = async (
 			player.on("not_ready", (_: { device_id: string }) => {
 				setIsPlayerReady(false);
 				clearInterval(intervalId as NodeJS.Timeout);
-				throw new Error("Device has gone offline unexpectedly.");
+				console.error("Device has gone offline unexpectedly.");
 			});
 
 			player.on(
@@ -56,7 +57,6 @@ const PlayerSetup = async (
 			);
 		})
 		.catch((_: Error) => {
-			setIsPlayerReady(false);
 			throw new Error("Failed to connect to Spotify player.");
 		});
 };
