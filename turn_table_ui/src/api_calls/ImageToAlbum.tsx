@@ -14,7 +14,6 @@ const ImageToAlbum = async (image: string) => {
 		);
 		return response.data;
 	} catch (error: unknown) {
-		// Check if the error is an AxiosError (has a response)
 		if (axios.isAxiosError(error)) {
 			// Handle Axios errors (network errors)
 			throw new Error(error.response?.data?.message || "An error occurred");

@@ -22,7 +22,6 @@ const PlayerSetup = async (
 			player.on("ready", (event: { device_id: string }) => {
 				setDeviceId(event.device_id);
 				setPlayer(player);
-				setIsPlayerReady(true);
 				console.log("Player is ready.");
 				intervalId = setInterval(async () => {
 					const state = await player.getCurrentState();

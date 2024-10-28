@@ -2,6 +2,8 @@ import ImageToAlbum from "@/api_calls/ImageToAlbum.tsx";
 import Upload from "@/components/Upload.tsx";
 import { useUpload } from "@/contexts/CaptureContext.tsx";
 import { useError } from "@/contexts/ErrorContext.tsx";
+import type Album from "@/interfaces/Album.tsx";
+import getScreenShot from "@/utils/GetScreenShot.tsx";
 import { Button } from "@nextui-org/button";
 import { Image } from "@nextui-org/image";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -38,24 +40,28 @@ const ImageCapture = () => {
 		setFadeConfirm(!fadeConfirm);
 	};
 
-	const getAlbum = async () => {
+	const getAlbum = () => {
 		setIsUploading(true);
 		triggerConfirmSlide();
 		if (webcamRef.current) {
-			const imageSrc = webcamRef.current.getScreenshot();
+			const imageSrc = getScreenShot(webcamRef);
 			if (!imageSrc) {
 				showError("Failed to capture image");
 				setIsUploading(false);
 				return;
 			}
 			setCurrentImage(imageSrc);
-
-			const album = await ImageToAlbum(imageSrc).catch((error) => {
-				showError(error.message);
-			});
-			setScannedAlbum(album);
+			ImageToAlbum(imageSrc)
+				.then((album: Album) => {
+					setScannedAlbum(album);
+					setIsUploading(false);
+				})
+				.catch((error) => {
+					setIsUploading(false);
+					setScannedAlbum(null);
+					showError(error.message);
+				});
 		}
-		setIsUploading(false);
 	};
 
 	return (
@@ -81,7 +87,7 @@ const ImageCapture = () => {
 							height={1080}
 						/>
 					) : (
-						<Image src={currentImage} />
+						<Image src={currentImage} alt="Captured Image" />
 					)}
 					<div className="p-4 text-center absolute bottom-0 w-full left-0 space-x-2">
 						<Button

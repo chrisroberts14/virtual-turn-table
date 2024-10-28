@@ -2,22 +2,17 @@ import AlbumConfirm from "@/components/AlbumConfirm.tsx";
 import AlbumHistorySelector from "@/components/AlbumHistorySelector.tsx";
 import ImageCapture from "@/components/ImageCapture.tsx";
 import { UploadContext } from "@/contexts/CaptureContext.tsx";
+import useResizeHandler from "@/hooks/UseResizeHandler.tsx";
 import type Album from "@/interfaces/Album.tsx";
 import { Resizable } from "re-resizable";
 import { useState } from "react";
 
 const ScanPage = () => {
-	const [contentHeight, setContentHeight] = useState(window.innerHeight - 240);
 	const [isUploading, setIsUploading] = useState(false);
 	const [scannedAlbum, setScannedAlbum] = useState<Album | null>(null);
 	const [fadeConfirm, setFadeConfirm] = useState(false);
 	const [currentImage, setCurrentImage] = useState<string | null>(null);
-
-	const onResize = () => {
-		setContentHeight(window.innerHeight - 240);
-	};
-
-	window.addEventListener("resize", onResize);
+	const contentHeight = useResizeHandler(240);
 
 	return (
 		<UploadContext.Provider

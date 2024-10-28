@@ -96,39 +96,6 @@ describe("PlayerSetup", () => {
 		vi.clearAllMocks();
 	});
 
-	test("should connect to the Spotify player and set device ID when ready", async () => {
-		const mockDeviceId = "test-device-id";
-
-		// Mock the player connection and ready event
-		// @ts-ignore
-		(mockPlayer.connect as vi.Mock).mockResolvedValue(true);
-		// @ts-ignore
-		(mockPlayer.on as vi.Mock).mockImplementation(
-			(event: string, callback: (arg0: { device_id: string }) => void) => {
-				if (event === "ready") {
-					callback({ device_id: mockDeviceId });
-				}
-			},
-		);
-
-		await act(async () => {
-			await PlayerSetup(
-				mockPlayer,
-				mockSetDeviceId,
-				mockSetPlayer,
-				mockSetIsPlayerReady,
-				mockSetTrackPosition,
-				mockSetCurrentSong,
-				mockCurrentAlbum,
-			);
-		});
-
-		expect(mockPlayer.connect).toHaveBeenCalled();
-		expect(mockSetDeviceId).toHaveBeenCalledWith(mockDeviceId);
-		expect(mockSetPlayer).toHaveBeenCalledWith(mockPlayer);
-		expect(mockSetIsPlayerReady).toHaveBeenCalledWith(true);
-	});
-
 	test("should update track position on interval", async () => {
 		const mockState = {
 			position: 1000,

@@ -23,10 +23,6 @@ const SongList = () => {
 	);
 
 	const handleSelectionChange = (keys: Selection) => {
-		if (keys === "all") {
-			// Handle "all" selection case if needed, but for single selection, this shouldn't occur
-			return;
-		}
 		setSelectedKey(new Set(keys)); // Update the selected key with the new Set
 	};
 
@@ -71,7 +67,7 @@ const SongList = () => {
 			</TableHeader>
 			<TableBody items={currentAlbum?.songs}>
 				{(item: Song) => (
-					<TableRow key={item.title}>
+					<TableRow key={item.title} title={item.title}>
 						{(columnKey) => (
 							<TableCell>
 								{columnKey === "artists"

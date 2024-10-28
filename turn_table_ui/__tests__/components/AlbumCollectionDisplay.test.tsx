@@ -75,17 +75,6 @@ describe("AlbumCollectionDisplay", () => {
 		});
 	});
 
-	it("should call showError when GetUserAlbums fails", async () => {
-		// @ts-ignore
-		(GetUserAlbums as vi.mock).mockReturnValue(
-			Promise.reject(new Error("test_error")),
-		);
-		render(<AlbumCollectionDisplay />);
-		await waitFor(() => {
-			expect(useError().showError).toHaveBeenCalledWith("test_error");
-		});
-	});
-
 	it("should call setCurrentAlbum when an album is clicked", async () => {
 		render(<AlbumCollectionDisplay />);
 		await waitFor(async () => {
@@ -99,6 +88,18 @@ describe("AlbumCollectionDisplay", () => {
 		await waitFor(async () => {
 			await userEvent.hover(screen.getByAltText("title"));
 			expect(useAlbumSelection().setHoveredAlbum).toHaveBeenCalledWith(album);
+		});
+	});
+
+	it("should call showError when GetUserAlbums fails", async () => {
+		// @ts-ignore
+		(GetUserAlbums as vi.mock).mockReturnValue(
+			Promise.reject(new Error("test_error")),
+		);
+
+		render(<AlbumCollectionDisplay />);
+		await waitFor(() => {
+			expect(useError().showError).toHaveBeenCalledWith("test_error");
 		});
 	});
 });

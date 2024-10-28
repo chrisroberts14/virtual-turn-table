@@ -28,7 +28,13 @@ const ErrorDisplay = () => {
 					placement="center"
 					isOpen={showError}
 					closeButton={
-						<Button size="sm" isIconOnly color="danger" variant="solid">
+						<Button
+							size="sm"
+							isIconOnly
+							color="danger"
+							variant="solid"
+							title="close"
+						>
 							<IoMdClose />
 						</Button>
 					}
