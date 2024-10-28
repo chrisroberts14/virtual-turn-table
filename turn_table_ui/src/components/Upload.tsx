@@ -15,16 +15,6 @@ const Upload: React.FC<{ triggerConfirmSlide: () => void }> = ({
 	const { showError } = useError();
 	const { setIsUploading, setScannedAlbum, isUploading } = useUpload();
 
-	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		if (e.target.files) {
-			if (e.target.files?.length > 0) {
-				if (e.target.files[0]) {
-					setFile(e.target.files[0]);
-				}
-			}
-		}
-	};
-
 	const handleUpload = async () => {
 		if (file) {
 			setIsUploading(true);
@@ -50,8 +40,13 @@ const Upload: React.FC<{ triggerConfirmSlide: () => void }> = ({
 					<CardHeader className="flex gap-3">
 						<Input
 							type={"file"}
-							onChange={handleFileChange}
+							onChange={(e) => {
+								if (e.target.files) {
+									setFile(e.target.files[0]);
+								}
+							}}
 							accept={".png, .jpg"}
+							title={"Upload file input"}
 						/>
 					</CardHeader>
 

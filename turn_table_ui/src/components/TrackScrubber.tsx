@@ -2,17 +2,7 @@ import { useSongControl } from "@/contexts/SongControlContext.tsx";
 import { Slider, type SliderValue } from "@nextui-org/slider";
 
 const TrackScrubber = () => {
-	const { player, trackPosition, trackDuration, isPlayerReady } =
-		useSongControl();
-
-	const handleChange = (value: SliderValue) => {
-		if (player && isPlayerReady) {
-			const newPosition = Number(value);
-			player.seek(newPosition).then((_) => {
-				return;
-			});
-		}
-	};
+	const { player, trackPosition, trackDuration } = useSongControl();
 
 	const formatTime = (sliderValue: SliderValue) => {
 		const time = Number(sliderValue);
@@ -41,7 +31,8 @@ const TrackScrubber = () => {
 			className="max-w-full pl-5 pr-5"
 			value={trackPosition}
 			getValue={formatTime}
-			onChange={handleChange}
+			onChange={(sliderValue) => player?.seek(Number(sliderValue))}
+			title="Track Position"
 		/>
 	);
 };

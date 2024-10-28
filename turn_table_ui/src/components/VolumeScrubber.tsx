@@ -1,25 +1,10 @@
-import { useError } from "@/contexts/ErrorContext.tsx";
 import { useSongControl } from "@/contexts/SongControlContext.tsx";
 import { Slider, type SliderValue } from "@nextui-org/slider";
 import { useState } from "react";
 
 const VolumeScrubber = () => {
 	const [volume, setVolume] = useState(0.5);
-	const { showError } = useError();
-	const { player, isPlayerReady } = useSongControl();
-
-	const handleChange = (value: number | number[]) => {
-		if (Array.isArray(value)) {
-			showError("VolumeScrubber: value is an array");
-			return;
-		}
-		if (player && isPlayerReady) {
-			setVolume(value);
-			player.setVolume(value).then((_) => {
-				return;
-			});
-		}
-	};
+	const { player } = useSongControl();
 
 	return (
 		<Slider
@@ -35,7 +20,13 @@ const VolumeScrubber = () => {
 			getValue={(value: SliderValue) =>
 				`${Math.round(Number(value) * 100).toString()}%`
 			}
-			onChange={handleChange}
+			onChange={(value) => {
+				if (!Array.isArray(value)) {
+					setVolume(value);
+					player?.setVolume(value);
+				}
+			}}
+			title="Volume"
 		/>
 	);
 };

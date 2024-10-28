@@ -2,7 +2,6 @@ import { useMusic } from "@/contexts/MusicContext.tsx";
 import { useSongControl } from "@/contexts/SongControlContext.tsx";
 import type Song from "@/interfaces/Song.tsx";
 import {
-	type Selection,
 	Table,
 	TableBody,
 	TableCell,
@@ -21,10 +20,6 @@ const SongList = () => {
 	const [selectedKey, setSelectedKey] = useState<Set<Key>>(
 		currentSong ? new Set([currentSong.title]) : new Set(),
 	);
-
-	const handleSelectionChange = (keys: Selection) => {
-		setSelectedKey(new Set(keys)); // Update the selected key with the new Set
-	};
 
 	useEffect(() => {
 		if (selectedKey.size < 1) {
@@ -58,7 +53,7 @@ const SongList = () => {
 			isStriped
 			selectionMode="single"
 			aria-label="Song list"
-			onSelectionChange={handleSelectionChange}
+			onSelectionChange={(keys) => setSelectedKey(new Set(keys))}
 			selectedKeys={selectedKey}
 		>
 			<TableHeader>
