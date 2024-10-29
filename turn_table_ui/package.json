@@ -59,7 +59,6 @@
 		"@biomejs/biome": "1.9.3",
 		"@testing-library/jest-dom": "^6.6.2",
 		"@testing-library/react": "^16.0.1",
-		"@testing-library/react-hooks": "^8.0.1",
 		"@testing-library/user-event": "^14.5.2",
 		"@types/enzyme": "^3.10.18",
 		"@types/jest": "^29.5.14",

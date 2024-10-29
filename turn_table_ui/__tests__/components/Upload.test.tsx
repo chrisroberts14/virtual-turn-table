@@ -3,10 +3,10 @@ import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import UploadFile from "../../src/api_calls/UploadFile";
 import Upload from "../../src/components/Upload";
-import { useUpload } from "../../src/contexts/CaptureContext";
 import { useError } from "../../src/contexts/ErrorContext";
+import { useUpload } from "../../src/contexts/UploadContext";
 
-vi.mock("../../src/contexts/CaptureContext");
+vi.mock("../../src/contexts/UploadContext");
 vi.mock("../../src/contexts/ErrorContext");
 vi.mock("../../src/api_calls/UploadFile");
 

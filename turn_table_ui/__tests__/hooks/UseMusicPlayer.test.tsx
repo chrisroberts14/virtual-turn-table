@@ -9,7 +9,6 @@ import PlayTrack from "../../src/api_calls/PlayTrack";
 import PlayerSetup from "../../src/api_calls/PlayerSetup";
 import { ErrorProvider } from "../../src/contexts/ErrorContext";
 import { MusicContext } from "../../src/contexts/MusicContext";
-import { useMusic } from "../../src/contexts/MusicContext";
 import { SpotifyTokenContext } from "../../src/contexts/SpotifyTokenContext";
 import { UsernameContext } from "../../src/contexts/UsernameContext";
 import type Song from "../../src/interfaces/Song";

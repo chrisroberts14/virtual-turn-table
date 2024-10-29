@@ -1,7 +1,7 @@
 import AlbumConfirm from "@/components/AlbumConfirm.tsx";
 import AlbumHistorySelector from "@/components/AlbumHistorySelector.tsx";
 import ImageCapture from "@/components/ImageCapture.tsx";
-import { UploadContext } from "@/contexts/CaptureContext.tsx";
+import { UploadContext } from "@/contexts/UploadContext.tsx";
 import useResizeHandler from "@/hooks/UseResizeHandler.tsx";
 import type Album from "@/interfaces/Album.tsx";
 import { Resizable } from "re-resizable";

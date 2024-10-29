@@ -1,7 +1,7 @@
 import ImageToAlbum from "@/api_calls/ImageToAlbum.tsx";
 import Upload from "@/components/Upload.tsx";
-import { useUpload } from "@/contexts/CaptureContext.tsx";
 import { useError } from "@/contexts/ErrorContext.tsx";
+import { useUpload } from "@/contexts/UploadContext.tsx";
 import type Album from "@/interfaces/Album.tsx";
 import getScreenShot from "@/utils/GetScreenShot.tsx";
 import { Button } from "@nextui-org/button";

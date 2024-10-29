@@ -20,9 +20,14 @@ export default defineConfig(({ mode }) => {
 		test: {
 			environment: "jsdom",
 			globals: true,
-			setupFiles: "./__tests__/setupTests.ts",
 			coverage: {
-				exclude: ["**/*.js", "**/site.ts", "**/vite.config.ts", "__tests__"],
+				exclude: [
+					"**/*.js",
+					"**/site.ts",
+					"**/vite.config.ts",
+					"__tests__",
+					"**/vite-env.d.ts",
+				],
 			},
 		},
 	};

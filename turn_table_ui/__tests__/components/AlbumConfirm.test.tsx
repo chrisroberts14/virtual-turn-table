@@ -3,15 +3,15 @@ import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import AddAlbum from "../../src/api_calls/AddAlbum";
 import AlbumConfirm from "../../src/components/AlbumConfirm";
-import { useUpload } from "../../src/contexts/CaptureContext";
 import { useMusic } from "../../src/contexts/MusicContext";
+import { useUpload } from "../../src/contexts/UploadContext";
 import { useUsername } from "../../src/contexts/UsernameContext";
 import type Album from "../../src/interfaces/Album";
 import "@testing-library/jest-dom";
 
 vi.mock("../../src/contexts/UsernameContext");
 vi.mock("../../src/contexts/MusicContext");
-vi.mock("../../src/contexts/CaptureContext");
+vi.mock("../../src/contexts/UploadContext");
 vi.mock("../../src/api_calls/AddAlbum");
 
 describe("AlbumConfirm", () => {

@@ -1,7 +1,7 @@
 import AddAlbum from "@/api_calls/AddAlbum.tsx";
 import AlbumDisplay from "@/components/AlbumDisplay.tsx";
-import { useUpload } from "@/contexts/CaptureContext.tsx";
 import { useMusic } from "@/contexts/MusicContext.tsx";
+import { useUpload } from "@/contexts/UploadContext.tsx";
 import { useUsername } from "@/contexts/UsernameContext.tsx";
 import { Button } from "@nextui-org/button";
 import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";

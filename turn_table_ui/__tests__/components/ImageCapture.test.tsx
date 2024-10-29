@@ -1,8 +1,8 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { vi } from "vitest";
 import ImageCapture from "../../src/components/ImageCapture";
-import { useUpload } from "../../src/contexts/CaptureContext";
 import { useError } from "../../src/contexts/ErrorContext";
+import { useUpload } from "../../src/contexts/UploadContext";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import { act } from "react";
@@ -10,7 +10,7 @@ import ImageToAlbum from "../../src/api_calls/ImageToAlbum";
 import type Album from "../../src/interfaces/Album";
 import GetScreenShot from "../../src/utils/GetScreenShot";
 
-vi.mock("../../src/contexts/CaptureContext");
+vi.mock("../../src/contexts/UploadContext");
 vi.mock("../../src/contexts/ErrorContext");
 vi.mock("../../src/utils/GetScreenShot");
 vi.mock("../../src/api_calls/ImageToAlbum");
