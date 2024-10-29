@@ -27,6 +27,8 @@ export default defineConfig(({ mode }) => {
 					"**/vite.config.ts",
 					"__tests__",
 					"**/vite-env.d.ts",
+					"**/provider.tsx",
+					"**/main.tsx",
 				],
 			},
 		},
