@@ -1,6 +1,3 @@
-[submodule "vtt_user_data"]
-	path = vtt_user_data
-	url = git@github.com:chrisroberts14/vtt_user_data.git
 [submodule "vtt_ui"]
 	path = vtt_ui
 	url = git@github.com:chrisroberts14/vtt_ui.git
@@ -10,3 +7,6 @@
 [submodule "vtt_bff"]
 	path = vtt_bff
 	url = git@github.com:chrisroberts14/vtt_bff.git
+[submodule "vtt_user_data"]
+	path = vtt_user_data
+	url = git@github.com:chrisroberts14/vtt_user_data.git

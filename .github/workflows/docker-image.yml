@@ -19,7 +19,7 @@ jobs:
         token: ${{ secrets.ACCESS_TOKEN }}
     - name: Build the Docker image
       run: |
-        cd vtt-image-to-album
+        cd vtt_image_to_album
         docker build .
 
   build-bff-container:
@@ -33,7 +33,7 @@ jobs:
         token: ${{ secrets.ACCESS_TOKEN }}
     - name: Build the Docker image
       run: |
-        cd vtt-bff
+        cd vtt_bff
         docker build .
 
   build-ui-container:
@@ -47,7 +47,7 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
       - name: Build the Docker image
         run: |
-          cd vtt-ui
+          cd vtt_ui
           docker build .
 
   build-user-data-container:
@@ -61,5 +61,5 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
       - name: Build the Docker image
         run: |
-          cd vtt-user-data
+          cd vtt_user_data
           docker build .
