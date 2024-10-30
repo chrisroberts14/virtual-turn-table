@@ -1,12 +1,12 @@
 [submodule "vtt-user-data"]
 	path = vtt-user-data
-	url = https://github.com:chrisroberts14/vtt-user-data.git
+	url = https://github.com/chrisroberts14/vtt-user-data.git
 [submodule "vtt-ui"]
 	path = vtt-ui
-	url = https://github.com:chrisroberts14/vtt-ui.git
+	url = https://github.com/chrisroberts14/vtt-ui.git
 [submodule "vtt-image-to-album"]
 	path = vtt-image-to-album
-	url = https://github.com:chrisroberts14/vtt-image-to-album.git
+	url = https://github.com/chrisroberts14/vtt-image-to-album.git
 [submodule "vtt-bff"]
 	path = vtt-bff
-	url = https://github.com:chrisroberts14/vtt-bff.git
+	url = https://github.com/chrisroberts14/vtt-bff.git
