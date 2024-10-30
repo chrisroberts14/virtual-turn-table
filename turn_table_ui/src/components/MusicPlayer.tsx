@@ -90,7 +90,7 @@ const MusicPlayer = () => {
 								</Resizable>
 							) : null}
 						</div>
-						<div className="flex justify-center items-center bg-gray-700 flex-grow">
+						<div className="flex p-10 bg-gray-700 justify-center flex-grow">
 							<SpinningVinyl />
 						</div>
 					</div>

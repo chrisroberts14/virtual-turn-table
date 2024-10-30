@@ -37,7 +37,7 @@ services:
     depends_on:
       - bff
 
-  user-data:
+  user_data:
     build: user_data
     command: fastapi run user_data --port 8002
     ports:
