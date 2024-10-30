@@ -29,8 +29,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-        cache-dependency-path: './vtt-ui'
-        submodules: true
+        cache-dependency-path: './vtt_ui'
     - run: |
         cd vtt_ui
         npm ci
