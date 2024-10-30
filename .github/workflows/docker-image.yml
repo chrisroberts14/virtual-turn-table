@@ -16,7 +16,7 @@ jobs:
     - uses: actions/checkout@v4
       with:
         submodules: true
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.ACCESS_TOKEN }}
     - name: Build the Docker image
       run: |
         cd vtt-image-to-album
@@ -30,7 +30,7 @@ jobs:
     - uses: actions/checkout@v4
       with:
         submodules: true
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.ACCESS_TOKEN }}
     - name: Build the Docker image
       run: |
         cd vtt-bff
@@ -44,7 +44,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.ACCESS_TOKEN }}
       - name: Build the Docker image
         run: |
           cd vtt-ui
@@ -58,7 +58,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.ACCESS_TOKEN }}
       - name: Build the Docker image
         run: |
           cd vtt-user-data
