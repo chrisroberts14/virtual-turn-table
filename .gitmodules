@@ -1,12 +1,12 @@
-[submodule "vtt-user-data"]
+[submodule "vtt_user_data"]
 	path = vtt_user_data
 	url = git@github.com:chrisroberts14/vtt-user-data.git
-[submodule "vtt-ui"]
+[submodule "vtt_ui"]
 	path = vtt_ui
 	url = git@github.com:chrisroberts14/vtt-ui.git
-[submodule "vtt-image-to-album"]
+[submodule "vtt_image_to_album"]
 	path = vtt_image_to_album
 	url = git@github.com:chrisroberts14/vtt-image-to-album.git
-[submodule "vtt-bff"]
+[submodule "vtt_bff"]
 	path = vtt_bff
 	url = git@github.com:chrisroberts14/vtt-bff.git
