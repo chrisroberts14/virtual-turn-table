@@ -26,7 +26,8 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-        cache-dependency-path: './turn_table_ui'
+        cache-dependency-path: './vtt-ui'
+        submodules: true
     - run: |
         cd vtt-ui
         npm ci
