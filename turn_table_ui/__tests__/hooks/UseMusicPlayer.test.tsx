@@ -143,6 +143,9 @@ describe("UseMusicPlayer", () => {
 			currentSong: null,
 		});
 
+		// @ts-ignore
+		(PlayTrack as vi.mock).mockReturnValue(Promise.resolve());
+
 		const { result } = renderHook(() => UseMusicPlayer(), { wrapper });
 		act(() => {
 			result.current.setIsPlayerReady(true);

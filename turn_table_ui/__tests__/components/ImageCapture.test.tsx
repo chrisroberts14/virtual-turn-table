@@ -78,7 +78,7 @@ describe("ImageCapture upload", () => {
 
 	it("should render when no cameras are found", () => {
 		render(<ImageCapture />);
-		expect(screen.getByText("No cameras found")).toBeInTheDocument();
+		expect(screen.getByTitle("Detecting cameras...")).toBeInTheDocument();
 	});
 });
 

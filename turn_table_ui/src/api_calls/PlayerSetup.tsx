@@ -22,12 +22,10 @@ const PlayerSetup = async (
 			player.on("ready", (event: { device_id: string }) => {
 				setDeviceId(event.device_id);
 				setPlayer(player);
-				console.log("Player is ready.");
 				intervalId = setInterval(async () => {
 					const state = await player.getCurrentState();
 					if (state) {
 						setTrackPosition(state.position);
-						console.log("Player state updated.");
 						if (
 							state.position >= state.duration - 1000 &&
 							!state.paused &&

@@ -11,6 +11,14 @@ vi.mock("../../src/contexts/ErrorContext");
 vi.mock("../../src/contexts/UsernameContext");
 
 describe("Navigation Bar", () => {
+	beforeEach(() => {
+		// @ts-ignore
+		(useError as vi.Mock).mockReturnValue({ useError: vi.fn() });
+
+		// @ts-ignore
+		(useUsername as vi.Mock).mockReturnValue({ useUsername: vi.fn() });
+	});
+
 	it("renders the navigation bar with the logo and title", () => {
 		// @ts-ignore
 		(useNavigation as vi.Mock).mockReturnValue({
@@ -30,7 +38,7 @@ describe("Navigation Bar", () => {
 		(useNavigation as vi.Mock).mockReturnValue({
 			nextPage: "play",
 			setNextPage: vi.fn(),
-			isSignedIn: false,
+			isSignedIn: true,
 		});
 
 		render(<NavigationBar />);
@@ -46,7 +54,7 @@ describe("Navigation Bar", () => {
 		(useNavigation as vi.Mock).mockReturnValue({
 			nextPage: "play",
 			setNextPage: mockSetNextPage,
-			isSignedIn: false,
+			isSignedIn: true,
 		});
 
 		render(<NavigationBar />);

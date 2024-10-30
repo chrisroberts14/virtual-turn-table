@@ -101,7 +101,7 @@ const useMusicPlayer = () => {
 	}, [currentAlbum, isPlayerReady]);
 
 	useEffect(() => {
-		if (currentAlbum && isPlayerReady && currentSong) {
+		if (currentAlbum && isPlayerReady && currentSong && token) {
 			const currentSongIndex = currentAlbum.songs.findIndex(
 				(song) => song.title === currentSong.title,
 			);
@@ -110,20 +110,12 @@ const useMusicPlayer = () => {
 			} else {
 				setNextSong(null);
 			}
-			playTrackWithHandling().then(() => {
-				return;
-			});
-		}
-	}, [currentSong, currentAlbum, isPlayerReady]);
-
-	const playTrackWithHandling = async () => {
-		if (currentSong && currentAlbum && token && deviceId) {
 			PlayTrack(token, currentSong.uri, deviceId).catch((error) => {
 				showError(error.message);
 			});
 			setTrackDuration(currentSong.duration_ms);
 		}
-	};
+	}, [currentSong, currentAlbum, isPlayerReady, showError, token, deviceId]);
 
 	return {
 		player,

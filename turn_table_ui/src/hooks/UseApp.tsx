@@ -19,8 +19,10 @@ const useApp = () => {
 	useEffect(() => {
 		// Set to the correct page
 		const currentState = getStateData();
-		if (currentState?.currentPage) {
+		if (currentState?.currentPage && currentState?.currentAlbum) {
 			setNextPage(currentState.currentPage);
+		} else {
+			setNextPage("scan");
 		}
 
 		const hash = window.location.hash.substring(1);

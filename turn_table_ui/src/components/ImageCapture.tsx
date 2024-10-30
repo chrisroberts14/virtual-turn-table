@@ -77,7 +77,7 @@ const ImageCapture = () => {
 					<br />
 					Detecting cameras...
 					<br />
-					<Spinner className="pt-2" />
+					<Spinner className="pt-2" title="Detecting cameras..." />
 					<Upload triggerConfirmSlide={triggerConfirmSlide} />
 				</div>
 			) : usingCamera ? (

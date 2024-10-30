@@ -37,10 +37,14 @@ const AlbumCollectionDisplay = () => {
 					}
 				})
 				.catch((error) => {
-					showError(error.message);
+					displayError(error.message);
 				});
 		}
-	}, [username, token, showError, setAlbums]);
+	}, [username, token, setAlbums]);
+
+	const displayError = (error: string) => {
+		showError(error);
+	};
 
 	const handleClick = (album: Album) => {
 		setCurrentAlbum(album);

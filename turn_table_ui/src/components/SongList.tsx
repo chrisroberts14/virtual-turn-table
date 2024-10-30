@@ -21,22 +21,20 @@ const SongList = () => {
 		currentSong ? new Set([currentSong.title]) : new Set(),
 	);
 
-	useEffect(() => {
-		if (selectedKey.size < 1) {
+	const handleSelectionChange = (keys: Set<Key>) => {
+		if (keys.size === 0) {
 			setCurrentSong(null);
 			setTrackDuration(0);
 		} else {
-			if (currentAlbum) {
-				const newSongIndex = currentAlbum.songs.findIndex(
-					(song) => song.title === selectedKey.values().next().value,
-				);
-				setCurrentSong(currentAlbum.songs[newSongIndex]);
-				if (newSongIndex !== -1) {
-					setTrackDuration(currentAlbum.songs[newSongIndex].duration_ms);
-				}
+			const song = currentAlbum?.songs.find(
+				(song) => song.title === keys.values().next().value,
+			);
+			if (song) {
+				setCurrentSong(song);
+				setTrackDuration(song.duration_ms);
 			}
 		}
-	}, [selectedKey, currentAlbum, setCurrentSong, setTrackDuration]);
+	};
 
 	useEffect(() => {
 		// Update the selected item in the list
@@ -53,7 +51,7 @@ const SongList = () => {
 			isStriped
 			selectionMode="single"
 			aria-label="Song list"
-			onSelectionChange={(keys) => setSelectedKey(new Set(keys))}
+			onSelectionChange={(keys) => handleSelectionChange(new Set(keys))}
 			selectedKeys={selectedKey}
 		>
 			<TableHeader>
