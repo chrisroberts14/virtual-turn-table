@@ -59,17 +59,30 @@ const useMusicPlayer = () => {
 					volume: 0.5,
 				});
 				setPlayer(player);
-				PlayerSetup(
-					player,
-					setDeviceId,
-					setPlayer,
-					setIsPlayerReady,
-					setTrackPosition,
-					setCurrentSong,
-					currentAlbum,
-				)
+				PlayerSetup(player, setIsPlayerReady, setTrackPosition)
 					.then(() => {
 						setIsPlayerReady(true);
+						player.on("ready", (event: { device_id: string }) => {
+							setDeviceId(event.device_id);
+							setPlayer(player);
+							setInterval(async () => {
+								const state = await player.getCurrentState();
+								if (state) {
+									setTrackPosition(state.position);
+									if (
+										state.position >= state.duration - 1000 &&
+										!state.paused &&
+										currentAlbum
+									) {
+										const currentSongIndex = currentAlbum.songs.findIndex(
+											(song) =>
+												song.title === state.track_window.current_track.name,
+										);
+										setCurrentSong(currentAlbum.songs[currentSongIndex + 1]);
+									}
+								}
+							}, 500);
+						});
 					})
 					.catch((error) => {
 						console.error(error.message);
@@ -101,7 +114,7 @@ const useMusicPlayer = () => {
 	}, [currentAlbum, isPlayerReady]);
 
 	useEffect(() => {
-		if (currentAlbum && isPlayerReady && currentSong && token) {
+		if (currentAlbum && currentSong) {
 			const currentSongIndex = currentAlbum.songs.findIndex(
 				(song) => song.title === currentSong.title,
 			);
@@ -110,12 +123,20 @@ const useMusicPlayer = () => {
 			} else {
 				setNextSong(null);
 			}
-			PlayTrack(token, currentSong.uri, deviceId).catch((error) => {
-				showError(error.message);
-			});
-			setTrackDuration(currentSong.duration_ms);
 		}
-	}, [currentSong, currentAlbum, isPlayerReady, showError, token, deviceId]);
+	}, [currentSong, currentAlbum]);
+
+	useEffect(() => {
+		if (token && currentSong) {
+			PlayTrack(token, currentSong.uri, deviceId)
+				.then(() => {
+					setTrackDuration(currentSong.duration_ms);
+				})
+				.catch((error) => {
+					showError(error.message);
+				});
+		}
+	}, [currentSong, token, deviceId, showError]);
 
 	return {
 		player,

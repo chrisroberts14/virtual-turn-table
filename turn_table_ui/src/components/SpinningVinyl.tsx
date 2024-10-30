@@ -1,9 +1,19 @@
 import { useMusic } from "@/contexts/MusicContext.tsx";
 import { useSongControl } from "@/contexts/SongControlContext.tsx";
+import { Image } from "@nextui-org/image";
+import { useEffect, useState } from "react";
 
 const SpinningVinyl = () => {
 	const { currentAlbum } = useMusic();
 	const { isPaused } = useSongControl();
+	const [isAlbumCoverOffScreen, setIsAlbumCoverOffScreen] = useState(false);
+
+	useEffect(() => {
+		setIsAlbumCoverOffScreen(false);
+		setTimeout(() => {
+			setIsAlbumCoverOffScreen(true);
+		}, 2000);
+	}, []);
 
 	return (
 		<div className="relative w-[70%]">
@@ -14,6 +24,18 @@ const SpinningVinyl = () => {
 			>
 				<rect height="100%" width="100%" fill="#D0AC81" rx="20" ry="20" />
 			</svg>
+			{currentAlbum && (
+				<div
+					className={`z-20 flex h-full w-full absolute p-10 transition-transform ${isAlbumCoverOffScreen ? "-translate-x-[150%] duration-2000" : "translate-x-0"}`}
+				>
+					<div className="w-1/5 h-full z-10" />
+					<Image
+						className="z-20 w-[100%] h-[100%]"
+						src={currentAlbum.image_url}
+					/>
+					<div className="w-1/5 h-full z-10" />
+				</div>
+			)}
 			<svg
 				className={
 					!isPaused

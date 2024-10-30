@@ -29,11 +29,11 @@ const UserBox = () => {
 						setProfileImage(response.image_url);
 					}
 				})
-				.catch((error) => {
-					showError(error.message);
+				.catch((_) => {
+					logout();
 				});
 		}
-	}, [setUsername, showError]);
+	}, [setUsername]);
 
 	useEffect(() => {
 		if (!username || !email) {

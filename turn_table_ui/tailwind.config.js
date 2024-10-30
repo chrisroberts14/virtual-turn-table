@@ -11,6 +11,9 @@ module.exports = {
 	],
 	theme: {
 		extend: {
+			transitionDuration: {
+				2000: "2000ms",
+			},
 			keyframes: {
 				slideUp: {
 					"0%": { transform: "translateY(100%)", opacity: "0" },

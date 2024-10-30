@@ -56,7 +56,7 @@ describe("UserBox", () => {
 		});
 	});
 
-	it("should show error if get user info fails", async () => {
+	it("should logout if get user info fails", async () => {
 		// @ts-ignore
 		(GetUserInfo as vi.Mock).mockRejectedValue(
 			new Error("Failed to get user info"),
@@ -68,7 +68,7 @@ describe("UserBox", () => {
 			</UsernameContext.Provider>,
 		);
 		await waitFor(() => {
-			expect(mockShowError).toHaveBeenCalledWith("Failed to get user info");
+			expect(clearStateDataMock).toHaveBeenCalled();
 		});
 	});
 

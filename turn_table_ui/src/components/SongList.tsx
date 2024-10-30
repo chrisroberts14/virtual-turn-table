@@ -53,6 +53,7 @@ const SongList = () => {
 			aria-label="Song list"
 			onSelectionChange={(keys) => handleSelectionChange(new Set(keys))}
 			selectedKeys={selectedKey}
+			className="z-30"
 		>
 			<TableHeader>
 				<TableColumn key="title">Title</TableColumn>
