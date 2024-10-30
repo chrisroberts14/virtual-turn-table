@@ -26,6 +26,9 @@ describe("Upload", () => {
 		useError.mockReturnValue({ showError: mockShowError });
 		// @ts-ignore
 		UploadFile.mockReturnValue(Promise.resolve());
+
+		// @ts-ignore
+		global.URL.createObjectURL = vi.fn(() => "mocked_url");
 	});
 
 	it("should render", () => {

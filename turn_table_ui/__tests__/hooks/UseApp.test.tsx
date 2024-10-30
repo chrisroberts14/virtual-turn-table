@@ -13,7 +13,7 @@ describe("UseApp", () => {
 		(getStateData as vi.mock).mockReturnValue({ currentPage: "play" });
 		const { result } = renderHook(() => useApp());
 		expect(result.current.isSignedIn).toBe(false);
-		expect(result.current.nextPage).toBe("play");
+		expect(result.current.nextPage).toBe("scan");
 		expect(result.current.token).toBe(null);
 	});
 
@@ -27,7 +27,7 @@ describe("UseApp", () => {
 		});
 		const { result } = renderHook(() => useApp());
 		expect(result.current.isSignedIn).toBe(true);
-		expect(result.current.nextPage).toBe("play");
+		expect(result.current.nextPage).toBe("scan");
 		expect(result.current.token).toBe("test_token");
 	});
 

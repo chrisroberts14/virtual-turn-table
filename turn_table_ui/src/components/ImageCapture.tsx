@@ -7,12 +7,13 @@ import getScreenShot from "@/utils/GetScreenShot.tsx";
 import { Button } from "@nextui-org/button";
 import { Image } from "@nextui-org/image";
 import { Spinner } from "@nextui-org/spinner";
+import { Tab, Tabs } from "@nextui-org/tabs";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { FaCamera, FaUpload } from "react-icons/fa";
 import Webcam from "react-webcam";
 
 const ImageCapture = () => {
 	const {
-		scannedAlbum,
 		setScannedAlbum,
 		isUploading,
 		setIsUploading,
@@ -24,7 +25,6 @@ const ImageCapture = () => {
 	const webcamRef = useRef<Webcam | null>(null);
 	const { showError } = useError();
 	const [cameras, setCameras] = useState<MediaDeviceInfo[]>([]);
-	const [usingCamera, setUsingCamera] = useState<boolean>(false);
 
 	// Use callback to cache the function between refreshes
 	const getCameras = useCallback((mediaDevices: MediaDeviceInfo[]) => {
@@ -41,7 +41,7 @@ const ImageCapture = () => {
 		setFadeConfirm(!fadeConfirm);
 	};
 
-	const getAlbum = () => {
+	const getAlbumFromCamera = () => {
 		setIsUploading(true);
 		triggerConfirmSlide();
 		if (webcamRef.current) {
@@ -80,41 +80,56 @@ const ImageCapture = () => {
 					<Spinner className="pt-2" title="Detecting cameras..." />
 					<Upload triggerConfirmSlide={triggerConfirmSlide} />
 				</div>
-			) : usingCamera ? (
-				<div>
-					{!currentImage ? (
-						<Webcam
-							audio={false}
-							screenshotFormat="image/png"
-							className="rounded-lg object-cover w-full h-full p-8 pb-16"
-							ref={webcamRef}
-							width={1920}
-							height={1080}
-						/>
-					) : (
-						<Image src={currentImage} alt="Captured Image" />
-					)}
-					<div className="p-4 text-center absolute bottom-0 w-full left-0 space-x-2">
-						<Button
-							onClick={getAlbum}
-							isDisabled={scannedAlbum !== null || isUploading}
-						>
-							Capture
-						</Button>
-						<Button
-							onClick={() => setUsingCamera(!usingCamera)}
-							className="mt-4"
-						>
-							Use file upload
-						</Button>
-					</div>
-				</div>
 			) : (
-				<div className="text-center">
-					<Upload triggerConfirmSlide={triggerConfirmSlide} />
-					<Button onClick={() => setUsingCamera(!usingCamera)} className="mt-4">
-						Use camera
-					</Button>
+				<div className="flex flex-col">
+					<div className="justify-center text-center content-center">
+						<Tabs>
+							<Tab
+								key="camera"
+								title={
+									<div
+										className="flex items-center space-x-2"
+										title="Swap to camera"
+									>
+										<FaCamera />
+										<span> Camera </span>
+									</div>
+								}
+							>
+								<div className="flex justify-center" title="Webcam">
+									{!currentImage ? (
+										<Webcam
+											audio={false}
+											screenshotFormat="image/png"
+											className="rounded-lg object-cover w-[80%] h-full p-8 pb-4"
+											ref={webcamRef}
+											width={1920}
+											height={1080}
+										/>
+									) : (
+										<Image src={currentImage} alt="Captured Image" />
+									)}
+								</div>
+								<Button onClick={getAlbumFromCamera} disabled={isUploading}>
+									Capture
+								</Button>
+							</Tab>
+							<Tab
+								key="upload"
+								title={
+									<div
+										className="flex items-center space-x-2"
+										title="Swap to upload"
+									>
+										<FaUpload />
+										<span> Upload </span>
+									</div>
+								}
+							>
+								<Upload triggerConfirmSlide={triggerConfirmSlide} />
+							</Tab>
+						</Tabs>
+					</div>
 				</div>
 			)}
 		</div>

@@ -34,14 +34,14 @@ const album: Album = {
 
 const swapToCamera = async () => {
 	await waitFor(() => {
-		expect(screen.getByText("Use camera")).toBeInTheDocument();
+		expect(screen.getByTitle("Swap to camera")).toBeInTheDocument();
 	});
 
 	act(() => {
-		userEvent.click(screen.getByText("Use camera"));
+		userEvent.click(screen.getByTitle("Swap to camera"));
 	});
 	await waitFor(() => {
-		expect(screen.getByText("Use file upload")).toBeInTheDocument();
+		expect(screen.getByTitle("Webcam")).toBeInTheDocument();
 	});
 };
 

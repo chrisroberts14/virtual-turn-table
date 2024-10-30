@@ -10,6 +10,8 @@ import {
 } from "@nextui-org/navbar";
 import { Tab, Tabs } from "@nextui-org/tabs";
 import type { Key } from "@react-types/shared";
+import { FaPlay } from "react-icons/fa";
+import { IoScan } from "react-icons/io5";
 
 const NavigationBar = () => {
 	const { nextPage, setNextPage, isSignedIn } = useNavigation();
@@ -33,8 +35,24 @@ const NavigationBar = () => {
 						selectedKey={nextPage}
 						onSelectionChange={switchPage}
 					>
-						<Tab key="play" title="Play" />
-						<Tab key="scan" title="Scan" />
+						<Tab
+							key="play"
+							title={
+								<div className="flex items-center space-x-2">
+									<FaPlay />
+									<span> Play </span>
+								</div>
+							}
+						/>
+						<Tab
+							key="scan"
+							title={
+								<div className="flex items-center space-x-2">
+									<IoScan />
+									<span> Scan </span>
+								</div>
+							}
+						/>
 					</Tabs>
 				)}
 			</NavbarContent>
