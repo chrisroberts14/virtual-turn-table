@@ -14,12 +14,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-      with:
-        submodules: true
-        token: ${{ secrets.ACCESS_TOKEN }}
     - name: Build the Docker image
       run: |
-        cd vtt_image_to_album
+        cd image_to_album
         docker build .
 
   build-bff-container:
@@ -28,12 +25,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-      with:
-        submodules: true
-        token: ${{ secrets.ACCESS_TOKEN }}
     - name: Build the Docker image
       run: |
-        cd vtt_bff
+        cd bff
         docker build .
 
   build-ui-container:
@@ -42,12 +36,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
-          token: ${{ secrets.ACCESS_TOKEN }}
       - name: Build the Docker image
         run: |
-          cd vtt_ui
+          cd turn_table_ui
           docker build .
 
   build-user-data-container:
@@ -56,10 +47,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
-          token: ${{ secrets.ACCESS_TOKEN }}
       - name: Build the Docker image
         run: |
-          cd vtt_user_data
+          cd user_data
           docker build .

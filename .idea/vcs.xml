@@ -2,9 +2,5 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/vtt-bff" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/vtt-image-to-album" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/vtt-ui" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/vtt-user-data" vcs="Git" />
   </component>
 </project>

@@ -6,30 +6,30 @@
 version: 2
 updates:
   - package-ecosystem: "npm"
-    directory: "/vtt_ui/" # Location of package manifests
+    directory: "/turn_table_ui/" # Location of package manifests
     schedule:
       interval: "weekly"
   - package-ecosystem: "pip"
-    directory: "/vtt_image_to_album/" # Location of package manifests
+    directory: "/image_to_album/" # Location of package manifests
     schedule:
       interval: "weekly"
   - package-ecosystem: "pip"
-    directory: "/vtt_user_data/" # Location of package manifests
+    directory: "/user_data/" # Location of package manifests
     schedule:
       interval: "weekly"
   - package-ecosystem: "pip"
-    directory: "/vtt_bff/" # Location of package manifests
+    directory: "/bff/" # Location of package manifests
     schedule:
       interval: "weekly"
   - package-ecosystem: "docker"
-    directory: "/vtt_bff/" # Location of package manifests
+    directory: "/bff/" # Location of package manifests
     schedule:
       interval: "weekly"
   - package-ecosystem: "docker"
-    directory: "/vtt_ui/" # Location of package manifests
+    directory: "/turn_table_ui/" # Location of package manifests
     schedule:
       interval: "weekly"
   - package-ecosystem: "docker"
-    directory: "/vtt_image_to_album/" # Location of package manifests
+    directory: "/image_to_album/" # Location of package manifests
     schedule:
       interval: "weekly"
