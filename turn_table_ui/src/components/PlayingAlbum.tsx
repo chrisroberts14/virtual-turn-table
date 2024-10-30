@@ -3,6 +3,7 @@ import { useSongControl } from "@/contexts/SongControlContext.tsx";
 import { Card, CardBody } from "@nextui-org/card";
 import { Divider } from "@nextui-org/divider";
 import { Image } from "@nextui-org/image";
+import { Skeleton } from "@nextui-org/skeleton";
 
 const PlayingAlbum = () => {
 	const { currentAlbum } = useMusic();
@@ -18,7 +19,10 @@ const PlayingAlbum = () => {
 					alt="album cover"
 				/>
 			) : (
-				<div>No Album</div>
+				<Skeleton
+					style={{ width: "10em", height: "10em" }}
+					className="rounded-lg"
+				/>
 			)}
 
 			{currentAlbum ? (
@@ -43,7 +47,21 @@ const PlayingAlbum = () => {
 					</Card>
 					<p className="text-[0.7rem]">Is up next...</p>
 				</div>
-			) : null}
+			) : (
+				<div className={"flex flex-col pl-2 justify-center"}>
+					<p className="text-[0.7rem]">Currently Playing:</p>
+					<Card>
+						<CardBody className="max-h-16">
+							<Skeleton style={{ width: "8em", height: "2em" }} />
+						</CardBody>
+						<Divider />
+						<CardBody className="max-h-16">
+							<Skeleton style={{ width: "8em", height: "2em" }} />
+						</CardBody>
+					</Card>
+					<p className="text-[0.7rem]">Is up next...</p>
+				</div>
+			)}
 		</div>
 	);
 };

@@ -12,6 +12,7 @@ from user_data.db_models import UserDb, AlbumDb
 
 app = FastAPI()
 
+
 origins = [
     "http://localhost:8000",
 ]

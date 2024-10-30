@@ -27,14 +27,16 @@ const NavigationBar = () => {
 				</p>
 			</NavbarBrand>
 			<NavbarContent className="hidden sm:flex gap-4 flex-[2]" justify="center">
-				<Tabs
-					aria-label="Tab control"
-					selectedKey={nextPage}
-					onSelectionChange={switchPage}
-				>
-					<Tab key="play" title="Play" />
-					<Tab key="scan" title="Scan" />
-				</Tabs>
+				{isSignedIn && (
+					<Tabs
+						aria-label="Tab control"
+						selectedKey={nextPage}
+						onSelectionChange={switchPage}
+					>
+						<Tab key="play" title="Play" />
+						<Tab key="scan" title="Scan" />
+					</Tabs>
+				)}
 			</NavbarContent>
 			<NavbarContent justify="end">
 				<NavbarItem>{isSignedIn ? <UserBox /> : <Login />}</NavbarItem>

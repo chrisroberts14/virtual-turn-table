@@ -12,7 +12,6 @@ engine = create_engine(
     f"sqlite:///{Path(__file__).parent}/user_data.db",
     connect_args={"check_same_thread": False},
 )
-print(engine.url)
 
 
 # Enable foreign key constraints on connection
@@ -24,7 +23,6 @@ def _enable_foreign_keys(dbapi_connection, _):  # pragma: no cover
 
 # Use the event listener to apply the function on new connections
 event.listen(engine, "connect", _enable_foreign_keys)
-
 
 Base = declarative_base()
 

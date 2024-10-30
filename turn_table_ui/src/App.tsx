@@ -1,4 +1,5 @@
 import ErrorDisplay from "@/components/ErrorDisplay.tsx";
+import LoggedOutPage from "@/components/LoggedOutPage.tsx";
 import MusicPlayer from "@/components/MusicPlayer.tsx";
 import NavigationBar from "@/components/NavigationBar.tsx";
 import ScanPage from "@/components/ScanPage.tsx";
@@ -71,7 +72,9 @@ function App() {
 									</div>
 								</div>
 							</MusicContext.Provider>
-						) : null}
+						) : (
+							<LoggedOutPage />
+						)}
 					</div>
 					<ErrorDisplay />
 				</SpotifyTokenContext.Provider>

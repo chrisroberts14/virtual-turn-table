@@ -1,18 +1,19 @@
 """Database models for user data."""
 
+from pathlib import Path
 from typing import List
 
 from sqlalchemy import Column, String, ForeignKey, Table
 from sqlalchemy.orm import Mapped, relationship
 from sqlalchemy.testing.schema import mapped_column
 
-from user_data.db import Base
+from user_data.db import Base, engine
 
 user_album_link_table = Table(
     "user_album_link_table",
     Base.metadata,
-    Column("username", String, ForeignKey("users.username"), primary_key=True),
-    Column("album_uri", String, ForeignKey("albums.album_uri"), primary_key=True),
+    Column("username", String(50), ForeignKey("users.username"), primary_key=True),
+    Column("album_uri", String(20), ForeignKey("albums.album_uri"), primary_key=True),
 )
 
 
@@ -52,8 +53,8 @@ class UserDb(Base, Crud):
 
     __tablename__ = "users"
 
-    username: Mapped[str] = mapped_column(primary_key=True, unique=True)
-    email: Mapped[str] = mapped_column(unique=True)
+    username: Mapped[str] = mapped_column(String(50), primary_key=True, unique=True)
+    email: Mapped[str] = mapped_column(String(100), unique=True)
     albums: Mapped[List["AlbumDb"]] = relationship(
         "AlbumDb", secondary=user_album_link_table, back_populates="users"
     )
@@ -64,7 +65,11 @@ class AlbumDb(Base, Crud):
 
     __tablename__ = "albums"
 
-    album_uri: Mapped[str] = mapped_column(primary_key=True, unique=True)
+    album_uri: Mapped[str] = mapped_column(String(20), primary_key=True, unique=True)
     users: Mapped[List[UserDb]] = relationship(
         "UserDb", secondary=user_album_link_table, back_populates="albums"
     )
+
+
+if not Path(Path(__file__).parent, "user_data.db").exists():
+    Base.metadata.create_all(bind=engine)

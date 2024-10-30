@@ -6,6 +6,7 @@ import type Album from "@/interfaces/Album.tsx";
 import getScreenShot from "@/utils/GetScreenShot.tsx";
 import { Button } from "@nextui-org/button";
 import { Image } from "@nextui-org/image";
+import { Spinner } from "@nextui-org/spinner";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
 
@@ -71,8 +72,12 @@ const ImageCapture = () => {
 			}`}
 		>
 			{cameras.length === 0 ? (
-				<div className="flex flex-col items-center">
-					No cameras found
+				<div className="flex flex-col items-center text-center">
+					No cameras found only upload available
+					<br />
+					Detecting cameras...
+					<br />
+					<Spinner className="pt-2" />
 					<Upload triggerConfirmSlide={triggerConfirmSlide} />
 				</div>
 			) : usingCamera ? (
