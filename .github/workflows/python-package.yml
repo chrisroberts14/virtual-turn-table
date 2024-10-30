@@ -28,10 +28,10 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         python -m pip install pytest
-        if [ -f ./image_to_album/requirements.txt ]; then pip install -r ./image_to_album/requirements.txt; fi
+        if [ -f ./vtt-image-to-album/requirements.txt ]; then pip install -r ./vtt-image-to-album/requirements.txt; fi
     - name: Test with pytest
       run: |
-        pytest image_to_album --cov-fail-under=100 -n 4
+        pytest vtt-image-to-album --cov-fail-under=100 -n 4
       env:
         PYTHONPATH: ${{ github.workspace }}
         SPOTIFY_CLIENT_ID: "spotify_client_id"
@@ -57,10 +57,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install pytest
-          if [ -f ./bff/requirements.txt ]; then pip install -r ./bff/requirements.txt; fi
+          if [ -f ./vtt-bff/requirements.txt ]; then pip install -r ./vtt-bff/requirements.txt; fi
       - name: Test with pytest
         run: |
-          pytest bff --cov-fail-under=100 -n 4
+          pytest vtt-bff --cov-fail-under=100 -n 4
         env:
           PYTHONPATH: ${{ github.workspace }}
           SPOTIFY_CLIENT_ID: "spotify_client_id"
@@ -86,10 +86,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install pytest
-          if [ -f ./user_data/requirements.txt ]; then pip install -r ./user_data/requirements.txt; fi
+          if [ -f ./vtt-user-data/requirements.txt ]; then pip install -r ./vtt-user-data/requirements.txt; fi
       - name: Test with pytest
         run: |
-          pytest user_data --cov-fail-under=100 -n 4
+          pytest vtt-user-data --cov-fail-under=100 -n 4
         env:
           PYTHONPATH: ${{ github.workspace }}
           SPOTIFY_CLIENT_ID: "spotify_client_id"

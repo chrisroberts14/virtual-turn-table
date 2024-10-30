@@ -16,7 +16,7 @@ jobs:
     - uses: actions/checkout@v4
     - name: Build the Docker image
       run: |
-        cd image_to_album
+        cd vtt-image-to-album
         docker build .
 
   build-bff-container:
@@ -27,7 +27,7 @@ jobs:
     - uses: actions/checkout@v4
     - name: Build the Docker image
       run: |
-        cd bff
+        cd vtt-bff
         docker build .
 
   build-ui-container:
@@ -38,7 +38,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build the Docker image
         run: |
-          cd turn_table_ui
+          cd vtt-ui
           docker build .
 
   build-user-data-container:
@@ -49,5 +49,5 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build the Docker image
         run: |
-          cd user_data
+          cd vtt-user-data
           docker build .
