@@ -10,8 +10,8 @@ const LoggedOutPage = () => {
 			<div className="min-w-[15%] text-center content-center pb-52">SCAN</div>
 			<div className="flex flex-col w-[70%] pt-5">
 				<SoundWave />
-				<div className="flex h-screen w-full justify-center">
-					<div className="flex pb-52">
+				<div className="flex h-screen w-full justify-center pt-2">
+					<div className="flex pb-52 w-full justify-center">
 						{
 							// @ts-ignore
 							<SongControlContext.Provider value={{ isPaused: false }}>
