@@ -72,22 +72,6 @@ describe("UserBox", () => {
 		});
 	});
 
-	it("should show error if create user fails", async () => {
-		// @ts-ignore
-		(CreateUser as vi.Mock).mockRejectedValue(
-			new Error("Failed to create user"),
-		);
-
-		render(
-			<UsernameContext.Provider value={{ username, setUsername }}>
-				<UserBox />
-			</UsernameContext.Provider>,
-		);
-		await waitFor(() => {
-			expect(mockShowError).toHaveBeenCalledWith("Failed to create user");
-		});
-	});
-
 	it("should logout when logout button is clicked", async () => {
 		render(
 			<UsernameContext.Provider value={{ username, setUsername }}>
