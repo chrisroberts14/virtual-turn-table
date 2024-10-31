@@ -5,9 +5,9 @@ The project is a virtual turn table that allows users to scan they vinyl records
 The UI is built to work in a desktop environment but will hopefully be changed to work on mobile devices.
 
 ## Build
-![Python services](https://github.com/chrisroberts14/virtual-turn-table/blob/main/.github/workflows/python-package.yml/badge.svg)
-![React frontend](https://github.com/chrisroberts14/virtual-turn-table/blob/main/.github/workflows/node.js.yml/badge.svg)
-![Docker images](https://github.com/chrisroberts14/virtual-turn-table/blob/main/.github/workflows/docker-image.yml/badge.svg)
+[![Python Services](https://github.com/chrisroberts14/virtual-turn-table/actions/workflows/python-package.yml/badge.svg)](https://github.com/chrisroberts14/virtual-turn-table/actions/workflows/python-package.yml)
+[![Frontend](https://github.com/chrisroberts14/virtual-turn-table/actions/workflows/node.js.yml/badge.svg)](https://github.com/chrisroberts14/virtual-turn-table/actions/workflows/node.js.yml)
+[![Docker Image CI](https://github.com/chrisroberts14/virtual-turn-table/actions/workflows/docker-image.yml/badge.svg)](https://github.com/chrisroberts14/virtual-turn-table/actions/workflows/docker-image.yml)
 
 ## Architecture
 The project follows a back end for frontend structure with a React front end and three microservices each made with FastAPI in python.
