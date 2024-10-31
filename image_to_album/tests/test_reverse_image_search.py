@@ -15,6 +15,11 @@ class TestReverseImageSearch:
         :return:
         """
         # Mock the response from the image search api
+        mock_credentials = mocker.patch(
+            "google.oauth2.service_account.Credentials.from_service_account_info"
+        )
+        mock_credentials.return_value = MagicMock()
+
         mock_creds = mocker.patch("google.cloud.vision.ImageAnnotatorClient")
         mock_instance = mock_creds.return_value
         mock_response = MagicMock()
