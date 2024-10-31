@@ -112,12 +112,15 @@ def create_album_if_not_exists(album_uri: str, db: Session = Depends(get_db)) ->
 @app.post("/add_album_link/", status_code=HTTP_201_CREATED)
 def add_album_link(data: AlbumUserLinkIn, db: Session = Depends(get_db)):
     """
-    Add a link between a user and an album.
+    Add a link between a user and an album if it doesn't already exists.
 
     :param db:
     :param data:
     :return:
     """
+    user_albums = UserDb.get_by_id(db, data.user_id).albums
+    if data.album_uri in [album.album_uri for album in user_albums]:
+        return
     user = UserDb.get_by_id(db, data.user_id)
     if user is None:
         raise APIException(status_code=404, message="User not found")

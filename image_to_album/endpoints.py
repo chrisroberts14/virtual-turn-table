@@ -8,6 +8,7 @@ from typing import Annotated
 import requests
 from fastapi import APIRouter, UploadFile, Depends
 from google.cloud import vision
+from google.oauth2 import service_account
 
 from image_to_album.api_models import Album, Song, APIException
 from image_to_album.config import Settings
@@ -51,7 +52,10 @@ async def reverse_image_search(
         raise APIException(400, "Invalid file type. Please upload a jpg or png.")
 
     # Get the best response query from google cloud web detection
-    client = vision.ImageAnnotatorClient()
+    credentials = service_account.Credentials.from_service_account_info(
+        settings.google_cloud_credentials
+    )
+    client = vision.ImageAnnotatorClient(credentials=credentials)
     # pylint: disable=no-member
     image = vision.Image(content=file.file.read())
     response = client.web_detection(image=image)
