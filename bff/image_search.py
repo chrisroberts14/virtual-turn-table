@@ -25,7 +25,7 @@ def image_to_album(
     """
     image_data = base64.b64decode(img.image.split(",")[1])
 
-    endpoint = f"{settings.image_to_album_address}imgs/reverse_image_search/"
+    endpoint = f"{settings.image_to_album_address}/imgs/reverse_image_search/"
     files = {"file": ("placeholder.jpg", image_data)}
 
     # Get best results for image search
@@ -34,7 +34,7 @@ def image_to_album(
         raise APIException(500, "Image search failed please try again.")
 
     # Get the URI
-    endpoint = f"{settings.image_to_album_address}album/get_album/?image_name={response.json()}"
+    endpoint = f"{settings.image_to_album_address}/album/get_album/?image_name={response.json()}"
     response = requests.post(endpoint, timeout=5)
     if response.status_code != 200:
         raise APIException(500, "Album search failed please try again.")
