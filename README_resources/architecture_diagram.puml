@@ -1,0 +1,37 @@
+@startuml Virtual Turntable Architecture Diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!define SPRITESURL https://raw.githubusercontent.com/plantuml-stdlib/gilbarbara-plantuml-sprites/v1.1/sprites
+!include SPRITESURL/react.puml
+!include SPRITESURL/spotify.puml
+!include SPRITESURL/python.puml
+!include SPRITESURL/docker.puml
+!include SPRITESURL/sqlite.puml
+
+Person(user, User, "User")
+
+System_Boundary(c1, "Virtual Turntable"){
+    Container(web_app, "Single-Page App", "React, JS, Docker", "Is the front end the user interacts with", $sprite="react")
+    Container(BFF, "BFF", "Fast API, Python, Docker", "Coordinates all data from external APIs to simplify communication with front end", $sprite="python")
+    Container(image_to_album, "Image to album service", "Fast API, Python, Docker", "Uses some method to convert from an image of an album to the album name", $sprite="python")
+    Container(user_data_storage, "User service", "SQLAlchemy, FastAPI, Python, Docker", "A potential service to store user information about album collections", $sprite="python")
+    ContainerDb(user_data, "User album storage", "SQLite", "Database storing user album collections", $sprite="sqlite")
+}
+
+System_Ext(img_api, "Image search API", "An API which can take an image and return some data about the contents of the image. (Reverse image search, barcode reader, OCR)")
+
+System_Boundary(c2, "Spotify"){
+    System_Ext(spotify, "Spotify API", "Spotify data API", $sprite="spotify")
+    System_Ext(spotify_web_sdk, "Spotify Web SDK", "Spotify's web SDK for web playback", $sprite="spotify")
+}
+
+Rel(user, web_app, "")
+Rel(BFF, image_to_album, "Uses", "http")
+Rel(BFF, user_data_storage, "Uses", "http")
+Rel(BFF, spotify, "Uses", "http")
+Rel(web_app, BFF, "Uses", "http")
+Rel(web_app, spotify_web_sdk, "Uses", "http")
+Rel(image_to_album, img_api, "Uses", "http")
+Rel(user_data_storage, user_data, "Uses", "SQL")
+
+SHOW_LEGEND()
+@enduml
