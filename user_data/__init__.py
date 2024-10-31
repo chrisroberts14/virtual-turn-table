@@ -15,6 +15,7 @@ app = FastAPI()
 
 origins = [
     "http://localhost:8000",
+    "https://virtual-turn-table-bff-791764533505.us-central1.run.app",
 ]
 
 app.add_middleware(

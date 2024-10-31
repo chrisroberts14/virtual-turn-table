@@ -18,6 +18,7 @@ app.include_router(image_search_router, prefix="/image_search")
 
 origins = [
     "http://localhost:5173",
+    "https://virtual-turn-table-ui-791764533505.us-central1.run.app",
 ]
 
 
