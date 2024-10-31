@@ -26,7 +26,7 @@ const SpinningVinyl = () => {
 			</svg>
 			{currentAlbum && (
 				<div
-					className={`z-20 flex h-full w-full absolute p-10 transition-transform ${isAlbumCoverOffScreen ? "-translate-x-[150%] duration-2000" : "translate-x-0"}`}
+					className={`z-20 flex h-full w-full absolute p-10 transition-transform ${isAlbumCoverOffScreen ? "-translate-y-[300%] duration-2000" : "translate-y-0"}`}
 				>
 					<div className="w-1/5 h-full z-10" />
 					<Image
