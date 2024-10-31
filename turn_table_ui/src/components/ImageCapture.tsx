@@ -96,12 +96,12 @@ const ImageCapture = () => {
 									</div>
 								}
 							>
-								<div className="flex justify-center" title="Webcam">
+								<div className="flex justify-center pt-8" title="Webcam">
 									{!currentImage ? (
 										<Webcam
 											audio={false}
 											screenshotFormat="image/png"
-											className="rounded-lg object-cover w-[80%] h-full p-8 pb-4"
+											className="rounded-lg object-cover w-[65%] pb-4"
 											ref={webcamRef}
 											width={1920}
 											height={1080}

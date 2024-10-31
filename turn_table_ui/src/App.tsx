@@ -66,7 +66,7 @@ function App() {
 												: "translateX(100%)",
 											transition: "transform 0.5s ease-in-out",
 										}}
-										className="h-full"
+										className="h-full w-full"
 									>
 										<ScanPage />
 									</div>

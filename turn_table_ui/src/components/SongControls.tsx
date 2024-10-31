@@ -52,10 +52,7 @@ const SongControls = () => {
 	};
 
 	return (
-		<div
-			className="flex flex-col min-w-96 p-2 z-30 pt-10"
-			title="Song Controls"
-		>
+		<div className="flex flex-col p-2 z-30 pt-10" title="Song Controls">
 			<div className="flex flex-row justify-center">
 				<Button
 					onClick={prevSong}

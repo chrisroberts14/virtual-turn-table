@@ -27,7 +27,7 @@ const ScanPage = () => {
 				setCurrentImage,
 			}}
 		>
-			<div className="flex flex-col h-full">
+			<div className="flex flex-col h-screen">
 				<Resizable
 					defaultSize={{ width: "100%" }}
 					maxHeight={contentHeight}
@@ -55,16 +55,15 @@ const ScanPage = () => {
 								bottomLeft: false,
 								topLeft: false,
 							}}
-							maxWidth={"25%"}
 							maxHeight={"100%"}
 							style={{
 								transition: "width 0.5s ease-in-out",
 								overflow: "hidden", // Hide content when collapsed
 							}}
 							size={{
-								width: fadeConfirm ? "25%" : "0%", // Resizes based on the state
+								width: fadeConfirm ? "100%" : "0%", // Resizes based on the state
 							}}
-							className="bg-gray-700"
+							className="bg-gray-700 sm:max-w-[25%]"
 						>
 							<div className="overflow-y-auto h-full max-h-full">
 								<AlbumConfirm />

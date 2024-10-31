@@ -69,7 +69,7 @@ const MusicPlayer = () => {
 					}}
 				>
 					<div className="flex flex-row h-full">
-						<div className="animate-slideRight overflow-y-auto overflow-x-hidden max-w-[50%] bg-content1">
+						<div className="animate-slideRight overflow-y-auto overflow-x-hidden max-w-full md:max-w-[50%] bg-content1">
 							{currentAlbum ? (
 								<Resizable
 									enable={{
@@ -90,7 +90,7 @@ const MusicPlayer = () => {
 								</Resizable>
 							) : null}
 						</div>
-						<div className="flex p-10 bg-gray-700 justify-center flex-grow z-0">
+						<div className="flex sm:p-10 bg-gray-700 justify-center flex-grow z-0 sm:visible">
 							<SpinningVinyl />
 						</div>
 					</div>
@@ -100,10 +100,10 @@ const MusicPlayer = () => {
 						className="flex flex-row justify-center w-screen"
 						title="Song Details"
 					>
-						<div>
+						<div className="hidden sm:block">
 							<PlayingAlbum />
 						</div>
-						<div className="flex-[2]">
+						<div className="flex-grow">
 							<SongControls />
 						</div>
 						<div>

@@ -38,14 +38,7 @@ const Upload: React.FC<{ triggerConfirmSlide: () => void }> = ({
 
 	return (
 		<>
-			<div
-				style={{
-					display: "flex",
-					justifyContent: "center",
-					alignItems: "center",
-					height: "50vh",
-				}}
-			>
+			<div className="flex flex-col justify-center">
 				<Card className="max-w-[400px] max-h-full">
 					<CardHeader className="flex gap-3">
 						<Input

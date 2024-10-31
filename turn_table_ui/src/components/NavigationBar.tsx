@@ -15,20 +15,22 @@ import { IoScan } from "react-icons/io5";
 
 const NavigationBar = () => {
 	const { nextPage, setNextPage, isSignedIn } = useNavigation();
-
 	const switchPage = (key: Key) => {
 		setNextPage(key.toString());
 	};
 
 	return (
 		<Navbar className="bg-default-100">
-			<NavbarBrand>
+			<NavbarBrand className="hidden sm:flex">
 				<Logo />
-				<p className="font-bold text-inherit" style={{ padding: 10 }}>
+				<p
+					className="font-bold text-inherit overflow-x-hidden"
+					style={{ padding: 10 }}
+				>
 					Virtual Turn Table
 				</p>
 			</NavbarBrand>
-			<NavbarContent className="hidden sm:flex gap-4 flex-[2]" justify="center">
+			<NavbarContent className="gap-4 flex-[2]" justify="center">
 				{isSignedIn && (
 					<Tabs
 						aria-label="Tab control"

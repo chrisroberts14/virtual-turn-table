@@ -1,6 +1,7 @@
 import GetUserInfo from "@/api_calls/GetUserInfo.tsx";
 import { useUsername } from "@/contexts/UsernameContext.tsx";
 import { clearStateData, getStateData } from "@/interfaces/StateData.tsx";
+import { Avatar } from "@nextui-org/avatar";
 import {
 	Dropdown,
 	DropdownItem,
@@ -40,14 +41,18 @@ const UserBox = () => {
 	return (
 		<Dropdown>
 			<DropdownTrigger>
-				<User
-					name={username}
-					description={email}
-					avatarProps={{
-						src: profileImage,
-					}}
-					isFocusable={true}
-				/>
+				<div>
+					<User
+						name={username}
+						description={email}
+						avatarProps={{
+							src: profileImage,
+						}}
+						isFocusable={true}
+						className="hidden sm:flex"
+					/>
+					<Avatar src={profileImage} className="block sm:hidden" />
+				</div>
 			</DropdownTrigger>
 			<DropdownMenu
 				onAction={(key) => {

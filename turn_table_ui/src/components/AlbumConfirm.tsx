@@ -52,28 +52,24 @@ const AlbumConfirm = () => {
 
 	return (
 		<div className="h-full flex flex-row max-h-full">
-			<div className="w-full flex flex-row h-full justify-center max-h-full">
-				<div className="flex flex-col flex-grow max-w-[100%] max-h-full">
-					<Card className="flex-shrink max-w-[100%] text-center h-full min-w-0 max-h-full">
+			<div className="w-full flex flex-row">
+				<div className="flex flex-col max-w-[100%]">
+					<Card className="text-center">
 						<CardHeader className="justify-center">Album selection</CardHeader>
 						<CardBody className="flex flex-shrink max-h-[70%]">
-							<div
-								className="max-h-[50%] flex-grow"
-								style={{ width: "100%", paddingBottom: "100%" }}
-							>
+							<div className="max-h-[20%] pb-[100%] justify-center text-center">
 								{scannedAlbum ? (
 									<div>
 										<AlbumDisplay album={scannedAlbum} />
 									</div>
 								) : (
-									<Skeleton style={{ width: "100%", paddingBottom: "100%" }}>
+									<Skeleton>
 										<div />
 									</Skeleton>
 								)}
 							</div>
-
-							<Spacer className="flex pt-2 flex-shrink" />
-							<div className="w-full flex-grow max-h-[10%]">
+							<Spacer className="flex flex-shrink" />
+							<div className="w-full">
 								{scannedAlbum ? (
 									<Card className="bg-default-200 h-full overflow-y-auto">
 										<div>
@@ -92,7 +88,7 @@ const AlbumConfirm = () => {
 						</CardBody>
 						<CardFooter className="flex flex-grow justify-center">
 							<div className="flex flex-col flex-grow px-6">
-								<p className="pb-10">Is this the correct album?</p>
+								<p className="pb-4">Is this the correct album?</p>
 								<div className="flex flex-row flex-grow px-6">
 									<Button
 										isDisabled={buttonsDisabled}

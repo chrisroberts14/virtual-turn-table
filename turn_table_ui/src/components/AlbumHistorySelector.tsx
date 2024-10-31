@@ -14,14 +14,16 @@ const AlbumHistorySelector = () => {
 			value={{ hoveredAlbum, setHoveredAlbum, albums, setAlbums }}
 		>
 			<div className="min-w-[20%] h-full pt-2 bg-gray-900">
-				<Card>
+				<Card className="max-h-fit">
 					<CardBody>
 						<div className="flex flex-col items-center">
-							<div className="text-center">Album History</div>
+							<div className="text-center text-sm sm:text-medium">
+								Album History
+							</div>
 						</div>
 					</CardBody>
 				</Card>
-				<div className="px-4 py-2">
+				<div className="px-2 py-1">
 					<Card>
 						<CardHeader className="justify-center">
 							<div className="flex flex-col items-center w-full">
