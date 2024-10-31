@@ -1,9 +1,7 @@
+import createUser from "@/api_calls/CreateUser.tsx";
+import GetUserInfo from "@/api_calls/GetUserInfo.tsx";
 import type Album from "@/interfaces/Album.tsx";
-import {
-	clearStateData,
-	getStateData,
-	storeStateData,
-} from "@/interfaces/StateData.tsx";
+import { getStateData, storeStateData } from "@/interfaces/StateData.tsx";
 import { useEffect, useState } from "react";
 
 const useApp = () => {
@@ -30,40 +28,31 @@ const useApp = () => {
 		const token = params.get("access_token");
 
 		if (token) {
+			// Is signing in
 			storeStateData({
 				spotify_access_token: token,
-				spotify_login_time: String(new Date()),
-				spotify_session_length: params.get("expires_in") as string,
 			});
 			setIsSignedIn(true);
 			setToken(token);
+			GetUserInfo(token)
+				.then((data) => {
+					createUser(data.username, data.email).catch((error) => {
+						console.error(error);
+					});
+				})
+				.catch((error) => {
+					console.error(error);
+				});
+			// Set the location back to the root (removes all the query parameters)
 			window.location.href = "/";
+		} else if (currentState?.spotify_access_token) {
+			// Is already signed in
+			setIsSignedIn(true);
+			setToken(currentState.spotify_access_token);
 		} else {
-			if (currentState?.spotify_access_token) {
-				if (
-					currentState.spotify_session_length &&
-					currentState.spotify_login_time
-				) {
-					const currentSessionLength =
-						(new Date().getTime() -
-							new Date(currentState.spotify_login_time).getTime()) /
-						1000;
-
-					if (
-						currentSessionLength > Number(currentState.spotify_session_length)
-					) {
-						clearStateData();
-						setIsSignedIn(false);
-						setToken(null);
-					} else {
-						setIsSignedIn(true);
-						setToken(currentState.spotify_access_token);
-					}
-				}
-			} else {
-				setIsSignedIn(false);
-				setToken(null);
-			}
+			// Is not signed in
+			setIsSignedIn(false);
+			setToken(null);
 		}
 	}, []);
 

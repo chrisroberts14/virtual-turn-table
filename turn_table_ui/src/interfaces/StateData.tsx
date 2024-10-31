@@ -3,8 +3,6 @@ import type Song from "@/interfaces/Song.tsx";
 
 export interface StateData {
 	spotify_access_token?: string;
-	spotify_login_time?: string;
-	spotify_session_length?: string;
 	currentAlbum?: Album;
 	currentPage?: string;
 	currentSong?: Song;

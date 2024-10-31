@@ -15,6 +15,16 @@ module.exports = {
 				2000: "2000ms",
 			},
 			keyframes: {
+				pulse: {
+					"0%, 100%": { transform: "scale(1)" },
+					"50%": { transform: "scale(1.1)" },
+				},
+				flash: {
+					"0%": { opacity: "0" },
+					"2%": { opacity: "1" },
+					"10%": { opacity: "0" },
+					"100%": { opacity: "0" },
+				},
 				slideUp: {
 					"0%": { transform: "translateY(100%)", opacity: "0" },
 					"100%": { transform: "translateY(0)", opacity: "1" },
@@ -52,6 +62,8 @@ module.exports = {
 				slideOutToRight: "slideOutToRight 0.5s ease-out",
 				slideInFromRight: "slideInFromRight 0.5s ease-out",
 				slideOutToLeft: "slideOutToLeft 0.5s ease-out",
+				flash: "flash 4s ease-out infinite",
+				pulse: "pulse 2s infinite ease-in-out",
 			},
 		},
 	},
