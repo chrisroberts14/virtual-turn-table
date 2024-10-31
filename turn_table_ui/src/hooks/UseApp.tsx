@@ -34,6 +34,8 @@ const useApp = () => {
 			});
 			setIsSignedIn(true);
 			setToken(token);
+			console.log("Token: ", token);
+
 			GetUserInfo(token)
 				.then((data) => {
 					createUser(data.username, data.email).catch((error) => {
@@ -44,7 +46,7 @@ const useApp = () => {
 					console.error(error);
 				});
 			// Set the location back to the root (removes all the query parameters)
-			window.location.href = "/";
+			// window.location.href = "/";
 		} else if (currentState?.spotify_access_token) {
 			// Is already signed in
 			setIsSignedIn(true);
