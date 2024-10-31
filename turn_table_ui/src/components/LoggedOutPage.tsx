@@ -1,4 +1,5 @@
 import SoundWave from "@/components/SoundWave.tsx";
+import SpeakerWaves from "@/components/SpeakerWaves.tsx";
 import SpinningVinyl from "@/components/SpinningVinyl.tsx";
 import { MusicContext } from "@/contexts/MusicContext.tsx";
 import { SongControlContext } from "@/contexts/SongControlContext.tsx";
@@ -8,19 +9,25 @@ const LoggedOutPage = () => {
 	return (
 		<div className="flex bg-gray-900 h-fit flex-col">
 			<div className="flex w-fill h-[9%]">
-				<div className="min-w-[20%] text-center pb-52">
-					<header>Scan your albums</header>
+				<div className="min-w-[20%] text-center content-center">
+					<header className="text-white font-extrabold text-2xl">
+						Scan your albums
+					</header>
 				</div>
 				<SoundWave />
-				<div className="min-w-[20%] text-center content-center pb-52">
-					<header>Play them instantly!</header>
+				<div className="min-w-[20%] text-center content-center">
+					<span className="text-white font-extrabold text-2xl">
+						Play them instantly!
+					</span>
 				</div>
 			</div>
 
 			<div className="flex flex-col w-fill pt-5">
 				<div className="flex h-screen w-full justify-center pt-2">
 					<div className="flex pb-52 w-full justify-center">
-						<div>SOUND</div>
+						<div className="min-w-[20%] content-center">
+							<SpeakerWaves rotation={180} />
+						</div>
 						{
 							// @ts-ignore
 							<SongControlContext.Provider value={{ isPaused: false }}>
@@ -32,7 +39,9 @@ const LoggedOutPage = () => {
 								}
 							</SongControlContext.Provider>
 						}
-						<div>SOUND</div>
+						<div className="min-w-[20%] content-center">
+							<SpeakerWaves rotation={0} />
+						</div>
 					</div>
 				</div>
 			</div>
