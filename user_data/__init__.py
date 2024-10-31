@@ -118,12 +118,12 @@ def add_album_link(data: AlbumUserLinkIn, db: Session = Depends(get_db)):
     :param data:
     :return:
     """
-    user_albums = UserDb.get_by_id(db, data.user_id).albums
-    if data.album_uri in [album.album_uri for album in user_albums]:
-        return
     user = UserDb.get_by_id(db, data.user_id)
     if user is None:
         raise APIException(status_code=404, message="User not found")
+    user_albums = UserDb.get_by_id(db, data.user_id).albums
+    if data.album_uri in [album.album_uri for album in user_albums]:
+        return
     album = AlbumDb.get_by_id(db, data.album_uri)
     if album is None:
         raise APIException(status_code=404, message="Album not found")
