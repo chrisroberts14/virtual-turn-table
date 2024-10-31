@@ -7,47 +7,14 @@ on:
     branches: [ "main" ]
 
 jobs:
-
-  build-image-to-album-container:
-
+  build-images:
     runs-on: ubuntu-latest
-
+    strategy:
+        matrix:
+          image: [ "image_to_album", "bff", "turn_table_ui", "user_data" ]
     steps:
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: |
-        cd image_to_album
-        docker build .
-
-  build-bff-container:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: |
-        cd bff
-        docker build .
-
-  build-ui-container:
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build the Docker image
-        run: |
-          cd turn_table_ui
-          docker build .
-
-  build-user-data-container:
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build the Docker image
-        run: |
-          cd user_data
-          docker build .
+        - uses: actions/checkout@v4
+        - name: Build the Docker image
+          run: |
+            cd ${{ matrix.image }}
+            docker build .
