@@ -71,5 +71,5 @@ class AlbumDb(Base, Crud):
     )
 
 
-if not Path(Path(__file__).parent, "user_data.db").exists():
+if not Path(Path(__file__).parent, "db/user_data.db").exists():
     Base.metadata.create_all(bind=engine)

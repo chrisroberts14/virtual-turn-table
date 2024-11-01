@@ -51,3 +51,8 @@ services:
       - .env
     depends_on:
       - bff
+    volumes:
+      - user_data_db:/app/user_data/db
+
+volumes:
+  user_data_db:

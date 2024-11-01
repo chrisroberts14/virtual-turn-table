@@ -9,7 +9,7 @@ from sqlalchemy.orm import declarative_base, Session
 
 
 engine = create_engine(
-    f"sqlite:///{Path(__file__).parent}/user_data.db",
+    f"sqlite:///{Path(__file__).parent}/db/user_data.db",
     connect_args={"check_same_thread": False},
 )
 
