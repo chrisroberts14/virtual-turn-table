@@ -21,7 +21,7 @@ def get_album_details(spotify_access_token: str, album_uri: str) -> Album:
         raise APIException(400, "Album URI must start with 'spotify:album:'")
     endpoint = f"https://api.spotify.com/v1/albums/{album_uri.split(':')[2]}"
     headers = {"Authorization": f"Bearer {spotify_access_token}"}
-    response = requests.get(endpoint, headers=headers, timeout=5)
+    response = requests.get(endpoint, headers=headers, timeout=20)
     if response.status_code != 200:
         raise APIException(500, "Failed to get album details.")
     data = response.json()
@@ -62,7 +62,7 @@ def play_track(data: PlaySong):
     }
     data = {"uris": [data.track_uri]}
 
-    response = requests.put(endpoint, headers=headers, json=data, timeout=5)
+    response = requests.put(endpoint, headers=headers, json=data, timeout=20)
     if response.status_code != 204:
         raise APIException(500, "Failed to play track.")
 

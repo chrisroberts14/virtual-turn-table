@@ -24,7 +24,7 @@ def get_user_info(spotify_access_token: str) -> User:
     endpoint = "https://api.spotify.com/v1/me"
     headers = {"Authorization": f"Bearer {spotify_access_token}"}
 
-    response = requests.get(endpoint, headers=headers, timeout=5)
+    response = requests.get(endpoint, headers=headers, timeout=20)
     if response.status_code != 200:
         raise APIException(401, "Invalid access token please re-authenticate.")
     data = response.json()
@@ -47,7 +47,7 @@ def create_user(user: UserIn, settings: Annotated[Settings, Depends(get_settings
     :return:
     """
     endpoint = f"{settings.user_data_address}/user/"
-    response = requests.post(endpoint, json=user.model_dump(), timeout=10)
+    response = requests.post(endpoint, json=user.model_dump(), timeout=20)
     result = response.json()
     if response.status_code != 201:
         raise APIException(500, "Failed to access user data.")
@@ -69,12 +69,12 @@ def add_album(
     """
     # Create the album if it doesn't exist
     endpoint = f"{settings.user_data_address}/create_album/{data_in.album_uri}/"
-    response = requests.post(endpoint, timeout=5)
+    response = requests.post(endpoint, timeout=20)
     if response.status_code != 201:
         raise APIException(500, "Failed to create or find album.")
     # Create the link between the user and the album
     endpoint = f"{settings.user_data_address}/add_album_link/"
-    response = requests.post(endpoint, json=data_in.model_dump(), timeout=5)
+    response = requests.post(endpoint, json=data_in.model_dump(), timeout=20)
     if response.status_code != 201:
         raise APIException(500, "Failed to add album link.")
 
@@ -91,7 +91,7 @@ def get_users_albums(
     :return:
     """
     endpoint = f"{settings.user_data_address}/{user_name}/albums"
-    response = requests.get(endpoint, timeout=5)
+    response = requests.get(endpoint, timeout=20)
     if response.status_code != 200:
         raise APIException(500, "Failed to access user data.")
     data = response.json()

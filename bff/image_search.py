@@ -29,13 +29,13 @@ def image_to_album(
     files = {"file": ("placeholder.jpg", image_data)}
 
     # Get best results for image search
-    response = requests.post(endpoint, files=files, timeout=10)
+    response = requests.post(endpoint, files=files, timeout=20)
     if response.status_code != 200:
         raise APIException(500, "Image search failed please try again.")
 
     # Get the URI
     endpoint = f"{settings.image_to_album_address}/album/get_album/?image_name={response.json()}"
-    response = requests.post(endpoint, timeout=5)
+    response = requests.post(endpoint, timeout=20)
     if response.status_code != 200:
         raise APIException(500, "Album search failed please try again.")
 
