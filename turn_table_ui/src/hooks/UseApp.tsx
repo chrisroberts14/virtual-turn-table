@@ -1,4 +1,4 @@
-import createUser from "@/api_calls/CreateUser.tsx";
+import CreateUser from "@/api_calls/CreateUser.tsx";
 import GetUserInfo from "@/api_calls/GetUserInfo.tsx";
 import type Album from "@/interfaces/Album.tsx";
 import { getStateData, storeStateData } from "@/interfaces/StateData.tsx";
@@ -36,15 +36,12 @@ const useApp = () => {
 			setToken(token);
 			console.log("Token: ", token);
 
-			GetUserInfo(token)
-				.then((data) => {
-					createUser(data.username, data.email).catch((error) => {
-						console.error(error);
-					});
-				})
-				.catch((error) => {
-					console.error(error);
-				});
+			const user = GetUserInfo(token);
+			// @ts-ignore
+			CreateUser(user.username, user.email).catch((error) => {
+				console.error(error);
+			});
+
 			// Set the location back to the root (removes all the query parameters)
 			window.location.href = "/";
 		} else if (currentState?.spotify_access_token) {
