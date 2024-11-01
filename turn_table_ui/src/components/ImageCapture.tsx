@@ -133,13 +133,15 @@ const ImageCapture = () => {
 									>
 										Capture
 									</Button>
-									<Button
-										className="bg-blue-600"
-										onClick={switchCamera}
-										disabled={cameras.length <= 1}
-									>
-										Switch Camera
-									</Button>
+									{cameras.length > 1 && (
+										<Button
+											className="bg-blue-600"
+											onClick={switchCamera}
+											disabled={cameras.length <= 1}
+										>
+											Switch Camera
+										</Button>
+									)}
 								</div>
 							</Tab>
 							<Tab
