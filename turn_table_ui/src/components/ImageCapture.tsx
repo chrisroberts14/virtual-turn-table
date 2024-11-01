@@ -25,6 +25,7 @@ const ImageCapture = () => {
 	const webcamRef = useRef<Webcam | null>(null);
 	const { showError } = useError();
 	const [cameras, setCameras] = useState<MediaDeviceInfo[]>([]);
+	const [currentCameraId, setCurrentCameraId] = useState<string | null>(null);
 
 	// Use callback to cache the function between refreshes
 	const getCameras = useCallback((mediaDevices: MediaDeviceInfo[]) => {
@@ -35,7 +36,8 @@ const ImageCapture = () => {
 		navigator.mediaDevices.enumerateDevices().then((devices) => {
 			getCameras(devices as MediaDeviceInfo[]);
 		});
-	}, [getCameras]);
+		setCurrentCameraId(cameras[0]?.deviceId || null);
+	}, [getCameras, cameras[0]?.deviceId]);
 
 	const triggerConfirmSlide = () => {
 		setFadeConfirm(!fadeConfirm);
@@ -62,6 +64,16 @@ const ImageCapture = () => {
 					setScannedAlbum(null);
 					showError(error.message);
 				});
+		}
+	};
+
+	const switchCamera = () => {
+		if (cameras.length > 1) {
+			const currentIndex = cameras.findIndex(
+				(camera) => camera.deviceId === currentCameraId,
+			);
+			const nextCamera = cameras[(currentIndex + 1) % cameras.length];
+			setCurrentCameraId(nextCamera.deviceId);
 		}
 	};
 
@@ -105,14 +117,30 @@ const ImageCapture = () => {
 											ref={webcamRef}
 											width={1920}
 											height={1080}
+											videoConstraints={{
+												deviceId: currentCameraId || undefined,
+											}}
 										/>
 									) : (
 										<Image src={currentImage} alt="Captured Image" />
 									)}
 								</div>
-								<Button onClick={getAlbumFromCamera} disabled={isUploading}>
-									Capture
-								</Button>
+								<div className="space-x-2">
+									<Button
+										className="bg-blue-600"
+										onClick={getAlbumFromCamera}
+										disabled={isUploading}
+									>
+										Capture
+									</Button>
+									<Button
+										className="bg-blue-600"
+										onClick={switchCamera}
+										disabled={cameras.length <= 1}
+									>
+										Switch Camera
+									</Button>
+								</div>
 							</Tab>
 							<Tab
 								key="upload"
