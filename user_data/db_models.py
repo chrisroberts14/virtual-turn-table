@@ -1,5 +1,6 @@
 """Database models for user data."""
 
+import os
 from pathlib import Path
 from typing import List
 
@@ -71,5 +72,8 @@ class AlbumDb(Base, Crud):
     )
 
 
-if not Path(Path(__file__).parent, "db/user_data.db").exists():
-    Base.metadata.create_all(bind=engine)
+# Don't create the database if in testing mode this is not usually a good idea
+# but for this use it should be fine
+if os.environ.get("PYTEST_VERSION") is None:
+    if not Path(Path(__file__).parent, "db", "db/user_data.db").exists():
+        Base.metadata.create_all(bind=engine)
