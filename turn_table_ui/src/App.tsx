@@ -24,8 +24,6 @@ function App() {
 		setNextPage,
 		fadeScan,
 		fadePlayer,
-		disableTabChange,
-		setDisableTabChange,
 	} = useApp();
 
 	return (
@@ -39,8 +37,6 @@ function App() {
 								setIsSignedIn,
 								nextPage,
 								setNextPage,
-								disableTabChange,
-								setDisableTabChange,
 							}}
 						>
 							<NavigationBar />

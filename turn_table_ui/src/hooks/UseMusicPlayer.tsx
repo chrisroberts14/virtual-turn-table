@@ -1,6 +1,5 @@
 import PlayTrack from "@/api_calls/PlayTrack.tsx";
 import PlayerSetup from "@/api_calls/PlayerSetup.tsx";
-import { useError } from "@/contexts/ErrorContext.tsx";
 import { useMusic } from "@/contexts/MusicContext.tsx";
 import { useSpotifyToken } from "@/contexts/SpotifyTokenContext.tsx";
 import type Song from "@/interfaces/Song.tsx";
@@ -20,7 +19,6 @@ const useMusicPlayer = () => {
 	const [isPaused, setIsPaused] = useState(true);
 	const [trackPosition, setTrackPosition] = useState(0); // In ms
 	const [trackDuration, setTrackDuration] = useState(0);
-	const { showError } = useError();
 	const { token } = useSpotifyToken();
 	const { currentAlbum, setCurrentAlbum } = useMusic();
 
@@ -133,10 +131,10 @@ const useMusicPlayer = () => {
 					setTrackDuration(currentSong.duration_ms);
 				})
 				.catch((error) => {
-					showError(error.message);
+					console.error(error);
 				});
 		}
-	}, [currentSong, token, deviceId, showError]);
+	}, [currentSong, token, deviceId]);
 
 	return {
 		player,

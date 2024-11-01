@@ -10,8 +10,6 @@ interface NavigationContextType {
 	setIsSignedIn: Dispatch<SetStateAction<boolean>>;
 	nextPage: string;
 	setNextPage: Dispatch<SetStateAction<string>>;
-	disableTabChange: boolean;
-	setDisableTabChange: Dispatch<SetStateAction<boolean>>;
 }
 
 export const NavigationContext = createContext<

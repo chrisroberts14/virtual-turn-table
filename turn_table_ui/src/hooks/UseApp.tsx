@@ -12,7 +12,6 @@ const useApp = () => {
 	const [nextPage, setNextPage] = useState("");
 	const [fadeScan, setFadeScan] = useState(false);
 	const [fadePlayer, setFadePlayer] = useState(false);
-	const [disableTabChange, setDisableTabChange] = useState(false);
 
 	useEffect(() => {
 		// Set to the correct page
@@ -34,7 +33,6 @@ const useApp = () => {
 			});
 			setIsSignedIn(true);
 			setToken(token);
-			console.log("Token: ", token);
 
 			GetUserInfo(token).then((user) => {
 				CreateUser(user.display_name, user.email).catch((error) => {
@@ -66,7 +64,6 @@ const useApp = () => {
 	}, [currentAlbum]);
 
 	const triggerScreenChange = (page: string) => {
-		setDisableTabChange(true);
 		if (page === "play") {
 			setFadeScan(false);
 			setFadePlayer(true);
@@ -74,7 +71,6 @@ const useApp = () => {
 			setFadePlayer(false);
 			setFadeScan(true);
 		}
-		setDisableTabChange(false);
 	};
 
 	return {
@@ -88,8 +84,6 @@ const useApp = () => {
 		setNextPage,
 		fadeScan,
 		fadePlayer,
-		disableTabChange,
-		setDisableTabChange,
 	};
 };
 

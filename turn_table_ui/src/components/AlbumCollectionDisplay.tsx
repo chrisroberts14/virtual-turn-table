@@ -4,6 +4,7 @@ import { useAlbumSelection } from "@/contexts/AlbumSelectionContext.tsx";
 import { useError } from "@/contexts/ErrorContext.tsx";
 import { useMusic } from "@/contexts/MusicContext.tsx";
 import { useSpotifyToken } from "@/contexts/SpotifyTokenContext.tsx";
+import { useUpload } from "@/contexts/UploadContext.tsx";
 import { useUsername } from "@/contexts/UsernameContext.tsx";
 import type Album from "@/interfaces/Album.tsx";
 import { Image } from "@nextui-org/image";
@@ -15,6 +16,7 @@ const AlbumCollectionDisplay = () => {
 	const { token } = useSpotifyToken();
 	const { setCurrentAlbum } = useMusic();
 	const { albums, setAlbums, setHoveredAlbum } = useAlbumSelection();
+	const { scannedAlbum } = useUpload();
 
 	useEffect(() => {
 		// Get the users album collection
