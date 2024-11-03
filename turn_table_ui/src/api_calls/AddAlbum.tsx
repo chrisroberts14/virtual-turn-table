@@ -1,8 +1,9 @@
 import { addAlbum } from "@/api_calls/BFFEndpoints";
+import eventEmitter from "@/utils/EventEmitter.ts";
 import axios from "axios";
 
 const AddAlbum = async (username: string, albumURI: string) => {
-	return axios
+	const result = await axios
 		.post(
 			addAlbum,
 			{
@@ -18,6 +19,8 @@ const AddAlbum = async (username: string, albumURI: string) => {
 		.catch((error) => {
 			throw new Error(error.response.data.message);
 		});
+	eventEmitter.emit("albumAdded");
+	return result;
 };
 
 export default AddAlbum;

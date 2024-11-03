@@ -6,8 +6,9 @@ import { useMusic } from "@/contexts/MusicContext.tsx";
 import { useSpotifyToken } from "@/contexts/SpotifyTokenContext.tsx";
 import { useUsername } from "@/contexts/UsernameContext.tsx";
 import type Album from "@/interfaces/Album.tsx";
+import eventEmitter from "@/utils/EventEmitter.ts";
 import { Image } from "@nextui-org/image";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 const AlbumCollectionDisplay = () => {
 	const { username } = useUsername();
@@ -16,31 +17,49 @@ const AlbumCollectionDisplay = () => {
 	const { setCurrentAlbum } = useMusic();
 	const { albums, setAlbums, setHoveredAlbum } = useAlbumSelection();
 
-	useEffect(() => {
-		// Get the users album collection
-		if (username && token) {
-			GetUserAlbums(username)
-				.then((albums) => {
-					if (albums.length > 0) {
-						// Get all album details and create a list of them
-						const albumPromises = albums.map((album_uri: string) => {
-							return GetAlbumDetails(album_uri, token);
-						});
+	const userAlbumUpdate = useCallback(
+		(user: string) => {
+			if (user && token) {
+				GetUserAlbums(user)
+					.then((albums) => {
+						if (albums.length > 0) {
+							// Get all album details and create a list of them
+							const albumPromises = albums.map((album_uri: string) => {
+								return GetAlbumDetails(album_uri, token);
+							});
 
-						const fetchAllAlbumDetails = async () => {
-							const albumDetails = await Promise.all(albumPromises);
-							setAlbums(albumDetails);
-						};
-						fetchAllAlbumDetails().then(() => {
-							return;
-						});
-					}
-				})
-				.catch((error) => {
-					displayError(error.message);
-				});
+							const fetchAllAlbumDetails = async () => {
+								const albumDetails = await Promise.all(albumPromises);
+								setAlbums(albumDetails);
+							};
+							fetchAllAlbumDetails().then(() => {
+								return;
+							});
+						}
+					})
+					.catch((error) => {
+						displayError(error.message);
+					});
+			}
+		},
+		[token, setAlbums],
+	);
+
+	useEffect(() => {
+		eventEmitter.on("albumAdded", () => {
+			if (username) userAlbumUpdate(username);
+		});
+		// Get the users album collection
+		if (username) {
+			userAlbumUpdate(username);
 		}
-	}, [username, token, setAlbums]);
+
+		return () => {
+			eventEmitter.off("albumAdded", () => {
+				if (username) userAlbumUpdate(username);
+			});
+		};
+	}, [username, userAlbumUpdate]);
 
 	const displayError = (error: string) => {
 		showError(error);

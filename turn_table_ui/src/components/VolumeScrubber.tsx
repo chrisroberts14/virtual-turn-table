@@ -29,6 +29,7 @@ const VolumeScrubber = () => {
 				}
 			}}
 			title="Volume"
+			label="Volume"
 		/>
 	);
 };
