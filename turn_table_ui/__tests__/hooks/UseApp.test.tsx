@@ -1,11 +1,13 @@
 import { renderHook, waitFor } from "@testing-library/react";
 import { act } from "react";
 import { vi } from "vitest";
+import GetUserInfo from "../../src/api_calls/GetUserInfo";
 import useApp from "../../src/hooks/UseApp";
 import type Album from "../../src/interfaces/Album";
 import { getStateData } from "../../src/interfaces/StateData";
 
 vi.mock("../../src/interfaces/StateData");
+vi.mock("../../src/api_calls/GetUserInfo");
 
 describe("UseApp", () => {
 	it("should initialise properly when not logged in", () => {
@@ -39,6 +41,8 @@ describe("UseApp", () => {
 			},
 			writable: true,
 		});
+		// @ts-ignore
+		(GetUserInfo as vi.mock).mockReturnValue(Promise.resolve({ data: "test" }));
 		const { result } = renderHook(() => useApp());
 		expect(result.current.isSignedIn).toBe(true);
 		expect(result.current.token).toBe("test_token");
