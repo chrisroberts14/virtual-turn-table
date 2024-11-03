@@ -65,4 +65,5 @@ interface SpotifyPlayer {
 	on: (event: string, callback: (eventData: any) => void) => void;
 	getCurrentState: () => Promise<SpotifyPlayerState>;
 	togglePlay: () => Promise<void>;
+	pause: () => void;
 }

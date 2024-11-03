@@ -7,6 +7,8 @@ const SpinningVinyl = () => {
 	const { currentAlbum } = useMusic();
 	const { isPaused } = useSongControl();
 	const [isAlbumCoverOffScreen, setIsAlbumCoverOffScreen] = useState(false);
+	const [rotation, setRotation] = useState(0);
+	const [speed, setSpeed] = useState(-0.1);
 
 	useEffect(() => {
 		setIsAlbumCoverOffScreen(false);
@@ -14,6 +16,31 @@ const SpinningVinyl = () => {
 			setIsAlbumCoverOffScreen(true);
 		}, 2000);
 	}, []);
+
+	useEffect(() => {
+		let animationFrame: number;
+		let start = performance.now();
+		const animate = (time: number) => {
+			const delta = time - start;
+			start = time;
+
+			if (!isPaused) {
+				setRotation((prev) => prev - speed * delta);
+			} else if (speed > 0) {
+				setSpeed((prev) => prev - 0.001);
+				setRotation((prev) => prev - ((speed * delta) % 360));
+			}
+			animationFrame = requestAnimationFrame(animate);
+		};
+
+		animationFrame = requestAnimationFrame(animate);
+
+		return () => cancelAnimationFrame(animationFrame);
+	}, [isPaused, speed]);
+
+	const rotationStyle = {
+		transform: `rotate(${rotation}deg)`,
+	};
 
 	return (
 		<div className="relative w-[70%]">
@@ -37,11 +64,7 @@ const SpinningVinyl = () => {
 				</div>
 			)}
 			<svg
-				className={
-					!isPaused
-						? "animate-spin max-h-full p-10 z-10 absolute"
-						: "max-h-full p-10 z-10 absolute"
-				}
+				style={rotationStyle}
 				version="1.1"
 				xmlns="http://www.w3.org/2000/svg"
 				viewBox="0 0 600 600"

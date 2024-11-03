@@ -67,6 +67,9 @@ const useMusicPlayer = () => {
 								const state = await player.getCurrentState();
 								if (state) {
 									setTrackPosition(state.position);
+									if (state.paused !== isPaused) {
+										setIsPaused(state.paused);
+									}
 									if (
 										state.position >= state.duration - 1000 &&
 										!state.paused &&
@@ -87,7 +90,7 @@ const useMusicPlayer = () => {
 					});
 			};
 		}
-	}, [token, player, currentAlbum]);
+	}, [token, player, currentAlbum, isPaused]);
 
 	useEffect(() => {
 		// If the current album changes, set the current song to the first song on the album
