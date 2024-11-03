@@ -30,4 +30,5 @@ jobs:
     - run: |
         cd turn_table_ui
         npm ci
+        npm test
         npm run build --if-present
