@@ -11,11 +11,13 @@ const SpinningVinyl = () => {
 	const [speed, setSpeed] = useState(-0.1);
 
 	useEffect(() => {
-		setIsAlbumCoverOffScreen(false);
-		setTimeout(() => {
-			setIsAlbumCoverOffScreen(true);
-		}, 2000);
-	}, []);
+		if (currentAlbum) {
+			setIsAlbumCoverOffScreen(false);
+			setTimeout(() => {
+				setIsAlbumCoverOffScreen(true);
+			}, 2000);
+		}
+	}, [currentAlbum]);
 
 	useEffect(() => {
 		let animationFrame: number;
@@ -51,6 +53,16 @@ const SpinningVinyl = () => {
 			>
 				<rect height="100%" width="100%" fill="#D0AC81" rx="20" ry="20" />
 			</svg>
+			{/* Dead code I've left here incase I want to animate the record player arm in the future}
+			<svg
+			className="h-[70%] w-[20%] z-10 absolute right-20 top-20">
+				<circle cx="90%" cy="3%" r="12" className="fill-gray-500" stroke="black" strokeWidth="2"/>
+				<g style={{transformOrigin: '93% 3%', transform: `rotate(${isPaused ? "90" : "105"}deg)`, transition: 'transform 2s'}}>
+					<rect x="92%" y="3%" width="250%" height="2%"
+						  className="fill-gray-500"  />
+					<circle cx="342%" cy="4%" r="9" className="fill-gray-500"/>
+				</g>
+			</svg>*/}
 			{currentAlbum && (
 				<div
 					className={`z-20 flex h-full w-full absolute p-10 transition-transform ${isAlbumCoverOffScreen ? "-translate-y-[300%] duration-2000" : "translate-y-0"}`}
