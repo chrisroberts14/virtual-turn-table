@@ -18,6 +18,6 @@ describe("VolumeScrubber", () => {
 
 	it("should render", async () => {
 		render(<VolumeScrubber />);
-		expect(screen.getByText("Volume")).toBeInTheDocument();
+		expect(screen.getByTitle("Volume")).toBeInTheDocument();
 	});
 });

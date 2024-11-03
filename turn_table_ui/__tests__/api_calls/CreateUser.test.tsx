@@ -7,7 +7,9 @@ vi.mock("axios");
 describe("CreateUser", () => {
 	it("runs", () => {
 		// @ts-ignore
-		(axios.post as vi.Mock).mockImplementation(() => Promise.resolve());
+		(axios.post as vi.Mock).mockImplementation(() =>
+			Promise.resolve({ data: "test" }),
+		);
 		const username = "test_user";
 		const email = "test_email";
 		CreateUser(username, email);
