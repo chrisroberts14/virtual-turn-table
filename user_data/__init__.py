@@ -1,16 +1,16 @@
 """Module creating the image to user_data API."""
 
-from fastapi import FastAPI, Request, Depends
+from fastapi import FastAPI, Request
 from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.status import HTTP_201_CREATED
-from sqlalchemy.orm import Session
 
-from user_data.api_models import APIException, Album, User, AlbumUserLinkIn
-from user_data.db import get_db
-from user_data.db_models import UserDb, AlbumDb
+from user_data.api_models import APIException
+from user_data.social import social_router
+from user_data.users import user_router
 
 app = FastAPI()
+app.include_router(social_router, prefix="/social")
+app.include_router(user_router, prefix="/user")
 
 
 origins = [
@@ -63,70 +63,3 @@ def check_health():
     :return:
     """
     return {"status": "alive"}
-
-
-@app.get("/{username}/albums")
-def get_user_albums(username: str, db: Session = Depends(get_db)) -> list[Album]:
-    """
-    Get all albums for a user.
-
-    :param db:
-    :param username:
-    :return:
-    """
-    db_user = UserDb.get_by_id(db, username)
-    if db_user is None:
-        raise APIException(status_code=404, message="User not found")
-    return db_user.albums
-
-
-@app.post("/user/", status_code=HTTP_201_CREATED)
-def create_or_get_user(user: User, db: Session = Depends(get_db)) -> User:
-    """
-    Create or get a user.
-
-    :param user:
-    :param db:
-    :return:
-    """
-    db_user = UserDb.get_by_id(db, user.username)
-    if db_user is not None:
-        return db_user
-    return UserDb.create(db, UserDb(username=user.username, email=user.email))
-
-
-@app.post("/create_album/{album_uri}/", status_code=HTTP_201_CREATED)
-def create_album_if_not_exists(album_uri: str, db: Session = Depends(get_db)) -> Album:
-    """
-    Create an album if it doesn't already exist.
-
-    :param album_uri:
-    :param db:
-    :return:
-    """
-    album = AlbumDb.get_by_id(db, album_uri)
-    if album is None:
-        return AlbumDb.create(db, AlbumDb(album_uri=album_uri))
-    return album
-
-
-@app.post("/add_album_link/", status_code=HTTP_201_CREATED)
-def add_album_link(data: AlbumUserLinkIn, db: Session = Depends(get_db)):
-    """
-    Add a link between a user and an album if it doesn't already exists.
-
-    :param db:
-    :param data:
-    :return:
-    """
-    user = UserDb.get_by_id(db, data.user_id)
-    if user is None:
-        raise APIException(status_code=404, message="User not found")
-    user_albums = UserDb.get_by_id(db, data.user_id).albums
-    if data.album_uri in [album.album_uri for album in user_albums]:
-        return
-    album = AlbumDb.get_by_id(db, data.album_uri)
-    if album is None:
-        raise APIException(status_code=404, message="Album not found")
-    user.albums.append(album)
-    db.commit()

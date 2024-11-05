@@ -22,7 +22,6 @@ class User(BaseModel):
     """User model."""
 
     username: str
-    email: str
     albums: list[Album] = []
 
 
@@ -31,3 +30,10 @@ class AlbumUserLinkIn(BaseModel):
 
     album_uri: str
     user_id: str
+
+
+class ShareCollectionIn(BaseModel):
+    """Model for sharing a collection."""
+
+    sharer: str
+    receiver: str

@@ -7,8 +7,9 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, event, StaticPool
 from sqlalchemy.orm import sessionmaker, Session
 
-from user_data import app, UserDb, AlbumDb
+from user_data import app
 from user_data.db import Base, get_db
+from user_data.db_models import UserDb, AlbumDb
 
 DATABASE_URL = "sqlite://"
 engine = create_engine(
@@ -86,8 +87,20 @@ def mock_user(db: Session) -> UserDb:  # pylint: disable=redefined-outer-name
     :return:
     """
     return UserDb.create(
-        db, UserDb(username="user1", email="test", albums=[AlbumDb(album_uri="album1")])
+        db, UserDb(username="user1", albums=[AlbumDb(album_uri="album1")])
     )
+
+
+@pytest.fixture(scope="function")
+def mock_user_with_no_albums(db: Session) -> UserDb:  # pylint: disable=redefined-outer-name
+    """
+    Fixture for a mock user with no albums.
+
+    Adds it to the database
+    :param db:
+    :return:
+    """
+    return UserDb.create(db, UserDb(username="user3"))
 
 
 @pytest.fixture(scope="function")
@@ -100,3 +113,40 @@ def mock_album(db: Session) -> AlbumDb:  # pylint: disable=redefined-outer-name
     :return:
     """
     return AlbumDb.create(db, AlbumDb(album_uri="album2"))
+
+
+@pytest.fixture(scope="function")
+def mock_user_with_public_album(mock_album: AlbumDb, db: Session) -> UserDb:  # pylint: disable=redefined-outer-name
+    """
+    Create a mock user with a public album.
+
+    :param mock_album:
+    :param db:
+    :return:
+    """
+    return UserDb.create(
+        db,
+        UserDb(
+            username="user2",
+            albums=[mock_album],
+            is_collection_public=True,
+        ),
+    )
+
+
+@pytest.fixture(scope="function")
+def user_with_shared_collections(
+    mock_user_with_public_album: UserDb,  # pylint: disable=redefined-outer-name
+    mock_user: UserDb,  # pylint: disable=redefined-outer-name
+    db,  # pylint: disable=redefined-outer-name
+) -> UserDb:
+    """
+    Create a user with shared collections.
+
+    :param mock_user:
+    :param mock_user_with_public_album:
+    :return:
+    """
+    mock_user.shared_collections.append(mock_user_with_public_album)
+    db.commit()
+    return mock_user

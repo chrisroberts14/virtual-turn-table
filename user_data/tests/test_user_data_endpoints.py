@@ -11,7 +11,7 @@ class TestUserDataEndpoints:
         :param client:
         :return:
         """
-        response = client.get("/user1/albums")
+        response = client.get("/user/user1/albums")
         assert response.status_code == 200
         assert response.json() == [{"album_uri": mock_user.albums[0].album_uri}]
 
@@ -22,7 +22,7 @@ class TestUserDataEndpoints:
         :param client:
         :return:
         """
-        response = client.get("/user1/albums")
+        response = client.get("/user/user1/albums")
         assert response.status_code == 404
         assert response.json() == {"message": "User not found", "status": "error"}
 
@@ -33,9 +33,9 @@ class TestUserDataEndpoints:
         :param client:
         :return:
         """
-        response = client.post("/user/", json={"username": "user1", "email": "test"})
+        response = client.post("/user/create_user", json={"username": "user1"})
         assert response.status_code == 201
-        assert response.json() == {"username": "user1", "email": "test", "albums": []}
+        assert response.json() == {"username": "user1", "albums": []}
 
     def test_create_user_already_exists(self, client, mock_user):
         """
@@ -44,11 +44,12 @@ class TestUserDataEndpoints:
         :param client:
         :return:
         """
-        response = client.post("/user/", json={"username": "user1", "email": "test"})
+        response = client.post(
+            "/user/create_user", json={"username": "user1", "email": "test"}
+        )
         assert response.status_code == 201
         assert response.json() == {
             "username": mock_user.username,
-            "email": mock_user.email,
             "albums": [{"album_uri": "album1"}],
         }
 
@@ -59,7 +60,7 @@ class TestUserDataEndpoints:
         :param client:
         :return:
         """
-        response = client.post("/create_album/album1/")
+        response = client.post("/user/create_album/album1")
         assert response.status_code == 201
         assert response.json() == {"album_uri": "album1"}
 
@@ -71,7 +72,7 @@ class TestUserDataEndpoints:
         :param mock_album:
         :return:
         """
-        response = client.post(f"/create_album/{mock_album.album_uri}/")
+        response = client.post(f"/user/create_album/{mock_album.album_uri}")
         assert response.status_code == 201
         assert response.json() == {"album_uri": mock_album.album_uri}
 
@@ -83,7 +84,7 @@ class TestUserDataEndpoints:
         :return:
         """
         response = client.post(
-            "/add_album_link/",
+            "/user/add_album_link",
             json={"user_id": mock_user.username, "album_uri": mock_album.album_uri},
         )
         assert response.status_code == 201
@@ -96,7 +97,7 @@ class TestUserDataEndpoints:
         :return:
         """
         response = client.post(
-            "/add_album_link/",
+            "/user/add_album_link/",
             json={"user_id": "user1", "album_uri": mock_album.album_uri},
         )
         assert response.status_code == 404
@@ -110,8 +111,25 @@ class TestUserDataEndpoints:
         :return:
         """
         response = client.post(
-            "/add_album_link/",
+            "/user/add_album_link",
             json={"user_id": mock_user.username, "album_uri": "album3"},
         )
         assert response.status_code == 404
         assert response.json() == {"message": "Album not found", "status": "error"}
+
+    def test_create_album_link_already_exists(self, client, mock_user):
+        """
+        Test the create album link endpoint when the link already exists.
+
+        :param client:
+        :param mock_user:
+        :return:
+        """
+        response = client.post(
+            "/user/add_album_link",
+            json={
+                "user_id": mock_user.username,
+                "album_uri": mock_user.albums[0].album_uri,
+            },
+        )
+        assert response.status_code == 200

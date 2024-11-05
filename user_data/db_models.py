@@ -17,6 +17,13 @@ user_album_link_table = Table(
     Column("album_uri", String(20), ForeignKey("albums.album_uri"), primary_key=True),
 )
 
+shared_collection_link_table = Table(
+    "shared_collection_link_table",
+    Base.metadata,
+    Column("sharer", String(50), ForeignKey("users.username"), primary_key=True),
+    Column("receiver", String(50), ForeignKey("users.username"), primary_key=True),
+)
+
 
 class Crud:  # pylint: disable=too-few-public-methods
     """Base class for CRUD operations."""
@@ -55,9 +62,26 @@ class UserDb(Base, Crud):
     __tablename__ = "users"
 
     username: Mapped[str] = mapped_column(String(50), primary_key=True, unique=True)
-    email: Mapped[str] = mapped_column(String(100), unique=True)
     albums: Mapped[List["AlbumDb"]] = relationship(
         "AlbumDb", secondary=user_album_link_table, back_populates="users"
+    )
+    is_collection_public: Mapped[bool] = mapped_column(String(50), default=False)
+    # List of users who have shared their collections with this user
+    shared_collections: Mapped[List["UserDb"]] = relationship(
+        "UserDb",
+        secondary=shared_collection_link_table,
+        primaryjoin=username == shared_collection_link_table.c.sharer,
+        secondaryjoin=username == shared_collection_link_table.c.receiver,
+        back_populates="shared_with",
+    )
+
+    # List of users with whom this user's collection has been shared
+    shared_with: Mapped[List["UserDb"]] = relationship(
+        "UserDb",
+        secondary=shared_collection_link_table,
+        primaryjoin=username == shared_collection_link_table.c.receiver,
+        secondaryjoin=username == shared_collection_link_table.c.sharer,
+        back_populates="shared_collections",
     )
 
 
@@ -74,6 +98,6 @@ class AlbumDb(Base, Crud):
 
 # Don't create the database if in testing mode this is not usually a good idea
 # but for this use it should be fine
-if os.environ.get("PYTEST_VERSION") is None:
+if os.environ.get("PYTEST_VERSION") is None:  # pragma: no cover
     if not Path(Path(__file__).parent, "db", "db/user_data.db").exists():
         Base.metadata.create_all(bind=engine)

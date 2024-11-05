@@ -13,7 +13,7 @@ from bff.config import get_settings, Settings
 user_router = APIRouter()
 
 
-@user_router.get("/get_user_info/")
+@user_router.get("/get_user_info")
 def get_user_info(spotify_access_token: str) -> User:
     """
     Get user data from spotify returning only the necessary data.
@@ -37,7 +37,7 @@ def get_user_info(spotify_access_token: str) -> User:
     )
 
 
-@user_router.post("/create_user/")
+@user_router.post("/create_user")
 def create_user(user: UserIn, settings: Annotated[Settings, Depends(get_settings)]):
     """
     Create a user in the database.
@@ -46,7 +46,7 @@ def create_user(user: UserIn, settings: Annotated[Settings, Depends(get_settings
     :param user:
     :return:
     """
-    endpoint = f"{settings.user_data_address}/user/"
+    endpoint = f"{settings.user_data_address}/user/create_user"
     response = requests.post(endpoint, json=user.model_dump(), timeout=20)
     result = response.json()
     if response.status_code != 201:
@@ -54,7 +54,7 @@ def create_user(user: UserIn, settings: Annotated[Settings, Depends(get_settings
     return JSONResponse(content=result, status_code=201)
 
 
-@user_router.post("/add_album/", status_code=HTTP_201_CREATED)
+@user_router.post("/add_album", status_code=HTTP_201_CREATED)
 def add_album(
     data_in: AlbumUserLinkIn, settings: Annotated[Settings, Depends(get_settings)]
 ):
@@ -68,12 +68,12 @@ def add_album(
     :return:
     """
     # Create the album if it doesn't exist
-    endpoint = f"{settings.user_data_address}/create_album/{data_in.album_uri}/"
+    endpoint = f"{settings.user_data_address}/user/create_album/{data_in.album_uri}"
     response = requests.post(endpoint, timeout=20)
     if response.status_code != 201:
         raise APIException(500, "Failed to create or find album.")
     # Create the link between the user and the album
-    endpoint = f"{settings.user_data_address}/add_album_link/"
+    endpoint = f"{settings.user_data_address}/user/add_album_link"
     response = requests.post(endpoint, json=data_in.model_dump(), timeout=20)
     if response.status_code != 201:
         raise APIException(500, "Failed to add album link.")
@@ -90,7 +90,7 @@ def get_users_albums(
     :param user_name:
     :return:
     """
-    endpoint = f"{settings.user_data_address}/{user_name}/albums"
+    endpoint = f"{settings.user_data_address}/user/{user_name}/albums"
     response = requests.get(endpoint, timeout=20)
     if response.status_code != 200:
         raise APIException(500, "Failed to access user data.")
