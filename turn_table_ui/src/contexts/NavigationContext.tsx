@@ -10,8 +10,8 @@ import {
 interface NavigationContextType {
 	isSignedIn: boolean;
 	setIsSignedIn: Dispatch<SetStateAction<boolean>>;
-	nextPage: string;
-	setNextPage: Dispatch<SetStateAction<string>>;
+	currentPage: number;
+	setCurrentPage: Dispatch<SetStateAction<number>>;
 }
 
 export const NavigationContext = createContext<

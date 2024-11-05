@@ -14,9 +14,9 @@ import { FaPlay } from "react-icons/fa";
 import { IoScan } from "react-icons/io5";
 
 const NavigationBar = () => {
-	const { nextPage, setNextPage, isSignedIn } = useNavigation();
+	const { currentPage, setCurrentPage, isSignedIn } = useNavigation();
 	const switchPage = (key: Key) => {
-		setNextPage(key.toString());
+		setCurrentPage(key.valueOf() as number);
 	};
 
 	return (
@@ -34,11 +34,11 @@ const NavigationBar = () => {
 				{isSignedIn && (
 					<Tabs
 						aria-label="Tab control"
-						selectedKey={nextPage}
+						selectedKey={currentPage}
 						onSelectionChange={switchPage}
 					>
 						<Tab
-							key="play"
+							key={0}
 							title={
 								<div className="flex items-center space-x-2">
 									<FaPlay />
@@ -47,11 +47,20 @@ const NavigationBar = () => {
 							}
 						/>
 						<Tab
-							key="scan"
+							key={1}
 							title={
 								<div className="flex items-center space-x-2">
 									<IoScan />
 									<span> Scan </span>
+								</div>
+							}
+						/>
+						<Tab
+							key={2}
+							title={
+								<div className="flex items-center space-x-2">
+									<IoScan />
+									<span> Social </span>
 								</div>
 							}
 						/>

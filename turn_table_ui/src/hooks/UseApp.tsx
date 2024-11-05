@@ -7,23 +7,27 @@ import { useEffect, useState } from "react";
 // Hook used in the main app.tsx file
 // Is defined in its own file for easier testing
 
+enum tabs {
+	play = 0,
+	scan = 1,
+	social = 2,
+}
+
 const useApp = () => {
 	const [isSignedIn, setIsSignedIn] = useState(false);
 	const [currentAlbum, setCurrentAlbum] = useState<Album | null>(null);
 	const [token, setToken] = useState<string | null>(null);
-	// Two pages are defined in the state: "play" and "scan"
-	const [nextPage, setNextPage] = useState("");
-	const [fadeScan, setFadeScan] = useState(false);
-	const [fadePlayer, setFadePlayer] = useState(false);
+	// Three pages are defined in the state: "play", "scan" and "social"
+	const [currentPage, setCurrentPage] = useState(tabs.scan);
 
 	useEffect(() => {
 		// Set to the correct page based on the page the user was on last time
 		// they were on the page
 		const currentState = getStateData();
 		if (currentState?.currentPage && currentState?.currentAlbum) {
-			setNextPage(currentState.currentPage);
+			setCurrentPage(currentState.currentPage);
 		} else {
-			setNextPage("scan");
+			setCurrentPage(tabs.scan);
 		}
 
 		// Try to access URL parameters
@@ -62,28 +66,15 @@ const useApp = () => {
 
 	useEffect(() => {
 		// Trigger the animation when the page changes
-		triggerScreenChange(nextPage);
-		storeStateData({ currentPage: nextPage });
-	}, [nextPage]);
+		storeStateData({ currentPage: currentPage });
+	}, [currentPage]);
 
 	useEffect(() => {
 		// When the album changes always set to play screen
 		if (currentAlbum) {
-			setNextPage("play");
+			setCurrentPage(tabs.play);
 		}
 	}, [currentAlbum]);
-
-	const triggerScreenChange = (page: string) => {
-		// Trigger the animation when the page changes
-		// Will probably need changing when a social page is added
-		if (page === "play") {
-			setFadeScan(false);
-			setFadePlayer(true);
-		} else {
-			setFadePlayer(false);
-			setFadeScan(true);
-		}
-	};
 
 	return {
 		isSignedIn,
@@ -92,10 +83,8 @@ const useApp = () => {
 		setCurrentAlbum,
 		token,
 		setToken,
-		nextPage,
-		setNextPage,
-		fadeScan,
-		fadePlayer,
+		currentPage,
+		setCurrentPage,
 	};
 };
 
