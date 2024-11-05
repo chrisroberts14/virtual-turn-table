@@ -2,6 +2,7 @@ import { albumDetails } from "@/api_calls/BFFEndpoints.tsx";
 import axios from "axios";
 
 const GetAlbumDetails = async (albumURI: string, accessToken: string) => {
+	// Call to get album details
 	try {
 		const response = await axios.get(albumDetails, {
 			params: {

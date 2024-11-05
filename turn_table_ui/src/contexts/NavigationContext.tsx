@@ -5,6 +5,8 @@ import {
 	useContext,
 } from "react";
 
+// Context for navigation useful for components that are a part of the navbar
+
 interface NavigationContextType {
 	isSignedIn: boolean;
 	setIsSignedIn: Dispatch<SetStateAction<boolean>>;

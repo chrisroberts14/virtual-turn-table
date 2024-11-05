@@ -6,6 +6,10 @@ import {
 	useContext,
 } from "react";
 
+// Many components need to know the current album
+// So use a context to store the current album
+// Other music related data is in a different context
+
 interface MusicContextType {
 	currentAlbum: Album | null;
 	setCurrentAlbum: Dispatch<SetStateAction<Album | null>>;

@@ -2,6 +2,7 @@ import { getUserAlbums } from "@/api_calls/BFFEndpoints.tsx";
 import axios from "axios";
 
 const GetUserAlbums = async (username: string) => {
+	// Call to get user's albums
 	try {
 		const response = await axios.get(`${getUserAlbums}${username}`);
 		return response.data;

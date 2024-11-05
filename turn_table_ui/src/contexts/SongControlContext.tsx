@@ -6,6 +6,9 @@ import {
 	useContext,
 } from "react";
 
+// Song information context
+// Many different components need to interact with these
+
 interface SongControlContextType {
 	isPaused: boolean;
 	setIsPaused: Dispatch<SetStateAction<boolean>>;

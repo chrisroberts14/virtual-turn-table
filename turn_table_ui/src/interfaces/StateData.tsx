@@ -1,6 +1,9 @@
 import type Album from "@/interfaces/Album.tsx";
 import type Song from "@/interfaces/Song.tsx";
 
+// Interface for the state data
+// Provides helper methods for easy access to the state data in local storage
+
 export interface StateData {
 	spotify_access_token?: string;
 	currentAlbum?: Album;

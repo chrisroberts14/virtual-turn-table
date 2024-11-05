@@ -1,3 +1,5 @@
+// Song interface
+
 interface Song {
 	title: string;
 	artists: string[];

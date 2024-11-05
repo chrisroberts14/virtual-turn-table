@@ -10,6 +10,8 @@ import {
 } from "@/interfaces/StateData.tsx";
 import { useEffect, useState } from "react";
 
+// Music player hook
+
 const useMusicPlayer = () => {
 	const [player, setPlayer] = useState<SpotifyPlayer | null>(null);
 	const [deviceId, setDeviceId] = useState("");
@@ -43,6 +45,7 @@ const useMusicPlayer = () => {
 	useEffect(() => {
 		// Only create the player once the token is available
 		if (token && !player) {
+			// Add the spotify player script to the page
 			const script = document.createElement("script");
 			script.src = "https://sdk.scdn.co/spotify-player.js";
 			script.async = true;
@@ -56,13 +59,14 @@ const useMusicPlayer = () => {
 					},
 					volume: 0.5,
 				});
-				setPlayer(player);
 				PlayerSetup(player, setIsPlayerReady, setTrackPosition)
 					.then(() => {
 						setIsPlayerReady(true);
 						player.on("ready", (event: { device_id: string }) => {
 							setDeviceId(event.device_id);
 							setPlayer(player);
+
+							// Set up a polling function ot set the current track position
 							setInterval(async () => {
 								const state = await player.getCurrentState();
 								if (state) {
@@ -75,6 +79,7 @@ const useMusicPlayer = () => {
 										!state.paused &&
 										currentAlbum
 									) {
+										// If at the end of the song skip to the next one
 										const currentSongIndex = currentAlbum.songs.findIndex(
 											(song) =>
 												song.title === state.track_window.current_track.name,
@@ -115,6 +120,7 @@ const useMusicPlayer = () => {
 	}, [currentAlbum, isPlayerReady]);
 
 	useEffect(() => {
+		// Set the next song when the current song changes
 		if (currentAlbum && currentSong) {
 			const currentSongIndex = currentAlbum.songs.findIndex(
 				(song) => song.title === currentSong.title,
@@ -128,6 +134,7 @@ const useMusicPlayer = () => {
 	}, [currentSong, currentAlbum]);
 
 	useEffect(() => {
+		// Play the current track when the current song changes
 		if (token && currentSong) {
 			PlayTrack(token, currentSong.uri, deviceId)
 				.then(() => {

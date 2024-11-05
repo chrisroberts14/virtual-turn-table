@@ -1,5 +1,7 @@
 import type Song from "@/interfaces/Song.tsx";
 
+// Album interface
+
 interface Album {
 	title: string;
 	artists: string[];

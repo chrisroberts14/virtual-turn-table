@@ -1,6 +1,8 @@
 import type React from "react";
 import { type ReactNode, createContext, useContext, useState } from "react";
 
+// Context to allow any component to show an error message
+
 interface ErrorContextType {
 	error: string | null;
 	showError: (message: string) => void;

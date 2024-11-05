@@ -3,6 +3,7 @@ import eventEmitter from "@/utils/EventEmitter.ts";
 import axios from "axios";
 
 const AddAlbum = async (username: string, albumURI: string) => {
+	// Call to add album to user's library
 	const result = await axios
 		.post(
 			addAlbum,

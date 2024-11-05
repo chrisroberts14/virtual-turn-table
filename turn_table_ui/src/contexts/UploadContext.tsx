@@ -6,6 +6,8 @@ import {
 	useContext,
 } from "react";
 
+// Context used for uploading images to the backend
+
 interface UploadContextType {
 	isUploading: boolean;
 	setIsUploading: Dispatch<SetStateAction<boolean>>;

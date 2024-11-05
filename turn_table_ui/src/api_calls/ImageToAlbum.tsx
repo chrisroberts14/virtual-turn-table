@@ -2,6 +2,7 @@ import { imageToAlbum } from "@/api_calls/BFFEndpoints.tsx";
 import axios from "axios";
 
 const ImageToAlbum = async (image: string) => {
+	// Call to convert an image into an album
 	try {
 		const response = await axios.post(
 			imageToAlbum,

@@ -6,6 +6,8 @@ import {
 	useContext,
 } from "react";
 
+// Context to allow components to interact with the album selection
+
 interface AlbumSelectionContext {
 	hoveredAlbum: Album | null;
 	setHoveredAlbum: Dispatch<SetStateAction<Album | null>>;

@@ -8,6 +8,7 @@ const UploadFile = async (
 	setScannedAlbum: Dispatch<SetStateAction<Album | null>>,
 ) => {
 	const convertToBase64 = (file: File) => {
+		// Image needs to be converted to base64 to be sent to the backend
 		return new Promise((resolve, reject) => {
 			const reader = new FileReader();
 			reader.readAsDataURL(file);
@@ -17,6 +18,7 @@ const UploadFile = async (
 	};
 
 	const base64 = await convertToBase64(file);
+	// Call to convert an image into an album
 	await axios
 		.post(
 			imageToAlbum,
@@ -28,10 +30,12 @@ const UploadFile = async (
 			},
 		)
 		.then((response) => {
+			// Success set the scanned album
 			const newAlbum: Album = response.data;
 			setScannedAlbum(newAlbum);
 		})
 		.catch((error) => {
+			// Throw an error if the request fails
 			throw new Error(error.response.data.message);
 		});
 };

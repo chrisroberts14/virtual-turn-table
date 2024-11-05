@@ -5,6 +5,8 @@ import {
 	useContext,
 } from "react";
 
+// Context allows components to access the username
+
 interface UsernameContextType {
 	username: string | null;
 	setUsername: Dispatch<SetStateAction<string | null>>;

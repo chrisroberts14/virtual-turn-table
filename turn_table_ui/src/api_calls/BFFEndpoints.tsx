@@ -1,3 +1,5 @@
+// All endpoints for the BFF are defined in this file
+
 export const albumDetails = `${import.meta.env.VITE_BFF_ADDRESS}/music/album_details/`;
 export const userInfo = `${import.meta.env.VITE_BFF_ADDRESS}/user/get_user_info/`;
 export const imageToAlbum = `${import.meta.env.VITE_BFF_ADDRESS}/image_search/image_to_album/`;

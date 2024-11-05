@@ -5,6 +5,9 @@ import {
 	useContext,
 } from "react";
 
+// Context for the Spotify token
+// Allows different components to use the token in API calls
+
 interface SpotfyTokenContextType {
 	token: string | null;
 	setToken: Dispatch<SetStateAction<string | null>>;

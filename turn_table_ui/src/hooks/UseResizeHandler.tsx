@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+// Hook used to handle resizing of the window
+
 const useResizeHandler = (offset: number) => {
 	const [contentHeight, setContentHeight] = useState(
 		window.innerHeight - offset,
