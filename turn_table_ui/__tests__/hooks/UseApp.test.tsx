@@ -12,10 +12,10 @@ vi.mock("../../src/api_calls/GetUserInfo");
 describe("UseApp", () => {
 	it("should initialise properly when not logged in", () => {
 		// @ts-ignore
-		(getStateData as vi.mock).mockReturnValue({ currentPage: "play" });
+		(getStateData as vi.mock).mockReturnValue({ currentPage: 0 });
 		const { result } = renderHook(() => useApp());
 		expect(result.current.isSignedIn).toBe(false);
-		expect(result.current.nextPage).toBe("scan");
+		expect(result.current.currentPage).toBe(1);
 		expect(result.current.token).toBe(null);
 	});
 
@@ -29,7 +29,7 @@ describe("UseApp", () => {
 		});
 		const { result } = renderHook(() => useApp());
 		expect(result.current.isSignedIn).toBe(true);
-		expect(result.current.nextPage).toBe("scan");
+		expect(result.current.currentPage).toBe(1);
 		expect(result.current.token).toBe("test_token");
 	});
 
@@ -74,7 +74,7 @@ describe("UseApp", () => {
 			result.current.setCurrentAlbum({} as Album);
 		});
 		waitFor(() => {
-			expect(result.current.nextPage).toBe("play");
+			expect(result.current.currentPage).toBe(0);
 		});
 	});
 });

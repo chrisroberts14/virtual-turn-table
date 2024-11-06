@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import NavigationBar from "../../src/components/NavigationBar";
 import { useError } from "../../src/contexts/ErrorContext";
@@ -22,9 +22,9 @@ describe("Navigation Bar", () => {
 	it("renders the navigation bar with the logo and title", () => {
 		// @ts-ignore
 		(useNavigation as vi.Mock).mockReturnValue({
-			nextPage: "play",
-			setNextPage: vi.fn(),
-			isSignedIn: false,
+			currentPage: 0,
+			setCurrentPage: vi.fn(),
+			isSignedIn: true,
 		});
 
 		render(<NavigationBar />);
@@ -36,8 +36,8 @@ describe("Navigation Bar", () => {
 	it("renders Play and Scan tabs", () => {
 		// @ts-ignore
 		(useNavigation as vi.Mock).mockReturnValue({
-			nextPage: "play",
-			setNextPage: vi.fn(),
+			currentPage: 0,
+			setCurrentPage: vi.fn(),
 			isSignedIn: true,
 		});
 
@@ -48,12 +48,12 @@ describe("Navigation Bar", () => {
 		expect(screen.getByRole("tab", { name: /Scan/i })).toBeInTheDocument();
 	});
 
-	it("calls setNextPage when a tab is clicked", () => {
-		const mockSetNextPage = vi.fn();
+	it("calls setCurrentPage when a tab is clicked", () => {
+		const mockSetCurrentPage = vi.fn();
 		// @ts-ignore
 		(useNavigation as vi.Mock).mockReturnValue({
-			nextPage: "play",
-			setNextPage: mockSetNextPage,
+			currentPage: 0,
+			setCurrentPage: mockSetCurrentPage,
 			isSignedIn: true,
 		});
 
@@ -62,16 +62,17 @@ describe("Navigation Bar", () => {
 		// Simulate a click on the Scan tab
 		fireEvent.click(screen.getByRole("tab", { name: /Scan/i }));
 
-		// Assert that setNextPage is called with "scan"
-		expect(mockSetNextPage).toHaveBeenCalledWith("scan");
+		waitFor(() => {
+			expect(mockSetCurrentPage).toHaveBeenCalledWith(1);
+		});
 	});
 
 	it("renders UserBox when signed in, otherwise renders Login", () => {
 		// Case when user is signed in
 		// @ts-ignore
 		(useNavigation as vi.Mock).mockReturnValue({
-			nextPage: "play",
-			setNextPage: vi.fn(),
+			currentPage: 0,
+			setCurrentPage: vi.fn(),
 			isSignedIn: true,
 		});
 
