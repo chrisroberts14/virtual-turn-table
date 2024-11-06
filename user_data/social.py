@@ -12,10 +12,11 @@ social_router = APIRouter()
 
 
 @social_router.get("/get_public_collections", status_code=HTTP_200_OK)
-def get_public_collections(db: Session = Depends(get_db)) -> list[dict]:
+def get_public_collections(count: int = 5, db: Session = Depends(get_db)) -> list[dict]:
     """
-    Get all public collections.
+    Get the first `count` public collections.
 
+    :param count:
     :param db:
     :return:
     """
@@ -24,7 +25,10 @@ def get_public_collections(db: Session = Depends(get_db)) -> list[dict]:
             "username": user.username,
             "albums": [album.album_uri for album in user.albums],
         }
-        for user in db.query(UserDb).filter(UserDb.is_collection_public.is_(True)).all()
+        for user in db.query(UserDb)
+        .filter(UserDb.is_collection_public.is_(True))
+        .limit(count)
+        .all()
     ]
 
 
@@ -72,10 +76,10 @@ def share_collection(data: ShareCollectionIn, db: Session = Depends(get_db)):
     db.commit()
 
 
-@social_router.put("/make_collection_public/{username}", status_code=HTTP_200_OK)
-def make_collection_public(username: str, db: Session = Depends(get_db)):
+@social_router.put("/toggle_collection_public/{username}", status_code=HTTP_200_OK)
+def toggle_collection_public(username: str, db: Session = Depends(get_db)):
     """
-    Make a user's collection public.
+    Toggle if a user's collection is public.
 
     :param db:
     :param username:
@@ -84,5 +88,5 @@ def make_collection_public(username: str, db: Session = Depends(get_db)):
     user = UserDb.get_by_id(db, username)
     if user is None:
         raise APIException(status_code=404, message="User not found")
-    user.is_collection_public = True
+    user.is_collection_public = not user.is_collection_public
     db.commit()

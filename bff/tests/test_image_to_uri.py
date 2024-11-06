@@ -30,7 +30,7 @@ class TestImageToURI:
                     title="We",
                     artists=["Arcade Fire"],
                     image_url="test_url",
-                    album_uri="spotify:album:4EVnJfjXZjbyb8f2XvIVc2",
+                    album_uri="4EVnJfjXZjbyb8f2XvIVc2",
                     tracks_url="test_tracks_url",
                     songs=[],
                 ).model_dump()
@@ -53,7 +53,7 @@ class TestImageToURI:
                 title="We",
                 artists=["Arcade Fire"],
                 image_url="test_url",
-                album_uri="spotify:album:4EVnJfjXZjbyb8f2XvIVc2",
+                album_uri="4EVnJfjXZjbyb8f2XvIVc2",
                 tracks_url="test_tracks_url",
                 songs=[],
             ).model_dump()
@@ -116,7 +116,7 @@ class TestImageToURI:
                     title="We",
                     artists=["Arcade Fire"],
                     image_url="test_url",
-                    album_uri="spotify:album:4EVnJfjXZjbyb8f2XvIVc2",
+                    album_uri="4EVnJfjXZjbyb8f2XvIVc2",
                     tracks_url="test_tracks_url",
                     songs=[],
                 ).model_dump()

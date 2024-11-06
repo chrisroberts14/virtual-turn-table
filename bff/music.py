@@ -17,9 +17,9 @@ def get_album_details(spotify_access_token: str, album_uri: str) -> Album:
     :param album_uri:
     :return:
     """
-    if not album_uri.startswith("spotify:album:"):
-        raise APIException(400, "Album URI must start with 'spotify:album:'")
-    endpoint = f"https://api.spotify.com/v1/albums/{album_uri.split(':')[2]}"
+    if album_uri.startswith("spotify:album:"):
+        raise APIException(400, "Album URI must not start with 'spotify:album:'")
+    endpoint = f"https://api.spotify.com/v1/albums/{album_uri}"
     headers = {"Authorization": f"Bearer {spotify_access_token}"}
     response = requests.get(endpoint, headers=headers, timeout=20)
     if response.status_code != 200:

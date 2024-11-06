@@ -10,7 +10,7 @@ import eventEmitter from "@/utils/EventEmitter.ts";
 import { Image } from "@nextui-org/image";
 import { useCallback, useEffect } from "react";
 
-const AlbumCollectionDisplay = () => {
+const AlbumCollectionDisplay = ({ orientation = "horizontal" }) => {
 	const { username } = useUsername();
 	const { showError } = useError();
 	const { token } = useSpotifyToken();
@@ -74,11 +74,13 @@ const AlbumCollectionDisplay = () => {
 	};
 
 	return (
-		<div className="flex h-full w-full overflow-y-hidden overflow-x-auto bg-gray-900">
+		<div
+			className={`(${orientation === "vertical" ? "flex-col" : ""} flex h-full w-full overflow-y-hidden overflow-x-auto bg-gray-900`}
+		>
 			{albums.map((album) => (
 				<div
 					key={album.album_uri}
-					className="flex-shrink-0 h-full w-auto m-2 transition-transform duration-300 transform hover:scale-110"
+					className="flex-shrink-0 h-full w-auto m-2 transition-transform duration-300 transform hover:scale-105"
 					onClick={() => handleClick(album)}
 					onMouseOver={() => handleMouseOver(album)}
 					onFocus={() => handleMouseOver(album)}

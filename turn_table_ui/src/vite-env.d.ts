@@ -54,16 +54,13 @@ interface SpotifyPlayerState {
 }
 
 interface SpotifyPlayer {
-	connect: () => Promise<boolean>;
-	disconnect: () => void;
-	setVolume: (volume: number) => Promise<void>;
-	seek: (positionMs: number) => Promise<void>;
-	addListener: (
-		event: string,
-		callback: (state: SpotifyPlayerState) => void,
-	) => void;
-	on: (event: string, callback: (eventData: any) => void) => void;
-	getCurrentState: () => Promise<SpotifyPlayerState>;
-	togglePlay: () => Promise<void>;
-	pause: () => void;
+	connect: () => Promise<boolean>; // Connect to the Web Playback SDK
+	disconnect: () => void; // Disconnect from the Web Playback SDK
+	setVolume: (volume: number) => Promise<void>; // Set the volume (0-1)
+	seek: (positionMs: number) => Promise<void>; // Seek to a position in the current track (in milliseconds)
+	on: (event: string, callback: (eventData: any) => void) => void; // Add an event listener
+	getCurrentState: () => Promise<SpotifyPlayerState>; // Get the current player state
+	togglePlay: () => Promise<void>; // Toggle playback
+	pause: () => void; // Pause playback
+	resume: () => void; // Resume playback
 }

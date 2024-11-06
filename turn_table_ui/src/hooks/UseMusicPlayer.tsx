@@ -1,6 +1,7 @@
 import PlayTrack from "@/api_calls/PlayTrack.tsx";
 import PlayerSetup from "@/api_calls/PlayerSetup.tsx";
 import { useMusic } from "@/contexts/MusicContext.tsx";
+import { useNavigation } from "@/contexts/NavigationContext.tsx";
 import { useSpotifyToken } from "@/contexts/SpotifyTokenContext.tsx";
 import type Song from "@/interfaces/Song.tsx";
 import {
@@ -23,6 +24,7 @@ const useMusicPlayer = () => {
 	const [trackDuration, setTrackDuration] = useState(0);
 	const { token } = useSpotifyToken();
 	const { currentAlbum, setCurrentAlbum } = useMusic();
+	const { currentPage } = useNavigation();
 
 	useEffect(() => {
 		// Get the state data and set the current song
@@ -145,6 +147,17 @@ const useMusicPlayer = () => {
 				});
 		}
 	}, [currentSong, token, deviceId]);
+
+	useEffect(() => {
+		if (currentPage !== 0 && player) {
+			// 0 is the play page
+			// Pause if not on the play page
+			player.pause();
+		} else if (player) {
+			// Play if on the play page
+			player.resume();
+		}
+	}, [currentPage, player]);
 
 	return {
 		player,

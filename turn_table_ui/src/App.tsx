@@ -39,33 +39,42 @@ function App() {
 							}}
 						>
 							<NavigationBar />
+
+							{isSignedIn ? (
+								<MusicContext.Provider
+									value={{ currentAlbum, setCurrentAlbum }}
+								>
+									<div className="flex flex-row h-full">
+										<div
+											className="flex transition-transform duration-500 ease-in-out h-full"
+											style={{
+												transform: `translateX(-${currentPage * 100}%)`,
+											}}
+										>
+											<MusicPlayer />
+										</div>
+										<div
+											className="flex transition-transform duration-500 ease-in-out h-full"
+											style={{
+												transform: `translateX(-${currentPage * 100}%)`,
+											}}
+										>
+											<ScanPage />
+										</div>
+										<div
+											className="flex transition-transform duration-500 ease-in-out h-full"
+											style={{
+												transform: `translateX(-${currentPage * 100}%)`,
+											}}
+										>
+											<SocialPage />
+										</div>
+									</div>
+								</MusicContext.Provider>
+							) : (
+								<LoggedOutPage />
+							)}
 						</NavigationContext.Provider>
-						{isSignedIn ? (
-							<MusicContext.Provider value={{ currentAlbum, setCurrentAlbum }}>
-								<div className="flex flex-row h-full">
-									<div
-										className="flex transition-transform duration-500 ease-in-out h-full"
-										style={{ transform: `translateX(-${currentPage * 100}%)` }}
-									>
-										<MusicPlayer />
-									</div>
-									<div
-										className="flex transition-transform duration-500 ease-in-out h-full"
-										style={{ transform: `translateX(-${currentPage * 100}%)` }}
-									>
-										<ScanPage />
-									</div>
-									<div
-										className="flex transition-transform duration-500 ease-in-out h-full w-full"
-										style={{ transform: `translateX(-${currentPage * 100}%)` }}
-									>
-										<SocialPage />
-									</div>
-								</div>
-							</MusicContext.Provider>
-						) : (
-							<LoggedOutPage />
-						)}
 					</div>
 					<ErrorDisplay />
 				</SpotifyTokenContext.Provider>

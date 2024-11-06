@@ -16,7 +16,6 @@ class User(BaseModel):
 
     id: str
     display_name: str
-    email: str
     image_url: str
 
 
@@ -24,7 +23,6 @@ class UserIn(BaseModel):
     """User model to be stored in the database."""
 
     username: str
-    email: str
 
 
 class Song(BaseModel):
@@ -67,3 +65,17 @@ class AlbumUserLinkIn(BaseModel):
 
     album_uri: str
     user_id: str
+
+
+class Collection(BaseModel):
+    """Model for a collection of albums for a user."""
+
+    user_id: str
+    albums: list[Album]
+
+
+class ShareCollectionIn(BaseModel):
+    """Model for sharing a collection."""
+
+    sharer: str
+    receiver: str

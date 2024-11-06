@@ -38,7 +38,7 @@ class TestGetAlbum:
             "/music/album_details/",
             params={
                 "spotify_access_token": "test_token",
-                "album_uri": "spotify:album:uri",
+                "album_uri": "uri",
             },
         )
         assert response.status_code == 200
@@ -53,23 +53,6 @@ class TestGetAlbum:
                 songs=[],
             ).model_dump()
         )
-
-    def test_get_album_bad_uri(self, client):
-        """
-        Test the get_album_details endpoint with a bad uri.
-
-        :param client:
-        :return:
-        """
-        response = client.get(
-            "/music/album_details/",
-            params={"spotify_access_token": "test_token", "album_uri": "bad_uri"},
-        )
-        assert response.status_code == 400
-        assert response.json() == {
-            "message": "Album URI must start with 'spotify:album:'",
-            "status": "error",
-        }
 
     def test_get_album_failed_search(self, client, mocker):
         """
@@ -103,7 +86,7 @@ class TestGetAlbum:
             "/music/album_details/",
             params={
                 "spotify_access_token": "test_token",
-                "album_uri": "spotify:album:uri",
+                "album_uri": "uri",
             },
         )
         assert response.status_code == 500

@@ -13,7 +13,7 @@ const AlbumHistorySelector = () => {
 		<AlbumSelectionContext.Provider
 			value={{ hoveredAlbum, setHoveredAlbum, albums, setAlbums }}
 		>
-			<div className="min-w-[20%] h-full pt-2 bg-gray-900">
+			<div className="min-w-[25%] max-h-full pt-2 bg-gray-900">
 				<Card className="max-h-fit">
 					<CardBody>
 						<div className="flex flex-col items-center">
@@ -23,17 +23,17 @@ const AlbumHistorySelector = () => {
 						</div>
 					</CardBody>
 				</Card>
-				<div className="px-2 py-1">
-					<Card>
+				<div className="px-2 py-1 max-h-full">
+					<Card className="max-h-full">
 						<CardHeader className="justify-center">
 							<div className="flex flex-col items-center w-full">
-								<div className="text-center w-full">
+								<div className="text-center w-full overflow-x-auto">
 									{!hoveredAlbum ? (
 										<Skeleton className="rounded-lg">
 											<div className="h-6 rounded-lg bg-default-300 w-full" />
 										</Skeleton>
 									) : (
-										hoveredAlbum.title
+										<span className="text-nowrap">{hoveredAlbum.title}</span>
 									)}
 								</div>
 							</div>
@@ -46,7 +46,7 @@ const AlbumHistorySelector = () => {
 											<div className="h-6 rounded-lg bg-default-300 w-full" />
 										</Skeleton>
 									) : (
-										`By ${hoveredAlbum.artists}`
+										<span className="text-nowrap">{`By ${hoveredAlbum.artists}`}</span>
 									)}
 								</div>
 							</div>

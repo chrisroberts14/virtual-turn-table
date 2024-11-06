@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from bff.music import music_router
+from bff.social import social_router
 from bff.user import user_router
 from bff.image_search import image_search_router
 from bff.api_models import APIException
@@ -14,6 +15,7 @@ app = FastAPI()
 app.include_router(music_router, prefix="/music")
 app.include_router(user_router, prefix="/user")
 app.include_router(image_search_router, prefix="/image_search")
+app.include_router(social_router, prefix="/social")
 
 
 origins = [
