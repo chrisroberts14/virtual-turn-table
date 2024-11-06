@@ -32,7 +32,6 @@ def get_user_info(spotify_access_token: str) -> User:
     return User(
         id=data["id"],
         display_name=data["display_name"],
-        email=data["email"],
         image_url=data["images"][0]["url"],
     )
 

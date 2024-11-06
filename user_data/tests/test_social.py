@@ -82,7 +82,7 @@ class TestSocial:
 
     def test_make_collection_public(self, client, mock_user):
         """Test making a collection public."""
-        response = client.put(f"/social/make_collection_public/{mock_user.username}")
+        response = client.put(f"/social/toggle_collection_public/{mock_user.username}")
         assert response.status_code == 200
 
     def test_make_collection_public_bad_user(self, client):
@@ -92,6 +92,6 @@ class TestSocial:
         :param client:
         :return:
         """
-        response = client.put("/social/make_collection_public/nonexistent")
+        response = client.put("/social/toggle_collection_public/nonexistent")
         assert response.status_code == 404
         assert response.json() == {"message": "User not found", "status": "error"}

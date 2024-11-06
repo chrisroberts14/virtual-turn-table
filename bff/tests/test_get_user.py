@@ -21,7 +21,6 @@ class TestGetUser:
             """
             mock_response_data = {
                 "display_name": "test_user",
-                "email": "test_user",
                 "id": "test_user",
                 "images": [{"url": "test_user"}],
             }
@@ -37,7 +36,6 @@ class TestGetUser:
         assert response.status_code == 200
         assert response.json() == {
             "display_name": "test_user",
-            "email": "test_user",
             "id": "test_user",
             "image_url": "test_user",
         }
