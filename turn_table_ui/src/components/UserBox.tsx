@@ -1,4 +1,5 @@
 import GetUserInfo from "@/api_calls/GetUserInfo.tsx";
+import ToggleCollectionPublic from "@/api_calls/ToggleCollectionPublic.tsx";
 import { useUsername } from "@/contexts/UsernameContext.tsx";
 import { clearStateData, getStateData } from "@/interfaces/StateData.tsx";
 import { Avatar } from "@nextui-org/avatar";
@@ -58,9 +59,16 @@ const UserBox = () => {
 				onAction={(key) => {
 					if (key === "logout") {
 						logout();
+					} else if (key === "togglePublic") {
+						if (username) {
+							ToggleCollectionPublic(username).then(() => {
+								return;
+							});
+						}
 					}
 				}}
 			>
+				<DropdownItem key={"togglePublic"}>Is collection public?</DropdownItem>
 				<DropdownItem key={"logout"}>Logout</DropdownItem>
 			</DropdownMenu>
 		</Dropdown>
