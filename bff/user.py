@@ -95,3 +95,21 @@ def get_users_albums(
         raise APIException(400, "Failed to access user data.")
     data = response.json()
     return [album["album_uri"] for album in data]
+
+
+@user_router.get("/is_collection_public/{user_name}")
+def is_collection_public(
+    user_name: str, settings: Annotated[Settings, Depends(get_settings)]
+) -> bool:
+    """
+    Check if a user's collection is public.
+
+    :param settings:
+    :param user_name:
+    :return:
+    """
+    endpoint = f"{settings.user_data_address}/user/is_collection_public/{user_name}"
+    response = requests.get(endpoint, timeout=20)
+    if response.status_code != 200:
+        raise APIException(400, "Failed to access user data.")
+    return response.json()

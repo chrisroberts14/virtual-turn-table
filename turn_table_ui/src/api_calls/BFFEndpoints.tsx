@@ -11,3 +11,4 @@ export const getPublicCollections = `${import.meta.env.VITE_BFF_ADDRESS}/social/
 export const getSharedCollections = `${import.meta.env.VITE_BFF_ADDRESS}/social/get_shared_collections/`;
 export const shareCollection = `${import.meta.env.VITE_BFF_ADDRESS}/social/share_collection/`;
 export const toggleCollectionPublic = `${import.meta.env.VITE_BFF_ADDRESS}/social/toggle_collection_public/`;
+export const getIsCollectionPublic = `${import.meta.env.VITE_BFF_ADDRESS}/user/is_collection_public/`;

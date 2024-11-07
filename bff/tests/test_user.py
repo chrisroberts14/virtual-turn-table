@@ -275,3 +275,57 @@ class TestGetUserAlbums:
         mocker.patch("requests.get", side_effect=mock_request)
         response = client.get(self.endpoint)
         assert response.status_code == 400
+
+
+class TestIsCollectionPublic:
+    """Test the /user/is_collection_public/{username} endpoint."""
+
+    endpoint = "/user/is_collection_public/test_user"
+
+    def test_is_collection_public(self, client, mocker):
+        """
+        Test working call.
+
+        :param client:
+        :param mocker:
+        :return:
+        """
+
+        def mock_request(_, **__):
+            """
+            Mock the request.
+
+            :return:
+            """
+            mock_response = mocker.Mock()
+            mock_response.status_code = 200
+            mock_response.json.return_value = True
+            return mock_response
+
+        mocker.patch("requests.get", side_effect=mock_request)
+        response = client.get(self.endpoint)
+        assert response.status_code == 200
+        assert response.json() is True
+
+    def test_is_collection_public_bad_request(self, client, mocker):
+        """
+        Test call where the user data service fails.
+
+        :param client:
+        :param mocker:
+        :return:
+        """
+
+        def mock_request(_, **__):
+            """
+            Mock the request.
+
+            :return:
+            """
+            mock_response = mocker.Mock()
+            mock_response.status_code = 400
+            return mock_response
+
+        mocker.patch("requests.get", side_effect=mock_request)
+        response = client.get(self.endpoint)
+        assert response.status_code == 400
