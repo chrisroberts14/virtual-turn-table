@@ -8,18 +8,16 @@ from bff.api_models import PlaySong, APIException, Album, Song
 music_router = APIRouter()
 
 
-@music_router.get("/album_details/")
-def get_album_details(spotify_access_token: str, album_uri: str) -> Album:
+@music_router.get("/album_details")
+def get_album_details(spotify_access_token: str, album_id: str) -> Album:
     """
     Gets the album details given a specific uri.
 
     :param spotify_access_token:
-    :param album_uri:
+    :param album_id:
     :return:
     """
-    if album_uri.startswith("spotify:album:"):
-        raise APIException(400, "Album URI must not start with 'spotify:album:'")
-    endpoint = f"https://api.spotify.com/v1/albums/{album_uri}"
+    endpoint = f"https://api.spotify.com/v1/albums/{album_id}"
     headers = {"Authorization": f"Bearer {spotify_access_token}"}
     response = requests.get(endpoint, headers=headers, timeout=20)
     if response.status_code != 200:

@@ -27,9 +27,12 @@ def get_albums(album_uris: tuple[str], spotify_access_token: str):
     album_uri_string = ",".join(album_uris)
     spotify_album_data_url = "https://api.spotify.com/v1/albums"
     headers = {"Authorization": f"Bearer {spotify_access_token}"}
-    return requests.get(
+    result = requests.get(
         f"{spotify_album_data_url}?ids={album_uri_string}", headers=headers, timeout=20
-    ).json()
+    )
+    if result.status_code != 200:
+        raise APIException(400, "Failed to get album data")
+    return result.json()
 
 
 def convert_response_to_collection(

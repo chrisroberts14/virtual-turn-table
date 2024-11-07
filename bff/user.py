@@ -49,7 +49,7 @@ def create_user(user: UserIn, settings: Annotated[Settings, Depends(get_settings
     response = requests.post(endpoint, json=user.model_dump(), timeout=20)
     result = response.json()
     if response.status_code != 201:
-        raise APIException(500, "Failed to access user data.")
+        raise APIException(400, "Failed to create user")
     return JSONResponse(content=result, status_code=201)
 
 
@@ -70,12 +70,12 @@ def add_album(
     endpoint = f"{settings.user_data_address}/user/create_album/{data_in.album_uri}"
     response = requests.post(endpoint, timeout=20)
     if response.status_code != 201:
-        raise APIException(500, "Failed to create or find album.")
+        raise APIException(400, "Failed to create or find album.")
     # Create the link between the user and the album
     endpoint = f"{settings.user_data_address}/user/add_album_link"
     response = requests.post(endpoint, json=data_in.model_dump(), timeout=20)
     if response.status_code != 201:
-        raise APIException(500, "Failed to add album link.")
+        raise APIException(400, "Failed to add album link.")
 
 
 @user_router.get("/get_user_albums/{user_name}")
@@ -92,6 +92,6 @@ def get_users_albums(
     endpoint = f"{settings.user_data_address}/user/{user_name}/albums"
     response = requests.get(endpoint, timeout=20)
     if response.status_code != 200:
-        raise APIException(500, "Failed to access user data.")
+        raise APIException(400, "Failed to access user data.")
     data = response.json()
     return [album["album_uri"] for album in data]

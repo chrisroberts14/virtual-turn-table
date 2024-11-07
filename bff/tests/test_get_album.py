@@ -38,7 +38,7 @@ class TestGetAlbum:
             "/music/album_details/",
             params={
                 "spotify_access_token": "test_token",
-                "album_uri": "uri",
+                "album_id": "uri",
             },
         )
         assert response.status_code == 200
@@ -86,7 +86,7 @@ class TestGetAlbum:
             "/music/album_details/",
             params={
                 "spotify_access_token": "test_token",
-                "album_uri": "uri",
+                "album_id": "uri",
             },
         )
         assert response.status_code == 500

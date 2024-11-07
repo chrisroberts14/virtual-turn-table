@@ -71,3 +71,24 @@ class TestPlayTrack:
             "message": "Failed to play track.",
             "status": "error",
         }
+
+    def test_play_track_no_device_id(self, client):
+        """
+        Test the play_track endpoint where no device id is provided.
+
+        :param client:
+        :return:
+        """
+        response = client.post(
+            "/music/play_track/",
+            json={
+                "track_uri": "test_uri",
+                "device_id": "",
+                "spotify_access_token": "test_token",
+            },
+        )
+        assert response.status_code == 400
+        assert response.json() == {
+            "message": "No device id provided.",
+            "status": "error",
+        }

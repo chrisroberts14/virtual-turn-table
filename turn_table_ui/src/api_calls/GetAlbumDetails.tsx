@@ -7,7 +7,7 @@ const GetAlbumDetails = async (albumURI: string, accessToken: string) => {
 		const response = await axios.get(albumDetails, {
 			params: {
 				spotify_access_token: accessToken,
-				album_uri: albumURI,
+				album_id: albumURI,
 			},
 		});
 		return response.data;
