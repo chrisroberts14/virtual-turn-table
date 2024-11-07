@@ -12,6 +12,7 @@ import { Tab, Tabs } from "@nextui-org/tabs";
 import type { Key } from "@react-types/shared";
 import { FaPlay } from "react-icons/fa";
 import { IoScan } from "react-icons/io5";
+import { IoShareSocial } from "react-icons/io5";
 
 const NavigationBar = () => {
 	const { currentPage, setCurrentPage, isSignedIn } = useNavigation();
@@ -59,7 +60,7 @@ const NavigationBar = () => {
 							key={2}
 							title={
 								<div className="flex items-center space-x-2">
-									<IoScan />
+									<IoShareSocial />
 									<span> Social </span>
 								</div>
 							}

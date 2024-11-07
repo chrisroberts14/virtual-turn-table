@@ -6,11 +6,20 @@ import { useMusic } from "@/contexts/MusicContext.tsx";
 import { useSpotifyToken } from "@/contexts/SpotifyTokenContext.tsx";
 import { useUsername } from "@/contexts/UsernameContext.tsx";
 import type Album from "@/interfaces/Album.tsx";
+import type Collection from "@/interfaces/Collection.tsx";
 import eventEmitter from "@/utils/EventEmitter.ts";
 import { Image } from "@nextui-org/image";
 import { useCallback, useEffect } from "react";
 
-const AlbumCollectionDisplay = ({ orientation = "horizontal" }) => {
+interface AlbumCollectionDisplayProps {
+	albumCollection?: Collection;
+	orientation?: "horizontal" | "vertical";
+}
+
+const AlbumCollectionDisplay = ({
+	albumCollection,
+	orientation = "horizontal",
+}: AlbumCollectionDisplayProps) => {
 	const { username } = useUsername();
 	const { showError } = useError();
 	const { token } = useSpotifyToken();
@@ -19,7 +28,8 @@ const AlbumCollectionDisplay = ({ orientation = "horizontal" }) => {
 
 	const userAlbumUpdate = useCallback(
 		(user: string) => {
-			if (user && token) {
+			if (user && token && albumCollection) {
+				// Show the currently logged-in users albums
 				GetUserAlbums(user)
 					.then((albums) => {
 						if (albums.length > 0) {
@@ -40,9 +50,12 @@ const AlbumCollectionDisplay = ({ orientation = "horizontal" }) => {
 					.catch((error) => {
 						displayError(error.message);
 					});
+			} else if (albumCollection) {
+				// Show the albums handed to the component
+				setAlbums(albumCollection.albums);
 			}
 		},
-		[token, setAlbums],
+		[token, setAlbums, albumCollection],
 	);
 
 	useEffect(() => {
@@ -75,12 +88,12 @@ const AlbumCollectionDisplay = ({ orientation = "horizontal" }) => {
 
 	return (
 		<div
-			className={`(${orientation === "vertical" ? "flex-col" : ""} flex h-full w-full overflow-y-hidden overflow-x-auto bg-gray-900`}
+			className={`${orientation === "vertical" ? "flex-col" : ""} flex max-h-full w-full overflow-auto bg-gray-900 rounded-2xl`}
 		>
 			{albums.map((album) => (
 				<div
 					key={album.album_uri}
-					className="flex-shrink-0 h-full w-auto m-2 transition-transform duration-300 transform hover:scale-105"
+					className="flex-shrink-0 m-2 transition-transform duration-300 transform hover:scale-105"
 					onClick={() => handleClick(album)}
 					onMouseOver={() => handleMouseOver(album)}
 					onFocus={() => handleMouseOver(album)}
