@@ -85,3 +85,18 @@ def add_album_link(data: AlbumUserLinkIn, db: Session = Depends(get_db)):
         status_code=HTTP_201_CREATED,
         content={"album_uri": album.album_uri, "status": "success"},
     )
+
+
+@user_router.get("/is_collection_public/{username}")
+def is_collection_public(username: str, db: Session = Depends(get_db)) -> bool:
+    """
+    Check if a user's collection is public.
+
+    :param db:
+    :param username:
+    :return:
+    """
+    db_user = UserDb.get_by_id(db, username)
+    if db_user is None:
+        raise APIException(status_code=404, message="User not found")
+    return db_user.is_collection_public
