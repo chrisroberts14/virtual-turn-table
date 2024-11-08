@@ -5,11 +5,29 @@ from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
 from starlette.status import HTTP_201_CREATED, HTTP_200_OK
 
-from user_data.api_models import APIException, Album, User, AlbumUserLinkIn
+from user_data.api_models import (
+    APIException,
+    Album,
+    User,
+    AlbumUserLinkIn,
+    UserSearchOut,
+)
 from user_data.db import get_db
 from user_data.db_models import UserDb, AlbumDb
 
 user_router = APIRouter()
+
+
+@user_router.get("/")
+def get_all_users(db: Session = Depends(get_db)) -> list[UserSearchOut]:
+    """
+    Get all users.
+
+    :param db:
+    :return:
+    """
+    db_users = UserDb.get_all(db)
+    return [UserSearchOut(username=user.username) for user in db_users]
 
 
 @user_router.get("/{username}/albums")

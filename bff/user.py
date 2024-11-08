@@ -111,3 +111,18 @@ def get_users_albums(
         raise APIException(400, "Failed to access user data.")
     data = response.json()
     return [album["album_uri"] for album in data]
+
+
+@user_router.get("/")
+def get_all_users(settings: Annotated[Settings, Depends(get_settings)]):
+    """
+    Get all users.
+
+    :param settings:
+    :return:
+    """
+    endpoint = f"{settings.user_data_address}/user/"
+    response = requests.get(endpoint, timeout=20)
+    if response.status_code != 200:
+        raise APIException(400, "Failed to access user data.")
+    return response.json()

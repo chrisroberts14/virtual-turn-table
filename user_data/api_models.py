@@ -37,3 +37,9 @@ class ShareCollectionIn(BaseModel):
 
     sharer: str
     receiver: str
+
+
+class UserSearchOut(BaseModel):
+    """Model for output of search for users."""
+
+    username: str

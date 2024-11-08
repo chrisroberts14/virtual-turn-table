@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import List
 
 from sqlalchemy import Column, String, ForeignKey, Table, Boolean
-from sqlalchemy.orm import Mapped, relationship
+from sqlalchemy.orm import Mapped, relationship, Session
 from sqlalchemy.testing.schema import mapped_column
 
 from user_data.db import Base, engine
@@ -31,7 +31,7 @@ class Crud:  # pylint: disable=too-few-public-methods
     id = NotImplemented
 
     @classmethod
-    def create(cls, db, obj_in):
+    def create(cls, db: Session, obj_in):
         """
         Create a new object in the database.
 
@@ -45,7 +45,7 @@ class Crud:  # pylint: disable=too-few-public-methods
         return obj_in
 
     @classmethod
-    def get_by_id(cls, db, id_):
+    def get_by_id(cls, db: Session, id_):
         """
         Get an object by its id.
 
@@ -54,6 +54,16 @@ class Crud:  # pylint: disable=too-few-public-methods
         :return:
         """
         return db.get(cls, id_)
+
+    @classmethod
+    def get_all(cls, db: Session):
+        """
+        Get all objects in db.
+
+        :param db:
+        :return:
+        """
+        return db.query(cls).all()
 
 
 class UserDb(Base, Crud):
