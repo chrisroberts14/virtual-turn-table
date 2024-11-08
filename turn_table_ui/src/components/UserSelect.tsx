@@ -6,11 +6,15 @@ import { User as UserComp } from "@nextui-org/user";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 
-const UserSelect = () => {
+interface UserSelectProps {
+	inputValue: string;
+	setInputValue: (value: string) => void;
+}
+
+const UserSelect = ({ inputValue, setInputValue }: UserSelectProps) => {
 	const [users, setUsers] = useState<User[]>([]);
 	const { token } = useSpotifyToken();
 	const [isLoading, setIsLoading] = useState(false);
-	const [inputValue, setInputValue] = useState("");
 	const [value] = useDebounce(inputValue, 1000);
 
 	useEffect(() => {
@@ -34,6 +38,7 @@ const UserSelect = () => {
 			placeholder="Type to search..."
 			isLoading={isLoading}
 			onInputChange={(e) => setInputValue(e)}
+			isDisabled={isLoading && inputValue.length === 0}
 		>
 			{users.map((user) => (
 				<AutocompleteItem key={user.username} textValue={user.username}>

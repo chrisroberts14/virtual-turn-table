@@ -1,3 +1,4 @@
+import GetUserAlbums from "@/api_calls/GetUserAlbums.tsx";
 import ToggleCollectionPublic from "@/api_calls/ToggleCollectionPublic.tsx";
 import ShareModal from "@/components/ShareModal.tsx";
 import useUserBox from "@/hooks/UseUserBox.tsx";
@@ -6,10 +7,18 @@ import {
 	Dropdown,
 	DropdownItem,
 	DropdownMenu,
+	DropdownSection,
 	DropdownTrigger,
 } from "@nextui-org/dropdown";
 import { User } from "@nextui-org/user";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import {
+	MdDelete,
+	MdLogout,
+	MdPrivateConnectivity,
+	MdPublic,
+	MdShare,
+} from "react-icons/md";
 
 const UserBox = () => {
 	const {
@@ -20,10 +29,26 @@ const UserBox = () => {
 		setIsCollectionPublic,
 	} = useUserBox();
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+	const [disabledKeys, setDisabledKeys] = useState<string[]>([
+		"share",
+		"togglePublic",
+	]);
+
+	useEffect(() => {
+		if (username) {
+			GetUserAlbums(username).then((albums) => {
+				if (albums.length === 0) {
+					setDisabledKeys(["share", "togglePublic"]);
+				} else {
+					setDisabledKeys([]);
+				}
+			});
+		}
+	}, [username]);
 
 	return (
 		<div>
-			<Dropdown>
+			<Dropdown backdrop="blur">
 				<DropdownTrigger>
 					<div>
 						<User
@@ -38,6 +63,7 @@ const UserBox = () => {
 					</div>
 				</DropdownTrigger>
 				<DropdownMenu
+					disabledKeys={disabledKeys}
 					onAction={(key) => {
 						if (key === "logout") {
 							logout();
@@ -53,17 +79,54 @@ const UserBox = () => {
 						}
 					}}
 				>
-					{isCollectionPublic ? (
-						<DropdownItem key={"togglePublic"}>
-							Set collection public
+					<DropdownSection
+						title={
+							disabledKeys
+								? "You can't share an empty collection"
+								: "Your collection"
+						}
+					>
+						{isCollectionPublic ? (
+							<DropdownItem
+								key={"togglePublic"}
+								description="Share your collection pubicly"
+								startContent={<MdPublic />}
+							>
+								Set collection public
+							</DropdownItem>
+						) : (
+							<DropdownItem
+								key={"togglePublic"}
+								description="Unshare your collection pubicly"
+								startContent={<MdPrivateConnectivity />}
+							>
+								Set collection private
+							</DropdownItem>
+						)}
+						<DropdownItem
+							key={"share"}
+							description="Share your collection with select users"
+							startContent={<MdShare />}
+						>
+							Share collection
 						</DropdownItem>
-					) : (
-						<DropdownItem key={"togglePublic"}>
-							Set collection private
+					</DropdownSection>
+					<DropdownSection title="Account">
+						<DropdownItem
+							key={"delete"}
+							color="danger"
+							startContent={<MdDelete />}
+						>
+							Delete your account
 						</DropdownItem>
-					)}
-					<DropdownItem key={"share"}>Share collection</DropdownItem>
-					<DropdownItem key={"logout"}>Logout</DropdownItem>
+						<DropdownItem
+							key={"logout"}
+							color="danger"
+							startContent={<MdLogout />}
+						>
+							Logout
+						</DropdownItem>
+					</DropdownSection>
 				</DropdownMenu>
 			</Dropdown>
 			<ShareModal isOpen={isShareModalOpen} setIsOpen={setIsShareModalOpen} />

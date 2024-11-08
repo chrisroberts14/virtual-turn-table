@@ -130,7 +130,7 @@ def get_users_by_search(
     endpoint = f"{settings.user_data_address}/user/search"
     response = requests.get(endpoint, params={"query": query}, timeout=20)
     if response.status_code != 200:
-        raise APIException(400, "Failed to access user data.")
+        raise APIException(400, response.json()["detail"])
     # The response now has a list of users
     # Now get their images from spotify
     user_out_data = []
