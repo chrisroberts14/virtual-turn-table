@@ -17,6 +17,7 @@ class User(BaseModel):
     id: str
     display_name: str
     image_url: str
+    is_collection_public: bool = False
 
 
 class UserIn(BaseModel):

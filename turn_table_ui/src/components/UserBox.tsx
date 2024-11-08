@@ -1,7 +1,5 @@
-import GetUserInfo from "@/api_calls/GetUserInfo.tsx";
 import ToggleCollectionPublic from "@/api_calls/ToggleCollectionPublic.tsx";
-import { useUsername } from "@/contexts/UsernameContext.tsx";
-import { clearStateData, getStateData } from "@/interfaces/StateData.tsx";
+import useUserBox from "@/hooks/UseUserBox.tsx";
 import { Avatar } from "@nextui-org/avatar";
 import {
 	Dropdown,
@@ -10,34 +8,9 @@ import {
 	DropdownTrigger,
 } from "@nextui-org/dropdown";
 import { User } from "@nextui-org/user";
-import { useEffect, useState } from "react";
 
 const UserBox = () => {
-	const [email, setEmail] = useState("");
-	const [profileImage, setProfileImage] = useState("");
-	const { username, setUsername } = useUsername();
-
-	useEffect(() => {
-		const state = getStateData();
-		if (state && "spotify_access_token" in state) {
-			GetUserInfo(state.spotify_access_token)
-				.then((response) => {
-					if (response) {
-						setUsername(response.display_name);
-						setEmail(response.email);
-						setProfileImage(response.image_url);
-					}
-				})
-				.catch((_) => {
-					logout();
-				});
-		}
-	}, [setUsername]);
-
-	const logout = () => {
-		clearStateData();
-		window.location.href = "/";
-	};
+	const { profileImage, username, logout } = useUserBox();
 
 	return (
 		<Dropdown>
@@ -45,7 +18,6 @@ const UserBox = () => {
 				<div>
 					<User
 						name={username}
-						description={email}
 						avatarProps={{
 							src: profileImage,
 						}}
@@ -62,6 +34,7 @@ const UserBox = () => {
 					} else if (key === "togglePublic") {
 						if (username) {
 							ToggleCollectionPublic(username).then(() => {
+								// Set the state to the opposite of the current state
 								return;
 							});
 						}

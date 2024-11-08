@@ -14,10 +14,13 @@ user_router = APIRouter()
 
 
 @user_router.get("/get_user_info")
-def get_user_info(spotify_access_token: str) -> User:
+def get_user_info(
+    spotify_access_token: str, settings: Annotated[Settings, Depends(get_settings)]
+) -> User:
     """
     Get user data from spotify returning only the necessary data.
 
+    :param settings:
     :param spotify_access_token:
     :return:
     """
@@ -27,12 +30,25 @@ def get_user_info(spotify_access_token: str) -> User:
     response = requests.get(endpoint, headers=headers, timeout=20)
     if response.status_code != 200:
         raise APIException(401, "Invalid access token please re-authenticate.")
-    data = response.json()
+    spotify_data = response.json()
+    username = spotify_data["display_name"]
+
+    endpoint = f"{settings.user_data_address}/user/is_collection_public/{username}"
+    is_collection_public = requests.get(endpoint, timeout=20)
+    # The 404 implies the user could not be found so they may just not be in the database yet
+    # So don't raise an exception just set it to the default of false
+    if is_collection_public.status_code == 404:
+        is_collection_public = False
+    elif is_collection_public.status_code != 200:
+        raise APIException(400, "Failed to access user data.")
+    else:
+        is_collection_public = is_collection_public.json()
 
     return User(
-        id=data["id"],
-        display_name=data["display_name"],
-        image_url=data["images"][0]["url"],
+        id=spotify_data["id"],
+        display_name=username,
+        image_url=spotify_data["images"][0]["url"],
+        is_collection_public=is_collection_public,
     )
 
 
@@ -95,21 +111,3 @@ def get_users_albums(
         raise APIException(400, "Failed to access user data.")
     data = response.json()
     return [album["album_uri"] for album in data]
-
-
-@user_router.get("/is_collection_public/{user_name}")
-def is_collection_public(
-    user_name: str, settings: Annotated[Settings, Depends(get_settings)]
-) -> bool:
-    """
-    Check if a user's collection is public.
-
-    :param settings:
-    :param user_name:
-    :return:
-    """
-    endpoint = f"{settings.user_data_address}/user/is_collection_public/{user_name}"
-    response = requests.get(endpoint, timeout=20)
-    if response.status_code != 200:
-        raise APIException(400, "Failed to access user data.")
-    return response.json()
