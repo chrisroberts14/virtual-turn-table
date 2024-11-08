@@ -156,3 +156,14 @@ class TestUserDataEndpoints:
         response = client.get("/user/is_collection_public/user1")
         assert response.status_code == 404
         assert response.json() == {"message": "User not found", "status": "error"}
+
+    def test_get_all_users(self, client, mock_user):
+        """
+        Test the get all users endpoint.
+
+        :param client:
+        :return:
+        """
+        response = client.get("/user/")
+        assert response.status_code == 200
+        assert response.json() == [{"username": mock_user.username}]

@@ -358,3 +358,55 @@ class TestGetUserAlbums:
         mocker.patch("requests.get", side_effect=mock_request)
         response = client.get(self.endpoint)
         assert response.status_code == 400
+
+
+class TestGetAllUsers:
+    """Test the /user/ endpoint."""
+
+    endpoint = "/user/"
+
+    def test_get_all_users(self, client, mocker):
+        """
+        Test working call.
+
+        :return:
+        """
+
+        def mock_request(_, **__):
+            """
+            Mock the request.
+
+            :return:
+            """
+            mock_response = mocker.Mock()
+            mock_response.status_code = 200
+            mock_response.json.return_value = [{"user_id": "test"}]
+            return mock_response
+
+        mocker.patch("requests.get", side_effect=mock_request)
+        response = client.get(self.endpoint)
+        assert response.status_code == 200
+        assert response.json() == [{"user_id": "test"}]
+
+    def test_get_all_users_bad_request(self, client, mocker):
+        """
+        Test call where the user data service fails.
+
+        :param client:
+        :param mocker:
+        :return:
+        """
+
+        def mock_request(_, **__):
+            """
+            Mock the request.
+
+            :return:
+            """
+            mock_response = mocker.Mock()
+            mock_response.status_code = 400
+            return mock_response
+
+        mocker.patch("requests.get", side_effect=mock_request)
+        response = client.get(self.endpoint)
+        assert response.status_code == 400
