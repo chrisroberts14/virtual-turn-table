@@ -3,7 +3,7 @@ import axios from "axios";
 
 const GetIsCollectionPublic = async (username: string) => {
 	try {
-		const response = await axios.get(`${getIsCollectionPublic}${username}`);
+		const response = await axios.get(`${getIsCollectionPublic}/${username}`);
 		return response.data;
 	} catch (error: unknown) {
 		// Check if the error is an AxiosError (has a response)

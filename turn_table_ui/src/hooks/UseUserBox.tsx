@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 const useUserBox = () => {
 	const [profileImage, setProfileImage] = useState("");
 	const { username, setUsername } = useUsername();
+	const [isCollectionPublic, setIsCollectionPublic] = useState(false);
 
 	useEffect(() => {
 		const state = getStateData();
@@ -15,6 +16,7 @@ const useUserBox = () => {
 					if (response) {
 						setUsername(response.display_name);
 						setProfileImage(response.image_url);
+						setIsCollectionPublic(response.is_collection_public);
 					}
 				})
 				.catch((_) => {
@@ -32,6 +34,8 @@ const useUserBox = () => {
 		profileImage,
 		username,
 		logout,
+		isCollectionPublic,
+		setIsCollectionPublic,
 	};
 };
 

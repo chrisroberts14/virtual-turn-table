@@ -8,13 +8,18 @@ import useResizeHandler from "@/hooks/UseResizeHandler.tsx";
 import type Collection from "@/interfaces/Collection.tsx";
 import { Card, CardBody, CardHeader } from "@nextui-org/card";
 import { Skeleton } from "@nextui-org/skeleton";
+import { Spinner } from "@nextui-org/spinner";
 import { Resizable } from "re-resizable";
 import { useEffect } from "react";
 import { useState } from "react";
 
 const SocialPage = () => {
-	const [publicCollections, setPublicCollections] = useState<Collection[]>([]);
-	const [sharedCollections, setSharedCollections] = useState<Collection[]>([]);
+	const [publicCollections, setPublicCollections] = useState<
+		Collection[] | null
+	>([]);
+	const [sharedCollections, setSharedCollections] = useState<
+		Collection[] | null
+	>([]);
 	const { token } = useSpotifyToken();
 	const { username } = useUsername();
 	const contentHeight = useResizeHandler(64);
@@ -30,6 +35,12 @@ const SocialPage = () => {
 				}
 				setPublicCollections(value.pub);
 				setSharedCollections(value.shar);
+				if (value.pub.length === 0) {
+					setPublicCollections(null);
+				}
+				if (value.shar.length === 0) {
+					setSharedCollections(null);
+				}
 			},
 		);
 	}, [token, username]);
@@ -70,15 +81,29 @@ const SocialPage = () => {
 				}}
 			>
 				<header className="font-bold text-xl pb-2">Public Collections</header>
-				{publicCollections.length === 0 ? (
+				{publicCollections === null ? (
+					<div className="h-full w-full text-center content-center">
+						<span className="text-xl font-extrabold">
+							There are no public collections
+						</span>
+					</div>
+				) : publicCollections?.length === 0 ? (
 					<Skeleton className="rounded-2xl h-full">
-						<div className="h-full" />
+						<div className="h-full">
+							<Spinner />
+						</div>
 					</Skeleton>
 				) : (
 					<div className="overflow-x-auto flex space-x-2 h-full justify-start">
 						{
 							/* Add a list of public collections here */
-							publicCollections.map((collection) => {
+							publicCollections?.map((collection) => {
+								if (
+									collection.user_id === username ||
+									collection.albums.length === 0
+								) {
+									return null;
+								}
 								return (
 									<AlbumSelectionContext.Provider
 										value={{
@@ -108,9 +133,18 @@ const SocialPage = () => {
 			</Resizable>
 			<div className="pb-8 text-right p-2 border-l-5 border-black min-w-[20%] w-full justify-end">
 				<header className="font-bold text-xl pb-2">Shared With You</header>
-				{sharedCollections.length === 0 ? (
+				{sharedCollections === null ? (
+					<div className="h-full w-full text-center content-center">
+						{" "}
+						<span className="text-xl font-extrabold">
+							You have no shared collections
+						</span>{" "}
+					</div>
+				) : sharedCollections?.length === 0 ? (
 					<Skeleton className="rounded-2xl h-full">
-						<div className="h-full" />
+						<div className="h-full">
+							<Spinner />
+						</div>
 					</Skeleton>
 				) : (
 					<div
@@ -119,7 +153,13 @@ const SocialPage = () => {
 					>
 						{
 							/* Add a list of shared collections here */
-							sharedCollections.map((collection) => {
+							sharedCollections?.map((collection) => {
+								if (
+									collection.user_id === username ||
+									collection.albums.length === 0
+								) {
+									return null;
+								}
 								return (
 									<AlbumSelectionContext.Provider
 										value={{

@@ -10,7 +10,13 @@ import {
 import { User } from "@nextui-org/user";
 
 const UserBox = () => {
-	const { profileImage, username, logout } = useUserBox();
+	const {
+		profileImage,
+		username,
+		logout,
+		isCollectionPublic,
+		setIsCollectionPublic,
+	} = useUserBox();
 
 	return (
 		<Dropdown>
@@ -35,13 +41,21 @@ const UserBox = () => {
 						if (username) {
 							ToggleCollectionPublic(username).then(() => {
 								// Set the state to the opposite of the current state
-								return;
+								setIsCollectionPublic(!isCollectionPublic);
 							});
 						}
 					}
 				}}
 			>
-				<DropdownItem key={"togglePublic"}>Is collection public?</DropdownItem>
+				{isCollectionPublic ? (
+					<DropdownItem key={"togglePublic"}>
+						Set collection public
+					</DropdownItem>
+				) : (
+					<DropdownItem key={"togglePublic"}>
+						Set collection private
+					</DropdownItem>
+				)}
 				<DropdownItem key={"logout"}>Logout</DropdownItem>
 			</DropdownMenu>
 		</Dropdown>

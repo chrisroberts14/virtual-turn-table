@@ -4,7 +4,7 @@ import axios from "axios";
 const GetUserAlbums = async (username: string) => {
 	// Call to get user's albums
 	try {
-		const response = await axios.get(`${getUserAlbums}${username}`);
+		const response = await axios.get(`${getUserAlbums}/${username}`);
 		return response.data;
 	} catch (error: unknown) {
 		// Check if the error is an AxiosError (has a response)

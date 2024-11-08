@@ -88,5 +88,5 @@ def toggle_collection_public(username: str, db: Session = Depends(get_db)):
     user = UserDb.get_by_id(db, username)
     if user is None:
         raise APIException(status_code=404, message="User not found")
-    user.is_collection_public = not user.is_collection_public
+    user.is_collection_public = not bool(user.is_collection_public)
     db.commit()

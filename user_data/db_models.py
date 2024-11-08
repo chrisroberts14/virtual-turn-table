@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 from typing import List
 
-from sqlalchemy import Column, String, ForeignKey, Table
+from sqlalchemy import Column, String, ForeignKey, Table, Boolean
 from sqlalchemy.orm import Mapped, relationship
 from sqlalchemy.testing.schema import mapped_column
 
@@ -65,7 +65,7 @@ class UserDb(Base, Crud):
     albums: Mapped[List["AlbumDb"]] = relationship(
         "AlbumDb", secondary=user_album_link_table, back_populates="users"
     )
-    is_collection_public: Mapped[bool] = mapped_column(String(50), default=False)
+    is_collection_public: Mapped[bool] = mapped_column(Boolean, default=False)
     # List of users who have shared their collections with this user
     shared_collections: Mapped[List["UserDb"]] = relationship(
         "UserDb",

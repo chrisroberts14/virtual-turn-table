@@ -24,6 +24,8 @@ def get_albums(album_uris: tuple[str], spotify_access_token: str):
     :param album_uris:
     :return:
     """
+    if not album_uris:
+        return {"albums": []}
     album_uri_string = ",".join(album_uris)
     spotify_album_data_url = "https://api.spotify.com/v1/albums"
     headers = {"Authorization": f"Bearer {spotify_access_token}"}

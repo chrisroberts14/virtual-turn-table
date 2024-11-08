@@ -3,7 +3,7 @@ import axios from "axios";
 
 const GetSharedCollections = async (username: string, token: string) => {
 	try {
-		const response = await axios.get(`${getSharedCollections}${username}`, {
+		const response = await axios.get(`${getSharedCollections}/${username}`, {
 			params: {
 				spotify_access_token: token,
 			},
