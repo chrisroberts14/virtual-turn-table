@@ -1,6 +1,7 @@
 import ImageToAlbum from "@/api_calls/ImageToAlbum.tsx";
 import Upload from "@/components/Upload.tsx";
 import { useError } from "@/contexts/ErrorContext.tsx";
+import { useNavigation } from "@/contexts/NavigationContext.tsx";
 import { useUpload } from "@/contexts/UploadContext.tsx";
 import type Album from "@/interfaces/Album.tsx";
 import getScreenShot from "@/utils/GetScreenShot.tsx";
@@ -26,6 +27,7 @@ const ImageCapture = () => {
 	const { showError } = useError();
 	const [cameras, setCameras] = useState<MediaDeviceInfo[]>([]);
 	const [currentCameraId, setCurrentCameraId] = useState<string | null>(null);
+	const { currentPage } = useNavigation();
 
 	// Use callback to cache the function between refreshes
 	const getCameras = useCallback((mediaDevices: MediaDeviceInfo[]) => {
@@ -77,6 +79,7 @@ const ImageCapture = () => {
 		}
 	};
 
+	// @ts-ignore
 	return (
 		<div
 			className={`flex p-3 justify-center relative max-w-full bg-gray-700 transition-all duration-500 ease-in-out ${
@@ -109,21 +112,26 @@ const ImageCapture = () => {
 								}
 							>
 								<div className="flex justify-center pt-8" title="Webcam">
-									{!currentImage ? (
-										<Webcam
-											audio={false}
-											screenshotFormat="image/png"
-											className="rounded-lg object-cover w-[65%] pb-4"
-											ref={webcamRef}
-											width={1920}
-											height={1080}
-											videoConstraints={{
-												deviceId: currentCameraId || undefined,
-											}}
-										/>
-									) : (
-										<Image src={currentImage} alt="Captured Image" />
-									)}
+									{
+										// @ts-ignore
+										// Strange error appears here if you set it as a number rather than string
+										currentPage === "1" &&
+											(!currentImage ? (
+												<Webcam
+													audio={false}
+													screenshotFormat="image/png"
+													className="rounded-lg object-cover w-[65%] pb-4"
+													ref={webcamRef}
+													width={1920}
+													height={1080}
+													videoConstraints={{
+														deviceId: currentCameraId || undefined,
+													}}
+												/>
+											) : (
+												<Image src={currentImage} alt="Captured Image" />
+											))
+									}
 								</div>
 								<div className="space-x-2">
 									<Button
