@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 from starlette.status import HTTP_201_CREATED
 
-from bff.api_models import User, APIException, UserIn, AlbumUserLinkIn
+from bff.api_models import User, APIException, UserIn, AlbumUserLinkIn, GetUsersOut
 from bff.config import get_settings, Settings
 
 user_router = APIRouter()
@@ -113,16 +113,40 @@ def get_users_albums(
     return [album["album_uri"] for album in data]
 
 
-@user_router.get("/")
-def get_all_users(settings: Annotated[Settings, Depends(get_settings)]):
+@user_router.get("/search")
+def get_users_by_search(
+    query: str,
+    spotify_access_token: str,
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> list[GetUsersOut]:
     """
-    Get all users.
+    Get all users by search.
 
+    :param spotify_access_token:
+    :param query:
     :param settings:
     :return:
     """
-    endpoint = f"{settings.user_data_address}/user/"
-    response = requests.get(endpoint, timeout=20)
+    endpoint = f"{settings.user_data_address}/user/search"
+    response = requests.get(endpoint, params={"query": query}, timeout=20)
     if response.status_code != 200:
         raise APIException(400, "Failed to access user data.")
-    return response.json()
+    # The response now has a list of users
+    # Now get their images from spotify
+    user_out_data = []
+    users = response.json()
+    for user in users:
+        endpoint = f"https://api.spotify.com/v1/users/{user['username']}"
+        headers = {"Authorization": f"Bearer {spotify_access_token}"}
+        response = requests.get(endpoint, headers=headers, timeout=20)
+        if response.status_code != 200:
+            user["image_url"] = ""
+        else:
+            result = response.json()
+            if len(result["images"]) == 0:
+                user["image_url"] = ""
+            else:
+                user["image_url"] = result["images"][0]["url"]
+        user_out_data.append(GetUsersOut(**user))
+    # Now return the users with their images
+    return user_out_data

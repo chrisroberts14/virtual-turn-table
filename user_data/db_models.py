@@ -55,16 +55,6 @@ class Crud:  # pylint: disable=too-few-public-methods
         """
         return db.get(cls, id_)
 
-    @classmethod
-    def get_all(cls, db: Session):
-        """
-        Get all objects in db.
-
-        :param db:
-        :return:
-        """
-        return db.query(cls).all()
-
 
 class UserDb(Base, Crud):
     """User database model."""

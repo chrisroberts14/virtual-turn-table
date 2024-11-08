@@ -157,13 +157,14 @@ class TestUserDataEndpoints:
         assert response.status_code == 404
         assert response.json() == {"message": "User not found", "status": "error"}
 
-    def test_get_all_users(self, client, mock_user):
+    def test_get_users_by_search(self, client, mock_user):
         """
-        Test the get all users endpoint.
+        Test the get users by search endpoint.
 
         :param client:
+        :param mock_user:
         :return:
         """
-        response = client.get("/user/")
+        response = client.get("/user/search", params={"query": "user"})
         assert response.status_code == 200
         assert response.json() == [{"username": mock_user.username}]

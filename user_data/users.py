@@ -18,15 +18,21 @@ from user_data.db_models import UserDb, AlbumDb
 user_router = APIRouter()
 
 
-@user_router.get("/")
-def get_all_users(db: Session = Depends(get_db)) -> list[UserSearchOut]:
+@user_router.get("/search")
+def get_users_by_search(
+    query: str, db: Session = Depends(get_db)
+) -> list[UserSearchOut]:
     """
-    Get all users.
+    Get all users by search.
 
+    :param query:
     :param db:
     :return:
     """
-    db_users = UserDb.get_all(db)
+    # This is bespoke for the user table so don't have a generic get_by_search
+    db_users = (
+        db.query(UserDb).filter(UserDb.username.ilike(f"%{query}%")).limit(10).all()
+    )
     return [UserSearchOut(username=user.username) for user in db_users]
 
 

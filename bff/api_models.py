@@ -80,3 +80,10 @@ class ShareCollectionIn(BaseModel):
 
     sharer: str
     receiver: str
+
+
+class GetUsersOut(BaseModel):
+    """Model for getting users."""
+
+    username: str
+    image_url: str

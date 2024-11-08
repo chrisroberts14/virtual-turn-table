@@ -12,4 +12,5 @@ export const getSharedCollections = `${import.meta.env.VITE_BFF_ADDRESS}/social/
 export const shareCollection = `${import.meta.env.VITE_BFF_ADDRESS}/social/share_collection/`;
 export const toggleCollectionPublic = `${import.meta.env.VITE_BFF_ADDRESS}/social/toggle_collection_public`;
 export const getIsCollectionPublic = `${import.meta.env.VITE_BFF_ADDRESS}/user/is_collection_public`;
-export const getAllUsers = `${import.meta.env.VITE_BFF_ADDRESS}/user/`;
+export const getUsers = `${import.meta.env.VITE_BFF_ADDRESS}/user/`;
+export const getUsersBySearch = `${import.meta.env.VITE_BFF_ADDRESS}/user/search`;

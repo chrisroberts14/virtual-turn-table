@@ -360,35 +360,42 @@ class TestGetUserAlbums:
         assert response.status_code == 400
 
 
-class TestGetAllUsers:
-    """Test the /user/ endpoint."""
+class TestGetUsersBySearch:
+    """Test the /user/search endpoint."""
 
-    endpoint = "/user/"
+    endpoint = "/user/search"
 
-    def test_get_all_users(self, client, mocker):
+    def test_get_users_by_search(self, client, mocker):
         """
         Test working call.
 
         :return:
         """
 
-        def mock_request(_, **__):
+        def mock_request(url: str, **__):
             """
             Mock the request.
 
             :return:
             """
             mock_response = mocker.Mock()
-            mock_response.status_code = 200
-            mock_response.json.return_value = [{"user_id": "test"}]
+            if "/user/search" in url:
+                mock_response.status_code = 200
+                mock_response.json.return_value = [{"username": "test_user"}]
+            elif "/v1/users" in url:
+                mock_response.status_code = 200
+                mock_response.json.return_value = {"images": [{"url": "test_user"}]}
             return mock_response
 
         mocker.patch("requests.get", side_effect=mock_request)
-        response = client.get(self.endpoint)
+        response = client.get(
+            self.endpoint,
+            params={"query": "test", "spotify_access_token": "test_token"},
+        )
         assert response.status_code == 200
-        assert response.json() == [{"user_id": "test"}]
+        assert response.json() == [{"username": "test_user", "image_url": "test_user"}]
 
-    def test_get_all_users_bad_request(self, client, mocker):
+    def test_get_users_by_search_bad_request(self, client, mocker):
         """
         Test call where the user data service fails.
 
@@ -408,5 +415,75 @@ class TestGetAllUsers:
             return mock_response
 
         mocker.patch("requests.get", side_effect=mock_request)
-        response = client.get(self.endpoint)
+        response = client.get(
+            self.endpoint,
+            params={"query": "test", "spotify_access_token": "test_token"},
+        )
         assert response.status_code == 400
+        assert response.json() == {
+            "message": "Failed to access user data.",
+            "status": "error",
+        }
+
+    def test_get_users_by_search_failed_spotify_call(self, client, mocker):
+        """
+        Test call where the spotify service fails.
+
+        :param client:
+        :param mocker:
+        :return:
+        """
+
+        def mock_request(url: str, **__):
+            """
+            Mock the request.
+
+            :return:
+            """
+            mock_response = mocker.Mock()
+            if "/user/search" in url:
+                mock_response.status_code = 200
+                mock_response.json.return_value = [{"username": "test_user"}]
+            elif "/v1/users" in url:
+                mock_response.status_code = 400
+            return mock_response
+
+        mocker.patch("requests.get", side_effect=mock_request)
+        response = client.get(
+            self.endpoint,
+            params={"query": "test", "spotify_access_token": "test_token"},
+        )
+        assert response.status_code == 200
+        assert response.json() == [{"username": "test_user", "image_url": ""}]
+
+    def test_get_users_by_search_no_user_image(self, client, mocker):
+        """
+        Test call where the user does not have an image.
+
+        :param client:
+        :param mocker:
+        :return:
+        """
+
+        def mock_request(url: str, **__):
+            """
+            Mock the request.
+
+            :return:
+            """
+            mock_response = mocker.Mock()
+            if "/user/search" in url:
+                mock_response.status_code = 200
+                mock_response.json.return_value = [{"username": "test_user"}]
+            elif "/v1/users" in url:
+                mock_response.status_code = 200
+                mock_response.json.return_value = {"images": []}
+            return mock_response
+
+        mocker.patch("requests.get", side_effect=mock_request)
+        response = client.get(
+            self.endpoint,
+            params={"query": "test", "spotify_access_token": "test_token"},
+        )
+        assert response.status_code == 200
+        assert response.json() == [{"username": "test_user", "image_url": ""}]

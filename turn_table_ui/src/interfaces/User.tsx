@@ -1,6 +1,6 @@
 interface User {
 	username: string;
-	profileImage: string;
+	image_url: string;
 	isCollectionPublic: boolean;
 }
 

@@ -1,9 +1,14 @@
-import { getAllUsers } from "@/api_calls/BFFEndpoints.tsx";
+import { getUsersBySearch } from "@/api_calls/BFFEndpoints.tsx";
 import axios from "axios";
 
-const GetAllUsers = async () => {
+const GetUsersBySearch = async (query: string, token: string) => {
 	try {
-		const response = await axios.get(getAllUsers);
+		const response = await axios.get(getUsersBySearch, {
+			params: {
+				query: query,
+				spotify_access_token: token,
+			},
+		});
 		return response.data;
 	} catch (error: unknown) {
 		// Check if the error is an AxiosError (has a response)
@@ -16,4 +21,4 @@ const GetAllUsers = async () => {
 	}
 };
 
-export default GetAllUsers;
+export default GetUsersBySearch;
