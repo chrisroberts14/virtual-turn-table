@@ -7,6 +7,7 @@ import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import { act } from "react";
 import ImageToAlbum from "../../src/api_calls/ImageToAlbum";
+import { useNavigation } from "../../src/contexts/NavigationContext";
 import type Album from "../../src/interfaces/Album";
 import GetScreenShot from "../../src/utils/GetScreenShot";
 
@@ -14,6 +15,7 @@ vi.mock("../../src/contexts/UploadContext");
 vi.mock("../../src/contexts/ErrorContext");
 vi.mock("../../src/utils/GetScreenShot");
 vi.mock("../../src/api_calls/ImageToAlbum");
+vi.mock("../../src/contexts/NavigationContext");
 
 const scannedAlbum = null;
 const setScannedAlbum = vi.fn();
@@ -60,6 +62,14 @@ describe("ImageCapture upload", () => {
 		});
 
 		// @ts-ignore
+		(useNavigation as vi.mock).mockReturnValue({
+			isSignedIn: true,
+			setIsSignedIn: vi.fn(),
+			currentPage: 1,
+			setCurrentPage: vi.fn(),
+		});
+
+		// @ts-ignore
 		(useError as vi.mock).mockReturnValue({
 			showError: vi.fn(),
 		});
@@ -94,6 +104,14 @@ describe("ImageCapture camera", () => {
 			setFadeConfirm,
 			currentImage,
 			setCurrentImage,
+		});
+
+		// @ts-ignore
+		(useNavigation as vi.mock).mockReturnValue({
+			isSignedIn: true,
+			setIsSignedIn: vi.fn(),
+			currentPage: 1,
+			setCurrentPage: vi.fn(),
 		});
 
 		// @ts-ignore

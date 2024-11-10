@@ -8,11 +8,13 @@ import { UsernameContext } from "../../src/contexts/UsernameContext";
 import { clearStateData, getStateData } from "../../src/interfaces/StateData";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
+import GetUserAlbums from "../../src/api_calls/GetUserAlbums";
 
 vi.mock("../../src/api_calls/GetUserInfo");
 vi.mock("../../src/interfaces/StateData");
 vi.mock("../../src/api_calls/CreateUser");
 vi.mock("../../src/contexts/ErrorContext");
+vi.mock("../../src/api_calls/GetUserAlbums");
 
 describe("UserBox", () => {
 	const setUsername = vi.fn();
@@ -27,7 +29,6 @@ describe("UserBox", () => {
 		// @ts-ignore
 		(GetUserInfo as vi.Mock).mockResolvedValue({
 			display_name: "John Doe",
-			email: "john@example.com",
 			image_url: "https://example.com/john.jpg",
 		});
 
@@ -41,6 +42,9 @@ describe("UserBox", () => {
 
 		// @ts-ignore
 		(clearStateData as vi.Mock).mockImplementation(clearStateDataMock);
+
+		// @ts-ignore
+		(GetUserAlbums as vi.Mock).mockReturnValue(Promise.resolve([]));
 	});
 
 	it("renders the user info when GetUserInfo returns valid data", async () => {
@@ -52,7 +56,6 @@ describe("UserBox", () => {
 
 		await waitFor(() => {
 			expect(screen.getByText("John Doe")).toBeInTheDocument();
-			expect(screen.getByText("john@example.com")).toBeInTheDocument();
 		});
 	});
 

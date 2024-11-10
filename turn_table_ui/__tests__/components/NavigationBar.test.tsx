@@ -5,10 +5,12 @@ import { useError } from "../../src/contexts/ErrorContext";
 import { useNavigation } from "../../src/contexts/NavigationContext";
 import { useUsername } from "../../src/contexts/UsernameContext";
 import "@testing-library/jest-dom";
+import GetUserAlbums from "../../src/api_calls/GetUserAlbums";
 
 vi.mock("../../src/contexts/NavigationContext");
 vi.mock("../../src/contexts/ErrorContext");
 vi.mock("../../src/contexts/UsernameContext");
+vi.mock("../../src/api_calls/GetUserAlbums");
 
 describe("Navigation Bar", () => {
 	beforeEach(() => {
@@ -17,6 +19,9 @@ describe("Navigation Bar", () => {
 
 		// @ts-ignore
 		(useUsername as vi.Mock).mockReturnValue({ useUsername: vi.fn() });
+
+		// @ts-ignore
+		(GetUserAlbums as vi.Mock).mockReturnValue(Promise.resolve([]));
 	});
 
 	it("renders the navigation bar with the logo and title", () => {
@@ -43,9 +48,10 @@ describe("Navigation Bar", () => {
 
 		render(<NavigationBar />);
 
-		// Assert that both tabs are rendered
+		// Assert that all tabs are rendered
 		expect(screen.getByRole("tab", { name: /Play/i })).toBeInTheDocument();
 		expect(screen.getByRole("tab", { name: /Scan/i })).toBeInTheDocument();
+		expect(screen.getByRole("tab", { name: /Social/i })).toBeInTheDocument();
 	});
 
 	it("calls setCurrentPage when a tab is clicked", () => {
@@ -87,12 +93,12 @@ describe("Navigation Bar", () => {
 		});
 
 		const { rerender } = render(<NavigationBar />);
-		expect(screen.getByText(/User/i)).toBeInTheDocument(); // Adjust for UserBox content
+		expect(screen.getByText(/User/i)).toBeInTheDocument();
 
 		// Case when user is not signed in
 		// @ts-ignore
 		(useNavigation as vi.Mock).mockReturnValue({
-			nextPage: "play",
+			currentPage: 0,
 			setNextPage: vi.fn(),
 			isSignedIn: false,
 		});

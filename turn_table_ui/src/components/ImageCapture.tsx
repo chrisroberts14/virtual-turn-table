@@ -48,25 +48,23 @@ const ImageCapture = () => {
 	const getAlbumFromCamera = () => {
 		setIsUploading(true);
 		triggerConfirmSlide();
-		if (webcamRef.current) {
-			const imageSrc = getScreenShot(webcamRef);
-			if (!imageSrc) {
-				showError("Failed to capture image");
-				setIsUploading(false);
-				return;
-			}
-			setCurrentImage(imageSrc);
-			ImageToAlbum(imageSrc)
-				.then((album: Album) => {
-					setScannedAlbum(album);
-					setIsUploading(false);
-				})
-				.catch((error) => {
-					setIsUploading(false);
-					setScannedAlbum(null);
-					showError(error.message);
-				});
+		const imageSrc = getScreenShot(webcamRef);
+		if (!imageSrc) {
+			showError("Failed to capture image");
+			setIsUploading(false);
+			return;
 		}
+		setCurrentImage(imageSrc);
+		ImageToAlbum(imageSrc)
+			.then((album: Album) => {
+				setScannedAlbum(album);
+				setIsUploading(false);
+			})
+			.catch((error) => {
+				setIsUploading(false);
+				setScannedAlbum(null);
+				showError(error.message);
+			});
 	};
 
 	const switchCamera = () => {
@@ -115,7 +113,7 @@ const ImageCapture = () => {
 									{
 										// @ts-ignore
 										// Strange error appears here if you set it as a number rather than string
-										currentPage === "1" &&
+										(currentPage === "1" || currentPage === 1) &&
 											(!currentImage ? (
 												<Webcam
 													audio={false}

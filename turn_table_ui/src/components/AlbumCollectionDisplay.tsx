@@ -28,7 +28,12 @@ const AlbumCollectionDisplay = ({
 
 	const userAlbumUpdate = useCallback(
 		(user: string) => {
-			if (user && token && albumCollection) {
+			if (albumCollection) {
+				// Show the albums handed to the component
+				setAlbums(albumCollection.albums);
+				return;
+			}
+			if (user && token) {
 				// Show the currently logged-in users albums
 				GetUserAlbums(user)
 					.then((albums) => {
@@ -50,9 +55,6 @@ const AlbumCollectionDisplay = ({
 					.catch((error) => {
 						displayError(error.message);
 					});
-			} else if (albumCollection) {
-				// Show the albums handed to the component
-				setAlbums(albumCollection.albums);
 			}
 		},
 		[token, setAlbums, albumCollection],
