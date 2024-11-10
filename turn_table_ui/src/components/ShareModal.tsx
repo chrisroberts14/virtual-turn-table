@@ -18,10 +18,6 @@ const ShareModal = () => {
 
 	const handleShare = () => {
 		setIsShareModalOpen(false);
-		if (!shareInputValue || !username) {
-			showError("You must select a user to share with");
-			return;
-		}
 		// Share the users collection
 		ShareCollection(username, shareInputValue).catch(() => {
 			showError("Failed to share collection");
@@ -42,17 +38,13 @@ const ShareModal = () => {
 		>
 			<ModalContent>
 				<div className="justify-center w-full text-center space-y-2 p-2">
-					<h1
-						className="w-full text-center font-bold pb-2"
-						title="Share button"
-					>
-						Share
-					</h1>
+					<h1 className="w-full text-center font-bold pb-2">Share</h1>
 					<UserSelect />
 					<Button
 						className="bg-primary font-bold text-white"
 						onClick={handleShare}
-						//disabled={shareInputValue === ""}
+						title="Share button"
+						disabled={shareInputValue === ""}
 					>
 						Share
 					</Button>

@@ -1,7 +1,7 @@
 import { getPublicCollections } from "@/api_calls/BFFEndpoints.tsx";
 import axios from "axios";
 
-const GetPublicCollections = async (token: string) => {
+const GetPublicCollections = async (token: string | null) => {
 	try {
 		const response = await axios.get(getPublicCollections, {
 			params: {

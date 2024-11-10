@@ -2,6 +2,7 @@ import GetPublicCollections from "@/api_calls/GetPublicCollections.tsx";
 import GetSharedCollections from "@/api_calls/GetSharedCollections.tsx";
 import AlbumCollectionDisplay from "@/components/AlbumCollectionDisplay.tsx";
 import { AlbumSelectionContext } from "@/contexts/AlbumSelectionContext.tsx";
+import { useError } from "@/contexts/ErrorContext.tsx";
 import { useSpotifyToken } from "@/contexts/SpotifyTokenContext.tsx";
 import { useUsername } from "@/contexts/UsernameContext.tsx";
 import useResizeHandler from "@/hooks/UseResizeHandler.tsx";
@@ -23,6 +24,7 @@ const SocialPage = () => {
 	const { token } = useSpotifyToken();
 	const { username } = useUsername();
 	const contentHeight = useResizeHandler(64);
+	const { showError } = useError();
 
 	useEffect(() => {
 		if (!token || !username) {
@@ -31,6 +33,7 @@ const SocialPage = () => {
 		fetchCollections().then(
 			(value: { pub: Collection[]; shar: Collection[] } | null) => {
 				if (!value) {
+					showError("Failed to fetch collections");
 					return;
 				}
 				setPublicCollections(value.pub);
@@ -43,18 +46,23 @@ const SocialPage = () => {
 				}
 			},
 		);
-	}, [token, username]);
+	}, [token, username, showError]);
 
 	const fetchCollections = async () => {
-		if (!token || !username) {
+		const publicCollectionsResult: Collection[] = await GetPublicCollections(
+			token,
+		).catch(() => {
 			return null;
-		}
-		const publicCollectionsResult: Collection[] =
-			await GetPublicCollections(token);
+		});
 		const sharedCollectionsResult: Collection[] = await GetSharedCollections(
 			username,
 			token,
-		);
+		).catch(() => {
+			return null;
+		});
+		if (publicCollectionsResult === null || !sharedCollectionsResult === null) {
+			return null;
+		}
 		return { pub: publicCollectionsResult, shar: sharedCollectionsResult };
 	};
 
@@ -81,7 +89,9 @@ const SocialPage = () => {
 				}}
 			>
 				<header className="font-bold text-xl pb-2">Public Collections</header>
-				{publicCollections === null ? (
+				{publicCollections === null ||
+				(publicCollections.length === 1 &&
+					publicCollections[0].user_id === username) ? (
 					<div className="h-full w-full text-center content-center">
 						<span className="text-xl font-extrabold">
 							There are no public collections

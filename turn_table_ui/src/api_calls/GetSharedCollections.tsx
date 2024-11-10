@@ -1,7 +1,10 @@
 import { getSharedCollections } from "@/api_calls/BFFEndpoints.tsx";
 import axios from "axios";
 
-const GetSharedCollections = async (username: string, token: string) => {
+const GetSharedCollections = async (
+	username: string | null,
+	token: string | null,
+) => {
 	try {
 		const response = await axios.get(`${getSharedCollections}/${username}`, {
 			params: {

@@ -1,7 +1,7 @@
 import { shareCollection } from "@/api_calls/BFFEndpoints.tsx";
 import axios from "axios";
 
-const ShareCollection = async (sharer: string, receiver: string) => {
+const ShareCollection = async (sharer: string | null, receiver: string) => {
 	return await axios
 		.post(
 			shareCollection,
