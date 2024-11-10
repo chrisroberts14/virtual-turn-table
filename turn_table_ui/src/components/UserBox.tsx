@@ -1,6 +1,7 @@
 import GetUserAlbums from "@/api_calls/GetUserAlbums.tsx";
 import ToggleCollectionPublic from "@/api_calls/ToggleCollectionPublic.tsx";
 import ShareModal from "@/components/ShareModal.tsx";
+import { ShareContext } from "@/contexts/ShareContext.tsx";
 import useUserBox from "@/hooks/UseUserBox.tsx";
 import { Avatar } from "@nextui-org/avatar";
 import {
@@ -28,11 +29,12 @@ const UserBox = () => {
 		isCollectionPublic,
 		setIsCollectionPublic,
 	} = useUserBox();
-	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 	const [disabledKeys, setDisabledKeys] = useState<string[]>([
 		"share",
 		"togglePublic",
 	]);
+	const [shareInputValue, setShareInputValue] = useState<string>("");
+	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 
 	useEffect(() => {
 		if (username) {
@@ -129,7 +131,16 @@ const UserBox = () => {
 					</DropdownSection>
 				</DropdownMenu>
 			</Dropdown>
-			<ShareModal isOpen={isShareModalOpen} setIsOpen={setIsShareModalOpen} />
+			<ShareContext.Provider
+				value={{
+					isShareModalOpen,
+					setIsShareModalOpen,
+					shareInputValue,
+					setShareInputValue,
+				}}
+			>
+				<ShareModal />
+			</ShareContext.Provider>
 		</div>
 	);
 };

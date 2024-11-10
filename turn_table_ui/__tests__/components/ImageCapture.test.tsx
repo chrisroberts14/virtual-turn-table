@@ -214,4 +214,15 @@ describe("ImageCapture camera", () => {
 			expect(useError().showError).toHaveBeenCalledTimes(1);
 		});
 	});
+
+	it("should switch camera", async () => {
+		navigator.mediaDevices.enumerateDevices = vi
+			.fn()
+			.mockResolvedValue([{ kind: "videoinput" }, { kind: "videoinput" }]);
+
+		render(<ImageCapture />);
+		await swapToCamera();
+
+		await userEvent.click(screen.getByText("Switch Camera"));
+	});
 });

@@ -74,6 +74,20 @@ describe("AlbumConfirm", () => {
 		});
 	});
 
+	it("should put an error in the console if the album was failed to be added to the users collection", async () => {
+		// @ts-ignore
+		(AddAlbum as vi.mock).mockImplementation(() =>
+			Promise.reject(new Error("test_error")),
+		);
+		console.error = vi.fn();
+
+		render(<AlbumConfirm />);
+		await waitFor(async () => {
+			await userEvent.click(screen.getByText("Yes"));
+			expect(console.error).toHaveBeenCalled();
+		});
+	});
+
 	it("should set buttonsDisabled to true when scannedAlbum is set to null", async () => {
 		// @ts-ignore
 		(useUpload as vi.mock).mockReturnValue({

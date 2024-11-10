@@ -68,12 +68,6 @@ const AlbumCollectionDisplay = ({
 		if (username) {
 			userAlbumUpdate(username);
 		}
-
-		return () => {
-			eventEmitter.off("albumAdded", () => {
-				if (username) userAlbumUpdate(username);
-			});
-		};
 	}, [username, userAlbumUpdate]);
 
 	const displayError = (error: string) => {

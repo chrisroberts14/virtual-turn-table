@@ -10,6 +10,7 @@ import { useMusic } from "../../src/contexts/MusicContext";
 import { useSpotifyToken } from "../../src/contexts/SpotifyTokenContext";
 import { useUsername } from "../../src/contexts/UsernameContext";
 import type Album from "../../src/interfaces/Album";
+import eventEmitter from "../../src/utils/EventEmitter";
 
 vi.mock("../../src/contexts/UsernameContext");
 vi.mock("../../src/contexts/ErrorContext");
@@ -100,6 +101,22 @@ describe("AlbumCollectionDisplay", () => {
 		render(<AlbumCollectionDisplay />);
 		await waitFor(() => {
 			expect(useError().showError).toHaveBeenCalledWith("test_error");
+		});
+	});
+
+	it("should render if a collection was passed in", async () => {
+		render(<AlbumCollectionDisplay albumCollection={{ albums: [album] }} />);
+		await waitFor(() => {
+			expect(useAlbumSelection().setAlbums).toHaveBeenCalledWith([album]);
+		});
+	});
+
+	it("should run the userAlbumUpdate method if albumAdded event is called", async () => {
+		render(<AlbumCollectionDisplay />);
+		vi.clearAllMocks();
+		eventEmitter.emit("albumAdded");
+		await waitFor(() => {
+			expect(GetUserAlbums).toHaveBeenCalled();
 		});
 	});
 });

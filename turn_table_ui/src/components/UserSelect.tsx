@@ -1,4 +1,5 @@
 import GetUsersBySearch from "@/api_calls/GetUsersBySearch.tsx";
+import { useShare } from "@/contexts/ShareContext.tsx";
 import { useSpotifyToken } from "@/contexts/SpotifyTokenContext.tsx";
 import type User from "@/interfaces/User.tsx";
 import { Autocomplete, AutocompleteItem } from "@nextui-org/autocomplete";
@@ -6,16 +7,12 @@ import { User as UserComp } from "@nextui-org/user";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 
-interface UserSelectProps {
-	inputValue: string;
-	setInputValue: (value: string) => void;
-}
-
-const UserSelect = ({ inputValue, setInputValue }: UserSelectProps) => {
+const UserSelect = () => {
 	const [users, setUsers] = useState<User[]>([]);
 	const { token } = useSpotifyToken();
 	const [isLoading, setIsLoading] = useState(false);
-	const [value] = useDebounce(inputValue, 1000);
+	const { shareInputValue, setShareInputValue } = useShare();
+	const [value] = useDebounce(shareInputValue, 1000);
 
 	useEffect(() => {
 		if (!token) {
@@ -33,12 +30,12 @@ const UserSelect = ({ inputValue, setInputValue }: UserSelectProps) => {
 
 	return (
 		<Autocomplete
-			value={inputValue}
+			value={shareInputValue}
 			label="Select a user"
 			placeholder="Type to search..."
 			isLoading={isLoading}
-			onInputChange={(e) => setInputValue(e)}
-			isDisabled={isLoading && inputValue.length === 0}
+			onInputChange={(e) => setShareInputValue(e)}
+			isDisabled={isLoading && shareInputValue.length === 0}
 		>
 			{users.map((user) => (
 				<AutocompleteItem key={user.username} textValue={user.username}>
