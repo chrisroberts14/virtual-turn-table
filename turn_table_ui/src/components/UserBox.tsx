@@ -3,6 +3,7 @@ import ToggleCollectionPublic from "@/api_calls/ToggleCollectionPublic.tsx";
 import ShareModal from "@/components/ShareModal.tsx";
 import { ShareContext } from "@/contexts/ShareContext.tsx";
 import useUserBox from "@/hooks/UseUserBox.tsx";
+import eventEmitter from "@/utils/EventEmitter.ts";
 import { Avatar } from "@nextui-org/avatar";
 import {
 	Dropdown,
@@ -48,6 +49,12 @@ const UserBox = () => {
 		}
 	}, [username]);
 
+	useEffect(() => {
+		eventEmitter.on("albumAdded", () => {
+			setDisabledKeys([]);
+		});
+	}, []);
+
 	return (
 		<div>
 			<Dropdown backdrop="blur">
@@ -83,7 +90,7 @@ const UserBox = () => {
 				>
 					<DropdownSection
 						title={
-							disabledKeys
+							disabledKeys.length !== 0
 								? "You can't share an empty collection"
 								: "Your collection"
 						}

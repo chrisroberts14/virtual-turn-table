@@ -185,11 +185,16 @@ class TestCreateUser:
             """
             mock_response = mocker.Mock()
             mock_response.status_code = 201
-            mock_response.json.return_value = {"user_id": "test_user"}
+            mock_response.json.return_value = {
+                "username": "test_user",
+                "image_url": "test_user",
+            }
             return mock_response
 
         mocker.patch("requests.post", side_effect=mock_request)
-        response = client.post(self.endpoint, json={"username": "test_user"})
+        response = client.post(
+            self.endpoint, json={"username": "test_user", "image_url": "test_user"}
+        )
         assert response.status_code == 201
 
     def test_create_user_failed(self, client, mocker):
@@ -212,7 +217,9 @@ class TestCreateUser:
             return mock_response
 
         mocker.patch("requests.post", side_effect=mock_request)
-        response = client.post(self.endpoint, json={"username": "test_user"})
+        response = client.post(
+            self.endpoint, json={"username": "test_user", "image_url": "test_user"}
+        )
         assert response.status_code == 400
         assert response.json() == {
             "message": "Failed to create user",
@@ -381,16 +388,15 @@ class TestGetUsersBySearch:
             mock_response = mocker.Mock()
             if "/user/search" in url:
                 mock_response.status_code = 200
-                mock_response.json.return_value = [{"username": "test_user"}]
-            elif "/v1/users" in url:
-                mock_response.status_code = 200
-                mock_response.json.return_value = {"images": [{"url": "test_user"}]}
+                mock_response.json.return_value = [
+                    {"username": "test_user", "image_url": "test_user"}
+                ]
             return mock_response
 
         mocker.patch("requests.get", side_effect=mock_request)
         response = client.get(
             self.endpoint,
-            params={"query": "test", "spotify_access_token": "test_token"},
+            params={"query": "test"},
         )
         assert response.status_code == 200
         assert response.json() == [{"username": "test_user", "image_url": "test_user"}]
@@ -412,78 +418,16 @@ class TestGetUsersBySearch:
             """
             mock_response = mocker.Mock()
             mock_response.status_code = 400
+            mock_response.json.return_value = {"detail": "test"}
             return mock_response
 
         mocker.patch("requests.get", side_effect=mock_request)
         response = client.get(
             self.endpoint,
-            params={"query": "test", "spotify_access_token": "test_token"},
+            params={"query": "test"},
         )
         assert response.status_code == 400
         assert response.json() == {
             "message": "Failed to access user data.",
             "status": "error",
         }
-
-    def test_get_users_by_search_failed_spotify_call(self, client, mocker):
-        """
-        Test call where the spotify service fails.
-
-        :param client:
-        :param mocker:
-        :return:
-        """
-
-        def mock_request(url: str, **__):
-            """
-            Mock the request.
-
-            :return:
-            """
-            mock_response = mocker.Mock()
-            if "/user/search" in url:
-                mock_response.status_code = 200
-                mock_response.json.return_value = [{"username": "test_user"}]
-            elif "/v1/users" in url:
-                mock_response.status_code = 400
-            return mock_response
-
-        mocker.patch("requests.get", side_effect=mock_request)
-        response = client.get(
-            self.endpoint,
-            params={"query": "test", "spotify_access_token": "test_token"},
-        )
-        assert response.status_code == 200
-        assert response.json() == [{"username": "test_user", "image_url": ""}]
-
-    def test_get_users_by_search_no_user_image(self, client, mocker):
-        """
-        Test call where the user does not have an image.
-
-        :param client:
-        :param mocker:
-        :return:
-        """
-
-        def mock_request(url: str, **__):
-            """
-            Mock the request.
-
-            :return:
-            """
-            mock_response = mocker.Mock()
-            if "/user/search" in url:
-                mock_response.status_code = 200
-                mock_response.json.return_value = [{"username": "test_user"}]
-            elif "/v1/users" in url:
-                mock_response.status_code = 200
-                mock_response.json.return_value = {"images": []}
-            return mock_response
-
-        mocker.patch("requests.get", side_effect=mock_request)
-        response = client.get(
-            self.endpoint,
-            params={"query": "test", "spotify_access_token": "test_token"},
-        )
-        assert response.status_code == 200
-        assert response.json() == [{"username": "test_user", "image_url": ""}]

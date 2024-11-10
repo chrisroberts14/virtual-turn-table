@@ -23,6 +23,7 @@ def get_public_collections(count: int = 5, db: Session = Depends(get_db)) -> lis
     return [
         {
             "username": user.username,
+            "image_url": user.image_url,
             "albums": [album.album_uri for album in user.albums],
         }
         for user in db.query(UserDb)
@@ -47,6 +48,7 @@ def get_shared_collections(username: str, db: Session = Depends(get_db)) -> list
     return [
         {
             "username": shared_user.username,
+            "image_url": shared_user.image_url,
             "albums": [album.album_uri for album in shared_user.albums],
         }
         for shared_user in user.shared_collections

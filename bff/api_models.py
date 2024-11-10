@@ -24,6 +24,7 @@ class UserIn(BaseModel):
     """User model to be stored in the database."""
 
     username: str
+    image_url: str
 
 
 class Song(BaseModel):

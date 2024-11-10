@@ -22,6 +22,7 @@ class User(BaseModel):
     """User model."""
 
     username: str
+    image_url: str = ""
     albums: list[Album] = []
 
 
@@ -43,3 +44,4 @@ class UserSearchOut(BaseModel):
     """Model for output of search for users."""
 
     username: str
+    image_url: str = ""

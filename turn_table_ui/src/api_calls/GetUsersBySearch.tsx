@@ -1,12 +1,11 @@
 import { getUsersBySearch } from "@/api_calls/BFFEndpoints.tsx";
 import axios from "axios";
 
-const GetUsersBySearch = async (query: string, token: string) => {
+const GetUsersBySearch = async (query: string) => {
 	try {
 		const response = await axios.get(getUsersBySearch, {
 			params: {
 				query: query,
-				spotify_access_token: token,
 			},
 		});
 		return response.data;

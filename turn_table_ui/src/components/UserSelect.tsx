@@ -1,6 +1,5 @@
 import GetUsersBySearch from "@/api_calls/GetUsersBySearch.tsx";
 import { useShare } from "@/contexts/ShareContext.tsx";
-import { useSpotifyToken } from "@/contexts/SpotifyTokenContext.tsx";
 import type User from "@/interfaces/User.tsx";
 import { Autocomplete, AutocompleteItem } from "@nextui-org/autocomplete";
 import { User as UserComp } from "@nextui-org/user";
@@ -9,24 +8,20 @@ import { useDebounce } from "use-debounce";
 
 const UserSelect = () => {
 	const [users, setUsers] = useState<User[]>([]);
-	const { token } = useSpotifyToken();
 	const [isLoading, setIsLoading] = useState(false);
 	const { shareInputValue, setShareInputValue } = useShare();
 	const [value] = useDebounce(shareInputValue, 1000);
 
 	useEffect(() => {
-		if (!token) {
-			return;
-		}
 		setIsLoading(true);
-		GetUsersBySearch(value, token)
+		GetUsersBySearch(value)
 			.then((data) => {
 				setUsers(data);
 			})
 			.finally(() => {
 				setIsLoading(false);
 			});
-	}, [value, token]);
+	}, [value]);
 
 	return (
 		<Autocomplete

@@ -9,7 +9,11 @@ class TestSocial:
         response = client.get("/social/get_public_collections")
         assert response.status_code == 200
         assert response.json() == [
-            {"username": mock_user_with_public_album.username, "albums": ["album2"]}
+            {
+                "username": mock_user_with_public_album.username,
+                "albums": ["album2"],
+                "image_url": "image_url",
+            }
         ]
 
     def test_get_shared_collections(
@@ -21,7 +25,11 @@ class TestSocial:
         )
         assert response.status_code == 200
         assert response.json() == [
-            {"username": mock_user_with_public_album.username, "albums": ["album2"]}
+            {
+                "username": mock_user_with_public_album.username,
+                "albums": ["album2"],
+                "image_url": "image_url",
+            }
         ]
 
     def test_get_shared_collections_bad_user(self, client):

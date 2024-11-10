@@ -87,7 +87,12 @@ def mock_user(db: Session) -> UserDb:  # pylint: disable=redefined-outer-name
     :return:
     """
     return UserDb.create(
-        db, UserDb(username="user1", albums=[AlbumDb(album_uri="album1")])
+        db,
+        UserDb(
+            username="user1",
+            albums=[AlbumDb(album_uri="album1")],
+            image_url="image_url",
+        ),
     )
 
 
@@ -100,7 +105,7 @@ def mock_user_with_no_albums(db: Session) -> UserDb:  # pylint: disable=redefine
     :param db:
     :return:
     """
-    return UserDb.create(db, UserDb(username="user3"))
+    return UserDb.create(db, UserDb(username="user3", image_url="image_url"))
 
 
 @pytest.fixture(scope="function")
@@ -130,6 +135,7 @@ def mock_user_with_public_album(mock_album: AlbumDb, db: Session) -> UserDb:  # 
             username="user2",
             albums=[mock_album],
             is_collection_public=True,
+            image_url="image_url",
         ),
     )
 

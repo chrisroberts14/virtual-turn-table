@@ -47,7 +47,7 @@ const useApp = () => {
 			// Create a user if they are logging in
 			// This does nothing if the user already exists
 			GetUserInfo(token).then((user) => {
-				CreateUser(user.display_name, user.email).catch((error) => {
+				CreateUser(user.display_name, user.image_url).catch((error) => {
 					console.error(error);
 				});
 				// Set the location back to the root (removes all the query parameters)

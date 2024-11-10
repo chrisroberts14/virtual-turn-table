@@ -30,7 +30,7 @@ def main():
     create_user_endpoint = "http://localhost:8000/user/create_user"
     add_album_link_endpoint = "http://localhost:8000/user/add_album"
     for i in range(10):
-        user = {"username": f"user{i}"}
+        user = {"username": f"user{i}", "image_url": ""}
         response = requests.post(create_user_endpoint, json=user, timeout=5)
         if response.status_code != 201:
             print("Failed to create user")

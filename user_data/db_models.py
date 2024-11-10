@@ -62,6 +62,8 @@ class UserDb(Base, Crud):
     __tablename__ = "users"
 
     username: Mapped[str] = mapped_column(String(50), primary_key=True, unique=True)
+    # Store the image_url so we don't have to make a request to the spotify API
+    image_url: Mapped[str] = mapped_column(String(200), nullable=True)
     albums: Mapped[List["AlbumDb"]] = relationship(
         "AlbumDb", secondary=user_album_link_table, back_populates="users"
     )

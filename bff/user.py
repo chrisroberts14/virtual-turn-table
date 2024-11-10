@@ -116,13 +116,11 @@ def get_users_albums(
 @user_router.get("/search")
 def get_users_by_search(
     query: str,
-    spotify_access_token: str,
     settings: Annotated[Settings, Depends(get_settings)],
 ) -> list[GetUsersOut]:
     """
     Get all users by search.
 
-    :param spotify_access_token:
     :param query:
     :param settings:
     :return:
@@ -130,23 +128,5 @@ def get_users_by_search(
     endpoint = f"{settings.user_data_address}/user/search"
     response = requests.get(endpoint, params={"query": query}, timeout=20)
     if response.status_code != 200:
-        raise APIException(400, response.json()["detail"])
-    # The response now has a list of users
-    # Now get their images from spotify
-    user_out_data = []
-    users = response.json()
-    for user in users:
-        endpoint = f"https://api.spotify.com/v1/users/{user['username']}"
-        headers = {"Authorization": f"Bearer {spotify_access_token}"}
-        response = requests.get(endpoint, headers=headers, timeout=20)
-        if response.status_code != 200:
-            user["image_url"] = ""
-        else:
-            result = response.json()
-            if len(result["images"]) == 0:
-                user["image_url"] = ""
-            else:
-                user["image_url"] = result["images"][0]["url"]
-        user_out_data.append(GetUsersOut(**user))
-    # Now return the users with their images
-    return user_out_data
+        raise APIException(400, "Failed to access user data.")
+    return response.json()

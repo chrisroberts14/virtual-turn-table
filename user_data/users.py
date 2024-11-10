@@ -33,7 +33,10 @@ def get_users_by_search(
     db_users = (
         db.query(UserDb).filter(UserDb.username.ilike(f"%{query}%")).limit(10).all()
     )
-    return [UserSearchOut(username=user.username) for user in db_users]
+    return [
+        UserSearchOut(username=user.username, image_url=user.image_url)
+        for user in db_users
+    ]
 
 
 @user_router.get("/{username}/albums")
@@ -62,8 +65,13 @@ def create_or_get_user(user: User, db: Session = Depends(get_db)) -> User:
     """
     db_user = UserDb.get_by_id(db, user.username)
     if db_user is not None:
+        # Update the image if it has changed
+        if user.image_url != db_user.image_url:
+            db_user.image_url = user.image_url
+            db.commit()
+            db.refresh(db_user)
         return db_user
-    return UserDb.create(db, UserDb(username=user.username))
+    return UserDb.create(db, UserDb(username=user.username, image_url=user.image_url))
 
 
 @user_router.post("/create_album/{album_uri}", status_code=HTTP_201_CREATED)
