@@ -8,6 +8,7 @@ import { UsernameContext } from "../../src/contexts/UsernameContext";
 import { clearStateData, getStateData } from "../../src/interfaces/StateData";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
+import GetIsCollectionPublic from "../../src/api_calls/GetIsCollectionPublic";
 import GetUserAlbums from "../../src/api_calls/GetUserAlbums";
 
 vi.mock("../../src/api_calls/GetUserInfo");
@@ -15,6 +16,7 @@ vi.mock("../../src/interfaces/StateData");
 vi.mock("../../src/api_calls/CreateUser");
 vi.mock("../../src/contexts/ErrorContext");
 vi.mock("../../src/api_calls/GetUserAlbums");
+vi.mock("../../src/api_calls/GetIsCollectionPublic");
 
 describe("UserBox", () => {
 	const setUsername = vi.fn();
@@ -45,6 +47,9 @@ describe("UserBox", () => {
 
 		// @ts-ignore
 		(GetUserAlbums as vi.Mock).mockReturnValue(Promise.resolve([]));
+
+		// @ts-ignore
+		(GetIsCollectionPublic as vi.Mock).mockReturnValue(Promise.resolve(true));
 	});
 
 	it("renders the user info when GetUserInfo returns valid data", async () => {

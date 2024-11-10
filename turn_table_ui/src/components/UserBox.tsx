@@ -1,3 +1,4 @@
+import GetIsCollectionPublic from "@/api_calls/GetIsCollectionPublic.tsx";
 import GetUserAlbums from "@/api_calls/GetUserAlbums.tsx";
 import ToggleCollectionPublic from "@/api_calls/ToggleCollectionPublic.tsx";
 import ShareModal from "@/components/ShareModal.tsx";
@@ -46,8 +47,11 @@ const UserBox = () => {
 					setDisabledKeys([]);
 				}
 			});
+			GetIsCollectionPublic(username).then((isPublic) => {
+				setIsCollectionPublic(isPublic);
+			});
 		}
-	}, [username]);
+	}, [username, setIsCollectionPublic]);
 
 	useEffect(() => {
 		eventEmitter.on("albumAdded", () => {
