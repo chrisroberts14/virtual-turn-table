@@ -13,11 +13,11 @@ export default defineConfig(({ mode }) => {
 		plugins: [
 			react(),
 			tsconfigPaths(),
-			sentryVitePlugin({
+			/*sentryVitePlugin({
 				authToken: process.env.SENTRY_AUTH_TOKEN,
 				org: "christopher-roberts",
 				project: "vtt-ui",
-			}),
+			}),*/
 		],
 		test: {
 			environment: "jsdom",

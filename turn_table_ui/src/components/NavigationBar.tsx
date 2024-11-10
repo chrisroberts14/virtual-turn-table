@@ -1,3 +1,4 @@
+import CollectionShareNotify from "@/components/CollectionShareNotify.tsx";
 import Login from "@/components/Login.tsx";
 import { Logo } from "@/components/Logo.tsx";
 import UserBox from "@/components/UserBox.tsx";
@@ -70,6 +71,9 @@ const NavigationBar = () => {
 			</NavbarContent>
 			<NavbarContent justify="end">
 				<NavbarItem>{isSignedIn ? <UserBox /> : <Login />}</NavbarItem>
+			</NavbarContent>
+			<NavbarContent className="absolute">
+				<CollectionShareNotify />
 			</NavbarContent>
 		</Navbar>
 	);

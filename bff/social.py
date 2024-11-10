@@ -1,10 +1,12 @@
 """Social endpoints for the BFF."""
 
+import json
 from functools import lru_cache
 from typing import Annotated
 
 import requests
 from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
+from fastapi.responses import JSONResponse
 
 from bff.api_models import Collection, Album, Song, APIException
 from bff.config import Settings, get_settings
@@ -61,7 +63,7 @@ class ConnectionManager:
 manager = ConnectionManager()
 
 
-@social_router.websocket("/social_ws/{username}")
+@social_router.websocket("/ws/{username}")
 async def websocket_endpoint(websocket: WebSocket, username: str):
     """
     Websocket endpoint for the social service.
@@ -70,6 +72,7 @@ async def websocket_endpoint(websocket: WebSocket, username: str):
     :param username:
     :return:
     """
+    print(f"Connecting to {username}")
     await manager.connect(websocket, username)
     try:
         while True:
@@ -82,7 +85,7 @@ async def websocket_endpoint(websocket: WebSocket, username: str):
 @lru_cache(maxsize=128)
 def get_albums(album_uris: tuple[str], spotify_access_token: str):
     """
-    Helper function which caches previous calls,.
+    Helper function which caches previous calls.
 
     so we don't end up calling the spotify API multiple times for the same collection.
 
@@ -184,7 +187,7 @@ def get_shared_collections(
 
 
 @social_router.post("/share_collection")
-def share_collection(
+async def share_collection(
     data: ShareCollectionIn, settings: Annotated[Settings, Depends(get_settings)]
 ):
     """
@@ -198,6 +201,8 @@ def share_collection(
     response = requests.post(endpoint, json=data.model_dump(), timeout=20)
     if response.status_code != 201:
         raise APIException(400, "Failed to share collection")
+    await manager.send_message(json.dumps({"sharer": data.sharer}), data.receiver)
+    return JSONResponse({"message": "Collection shared"})
 
 
 @social_router.put("/toggle_collection_public/{username}")

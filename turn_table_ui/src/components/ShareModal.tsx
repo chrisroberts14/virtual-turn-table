@@ -27,7 +27,7 @@ const ShareModal = () => {
 
 	return (
 		<Modal
-			className="bg-gray-600"
+			className="dark"
 			backdrop="blur"
 			isOpen={isShareModalOpen}
 			placement="top-center"
@@ -38,7 +38,9 @@ const ShareModal = () => {
 		>
 			<ModalContent>
 				<div className="justify-center w-full text-center space-y-2 p-2">
-					<h1 className="w-full text-center font-bold pb-2">Share</h1>
+					<h1 className="w-full text-center font-bold pb-2 text-white">
+						Share
+					</h1>
 					<UserSelect />
 					<Button
 						className="bg-primary font-bold text-white"
