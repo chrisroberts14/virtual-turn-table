@@ -9,7 +9,7 @@ from sqlalchemy.orm import sessionmaker, Session
 
 from user_data import app
 from user_data.db import Base, get_db
-from user_data.db_models import UserDb, AlbumDb
+from user_data.db_models import UserDb, AlbumDb, NotificationDb
 
 DATABASE_URL = "sqlite://"
 engine = create_engine(
@@ -156,3 +156,26 @@ def user_with_shared_collections(
     mock_user.shared_collections.append(mock_user_with_public_album)
     db.commit()
     return mock_user
+
+
+@pytest.fixture(scope="function")
+def mock_notification(
+    db: Session,  # pylint: disable=redefined-outer-name
+    mock_user,  # pylint: disable=redefined-outer-name
+    mock_user_with_public_album,  # pylint: disable=redefined-outer-name
+) -> NotificationDb:
+    """
+    Create a mock notification.
+
+    :param mock_user_with_public_album:
+    :param mock_user:
+    :param db:
+    :return:
+    """
+    return NotificationDb.create(
+        db,
+        NotificationDb(
+            sender_id=mock_user.username,
+            receiver_id=mock_user_with_public_album.username,
+        ),
+    )

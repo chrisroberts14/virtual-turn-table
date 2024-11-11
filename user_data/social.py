@@ -83,8 +83,6 @@ def share_collection(
     notification = NotificationDb.create(
         db, NotificationDb(sender=sharer, receiver=receiver)
     )
-    if notification is None:
-        raise APIException(status_code=500, message="Failed to create notification")
     db.commit()
     return Notification(
         id=str(notification.id),
@@ -140,8 +138,7 @@ def share_accept(notification_id: str, db: Session = Depends(get_db)):
         raise APIException(status_code=404, message="Notification not found")
     sharer = UserDb.get_by_id(db, notification.sender_id)
     receiver = UserDb.get_by_id(db, notification.receiver_id)
-    if sharer is None or receiver is None:
-        raise APIException(status_code=404, message="User not found")
+    # Don't need to check as the notification can't exist without these
     receiver.shared_collections.append(sharer)
     db.delete(notification)
     db.commit()

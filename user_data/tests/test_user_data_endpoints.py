@@ -196,3 +196,26 @@ class TestUserDataEndpoints:
         assert response.json() == [
             {"username": mock_user.username, "image_url": mock_user.image_url}
         ]
+
+    def test_get_notifications(self, client, mock_user):
+        """
+        Test the get notifications endpoint.
+
+        :param client:
+        :param mock_user:
+        :return:
+        """
+        response = client.get(f"/user/notifications/{mock_user.username}")
+        assert response.status_code == 200
+        assert response.json() == []
+
+    def test_get_notifications_no_user(self, client):
+        """
+        Test the get notifications endpoint with no user.
+
+        :param client:
+        :return:
+        """
+        response = client.get("/user/notifications/user1")
+        assert response.status_code == 404
+        assert response.json() == {"message": "User not found", "status": "error"}

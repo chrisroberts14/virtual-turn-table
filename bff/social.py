@@ -87,13 +87,20 @@ async def websocket_endpoint(
                     f"{settings.user_data_address}/social/share_accept/{response.notification_id}",
                     timeout=20,
                 )
+                if response.status_code != 200:
+                    await manager.send_message(json.dumps({"success": False}), username)
+                else:
+                    await manager.send_message(json.dumps({"success": True}), username)
             else:
-                response = requests.delete(
+                response = requests.put(
                     f"{settings.user_data_address}/social/share_reject/{response.notification_id}",
                     timeout=20,
                 )
-            if response.status_code != 200:
-                raise APIException(400, "Failed to update notification")
+                if response.status_code != 200:
+                    await manager.send_message(json.dumps({"success": False}), username)
+                else:
+                    await manager.send_message(json.dumps({"success": True}), username)
+
     except WebSocketDisconnect:
         manager.disconnect(websocket, username)
 
@@ -217,7 +224,7 @@ async def share_collection(
     response = requests.post(endpoint, json=data.model_dump(), timeout=20)
     if response.status_code != 201:
         raise APIException(400, "Failed to share collection")
-    if manager.active_connections[data.receiver]:
+    if data.receiver in manager.active_connections:
         await manager.send_message(json.dumps(response.json()), data.receiver)
     return JSONResponse({"message": "Collection shared"})
 

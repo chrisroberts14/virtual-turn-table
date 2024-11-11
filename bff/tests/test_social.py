@@ -1,5 +1,9 @@
 """Test social router."""
 
+import json
+
+import pytest
+
 
 class TestGetPublicCollections:
     """Class to test getting public collections."""
@@ -317,7 +321,7 @@ class TestShareCollection:
 
     endpoint = "/social/share_collection"
 
-    def test_share_collection(self, client, mocker):
+    def test_share_collection(self, client, mocker, websocket_client):
         """Test sharing a collection."""
 
         def mock_request(_, **__):
@@ -328,13 +332,15 @@ class TestShareCollection:
             """
             mock_response = mocker.Mock()
             mock_response.status_code = 201
+            mock_response.json.return_value = {"message": "Collection shared"}
             return mock_response
 
         mocker.patch("requests.post", side_effect=mock_request)
         response = client.post(
-            self.endpoint, json={"sharer": "test_user", "receiver": "test_user2"}
+            self.endpoint, json={"sharer": "test_user2", "receiver": "test_user"}
         )
         assert response.status_code == 200
+        assert websocket_client.receive_text() == '{"message": "Collection shared"}'
 
     def test_share_collection_failed(self, client, mocker):
         """
@@ -414,3 +420,45 @@ class TestToggleCollectionPublic:
             "message": "Failed to toggle collection public",
             "status": "error",
         }
+
+
+class TestWebsocketEndpoint:
+    """Test the websocket endpoint."""
+
+    @pytest.mark.parametrize("accepted", ["true", "false"])
+    def test_receive_message(self, mocker, websocket_client, accepted):
+        """Test receiving a message."""
+
+        def mock_request(_, **__):
+            """
+            Mock the request.
+
+            :return:
+            """
+            mock_response = mocker.Mock()
+            mock_response.status_code = 200
+            return mock_response
+
+        data = {"accepted": accepted, "notification_id": "test"}
+        mocker.patch("requests.put", side_effect=mock_request)
+        websocket_client.send_text(json.dumps(data))
+        assert json.loads(websocket_client.receive_text()) == {"success": True}
+
+    @pytest.mark.parametrize("accepted", ["true", "false"])
+    def test_receive_message_bad_request(self, mocker, websocket_client, accepted):
+        """Test receiving a message."""
+
+        def mock_request(_, **__):
+            """
+            Mock the request.
+
+            :return:
+            """
+            mock_response = mocker.Mock()
+            mock_response.status_code = 400
+            return mock_response
+
+        data = {"accepted": accepted, "notification_id": "test"}
+        mocker.patch("requests.put", side_effect=mock_request)
+        websocket_client.send_text(json.dumps(data))
+        assert json.loads(websocket_client.receive_text()) == {"success": False}

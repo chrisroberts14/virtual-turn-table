@@ -431,3 +431,63 @@ class TestGetUsersBySearch:
             "message": "Failed to access user data.",
             "status": "error",
         }
+
+
+class TestGetNotifications:
+    """Test the /user/notifications/{username} endpoint."""
+
+    endpoint = "/user/get_notifications/test_user"
+
+    def test_get_notifications(self, client, mocker):
+        """
+        Test working call.
+
+        :return:
+        """
+
+        def mock_request(_, **__):
+            """
+            Mock the request.
+
+            :return:
+            """
+            mock_response = mocker.Mock()
+            mock_response.status_code = 200
+            mock_response.json.return_value = [
+                {"id": "test", "sender_id": "test", "receiver_id": "test"}
+            ]
+            return mock_response
+
+        mocker.patch("requests.get", side_effect=mock_request)
+        response = client.get(self.endpoint)
+        assert response.status_code == 200
+        assert response.json() == [
+            {"id": "test", "sender_id": "test", "receiver_id": "test"}
+        ]
+
+    def test_get_notifications_bad_request(self, client, mocker):
+        """
+        Test call where the user data service fails.
+
+        :param client:
+        :param mocker:
+        :return:
+        """
+
+        def mock_request(_, **__):
+            """
+            Mock the request.
+
+            :return:
+            """
+            mock_response = mocker.Mock()
+            mock_response.status_code = 400
+            return mock_response
+
+        mocker.patch("requests.get", side_effect=mock_request)
+        response = client.get(self.endpoint)
+        assert response.status_code == 400
+        assert response.json() == {
+            "message": "Failed to access user data.",
+            "status": "error",
+        }
