@@ -1,13 +1,18 @@
 // Context for sharing collections
 
-import type Sharer from "@/interfaces/Sharer.tsx";
-import { createContext, useContext } from "react";
+import type Notification from "@/interfaces/Notification.tsx";
+import {
+	type Dispatch,
+	type SetStateAction,
+	createContext,
+	useContext,
+} from "react";
 
 interface CollectionShareConfirmContextType {
 	socket: WebSocket | null;
 	setSocket: (socket: WebSocket | null) => void;
-	sharers: Sharer[];
-	setSharers: (sharers: Sharer[]) => void;
+	notifications: Notification[];
+	setNotifications: Dispatch<SetStateAction<Notification[]>>;
 	isCollectionShareModalOpen: boolean;
 	setIsCollectionShareModalOpen: (isCollectionShareModalOpen: boolean) => void;
 }

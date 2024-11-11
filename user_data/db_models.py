@@ -3,8 +3,9 @@
 import os
 from pathlib import Path
 from typing import List
+from uuid import uuid4
 
-from sqlalchemy import Column, String, ForeignKey, Table, Boolean
+from sqlalchemy import Column, String, ForeignKey, Table, Boolean, UUID
 from sqlalchemy.orm import Mapped, relationship, Session
 from sqlalchemy.testing.schema import mapped_column
 
@@ -56,6 +57,24 @@ class Crud:  # pylint: disable=too-few-public-methods
         return db.get(cls, id_)
 
 
+class NotificationDb(Base, Crud):
+    """Notification database model."""
+
+    __tablename__ = "notifications"
+
+    id: Mapped[int] = mapped_column(UUID, primary_key=True, unique=True, default=uuid4)
+    # Separate relationships for sender and receiver to avoid back_populates conflict
+    sender_id: Mapped[str] = mapped_column(String(50), ForeignKey("users.username"))
+    receiver_id: Mapped[str] = mapped_column(String(50), ForeignKey("users.username"))
+
+    sender: Mapped["UserDb"] = relationship(
+        "UserDb", foreign_keys=[sender_id], back_populates="sent_notifications"
+    )
+    receiver: Mapped["UserDb"] = relationship(
+        "UserDb", foreign_keys=[receiver_id], back_populates="received_notifications"
+    )
+
+
 class UserDb(Base, Crud):
     """User database model."""
 
@@ -84,6 +103,17 @@ class UserDb(Base, Crud):
         primaryjoin=username == shared_collection_link_table.c.receiver,
         secondaryjoin=username == shared_collection_link_table.c.sharer,
         back_populates="shared_collections",
+    )
+
+    sent_notifications: Mapped[List[NotificationDb]] = relationship(
+        "NotificationDb",
+        foreign_keys=[NotificationDb.sender_id],
+        back_populates="sender",
+    )
+    received_notifications: Mapped[List[NotificationDb]] = relationship(
+        "NotificationDb",
+        foreign_keys=[NotificationDb.receiver_id],
+        back_populates="receiver",
     )
 
 

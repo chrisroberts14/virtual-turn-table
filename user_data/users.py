@@ -11,6 +11,7 @@ from user_data.api_models import (
     User,
     AlbumUserLinkIn,
     UserSearchOut,
+    Notification,
 )
 from user_data.db import get_db
 from user_data.db_models import UserDb, AlbumDb
@@ -132,3 +133,25 @@ def is_collection_public(username: str, db: Session = Depends(get_db)) -> bool:
     if db_user is None:
         raise APIException(status_code=404, message="User not found")
     return db_user.is_collection_public
+
+
+@user_router.get("/notifications/{username}")
+def get_notifications(
+    username: str, db: Session = Depends(get_db)
+) -> list[Notification]:
+    """
+    Get all notifications for a user.
+
+    :param db:
+    :param username:
+    :return:
+    """
+    user = UserDb.get_by_id(db, username)
+    if user is None:
+        raise APIException(status_code=404, message="User not found")
+    return [
+        Notification(
+            id=str(notif.id), sender_id=notif.sender_id, receiver_id=notif.receiver_id
+        )
+        for notif in user.received_notifications
+    ]

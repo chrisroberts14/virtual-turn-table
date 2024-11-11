@@ -1,8 +1,9 @@
 import { BFFWebSocket } from "@/api_calls/BFFEndpoints.tsx";
+import GetNotifications from "@/api_calls/GetNotifications.tsx";
 import CollectionShareModal from "@/components/CollectionShareModal.tsx";
 import { CollectionShareConfirmContext } from "@/contexts/CollectionShareConfirmContext.tsx";
 import { useUsername } from "@/contexts/UsernameContext.tsx";
-import type Sharer from "@/interfaces/Sharer.tsx";
+import type Notification from "@/interfaces/Notification.tsx";
 import { Tooltip } from "@nextui-org/tooltip";
 import { useEffect, useState } from "react";
 
@@ -10,15 +11,18 @@ const CollectionShareNotify = () => {
 	const [isCollectionShareModalOpen, setIsCollectionShareModalOpen] =
 		useState<boolean>(false);
 	const { username } = useUsername();
-	const [notificationCount, setNotificationCount] = useState(0);
 	const [socket, setSocket] = useState<WebSocket | null>(null);
-	const [sharers, setSharers] = useState<Sharer[]>([]);
+	const [notifications, setNotifications] = useState<Notification[]>([]);
 
 	useEffect(() => {
 		if (username && !socket) {
 			setSocket(new WebSocket(`${BFFWebSocket}/${username}`));
 		}
-
+		if (username) {
+			GetNotifications(username).then((data: Notification[]) => {
+				setNotifications(data);
+			});
+		}
 		return () => {
 			socket?.close();
 		};
@@ -27,29 +31,26 @@ const CollectionShareNotify = () => {
 	useEffect(() => {
 		if (socket !== null) {
 			socket.onmessage = (event) => {
-				onNotification(event.data);
+				setNotifications([
+					...notifications,
+					JSON.parse(event.data) as Notification,
+				]);
 			};
 		}
-	}, [socket]);
-
-	const onNotification = (eventData: string) => {
-		setNotificationCount(notificationCount + 1);
-		const data = JSON.parse(eventData);
-		setSharers([...sharers, data as Sharer]);
-	};
+	}, [socket, notifications]);
 
 	return (
 		<CollectionShareConfirmContext.Provider
 			value={{
 				socket,
 				setSocket,
-				sharers,
-				setSharers,
+				notifications,
+				setNotifications,
 				isCollectionShareModalOpen,
 				setIsCollectionShareModalOpen,
 			}}
 		>
-			{notificationCount > 0 && (
+			{notifications.length > 0 && (
 				<div className="fixed top-0 right-0 m-3 animate-appearance-in">
 					<Tooltip
 						placement="left"
@@ -61,7 +62,7 @@ const CollectionShareNotify = () => {
 							onKeyDown={() => setIsCollectionShareModalOpen(true)}
 							onKeyUp={() => setIsCollectionShareModalOpen(true)}
 						>
-							{notificationCount}
+							{notifications.length}
 						</div>
 					</Tooltip>
 				</div>

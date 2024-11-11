@@ -88,3 +88,18 @@ class GetUsersOut(BaseModel):
 
     username: str
     image_url: str
+
+
+class Notification(BaseModel):
+    """Notification model."""
+
+    id: str
+    sender_id: str
+    receiver_id: str
+
+
+class WebSocketMessage(BaseModel):
+    """Model for websocket responses from the frontend."""
+
+    notification_id: str
+    accepted: bool

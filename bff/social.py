@@ -8,7 +8,7 @@ import requests
 from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
 from fastapi.responses import JSONResponse
 
-from bff.api_models import Collection, Album, Song, APIException
+from bff.api_models import Collection, Album, Song, APIException, WebSocketMessage
 from bff.config import Settings, get_settings
 from bff.api_models import ShareCollectionIn
 
@@ -64,20 +64,36 @@ manager = ConnectionManager()
 
 
 @social_router.websocket("/ws/{username}")
-async def websocket_endpoint(websocket: WebSocket, username: str):
+async def websocket_endpoint(
+    websocket: WebSocket,
+    username: str,
+    settings: Annotated[Settings, Depends(get_settings)],
+):
     """
     Websocket endpoint for the social service.
 
+    :param settings:
     :param websocket:
     :param username:
     :return:
     """
-    print(f"Connecting to {username}")
     await manager.connect(websocket, username)
     try:
         while True:
             data = await websocket.receive_text()
-            await manager.send_message(data, username)
+            response = WebSocketMessage(**json.loads(data))
+            if response.accepted is True:
+                response = requests.put(
+                    f"{settings.user_data_address}/social/share_accept/{response.notification_id}",
+                    timeout=20,
+                )
+            else:
+                response = requests.delete(
+                    f"{settings.user_data_address}/social/share_reject/{response.notification_id}",
+                    timeout=20,
+                )
+            if response.status_code != 200:
+                raise APIException(400, "Failed to update notification")
     except WebSocketDisconnect:
         manager.disconnect(websocket, username)
 
@@ -201,7 +217,8 @@ async def share_collection(
     response = requests.post(endpoint, json=data.model_dump(), timeout=20)
     if response.status_code != 201:
         raise APIException(400, "Failed to share collection")
-    await manager.send_message(json.dumps({"sharer": data.sharer}), data.receiver)
+    if manager.active_connections[data.receiver]:
+        await manager.send_message(json.dumps(response.json()), data.receiver)
     return JSONResponse({"message": "Collection shared"})
 
 

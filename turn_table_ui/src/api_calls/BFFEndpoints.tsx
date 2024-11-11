@@ -15,3 +15,4 @@ export const getIsCollectionPublic = `${import.meta.env.VITE_BFF_ADDRESS}/user/i
 export const getUsers = `${import.meta.env.VITE_BFF_ADDRESS}/user/`;
 export const getUsersBySearch = `${import.meta.env.VITE_BFF_ADDRESS}/user/search`;
 export const BFFWebSocket = `ws${import.meta.env.VITE_BFF_ADDRESS.slice(4)}/social/ws`;
+export const getNotifications = `${import.meta.env.VITE_BFF_ADDRESS}/user/get_notifications`;

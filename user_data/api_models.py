@@ -45,3 +45,11 @@ class UserSearchOut(BaseModel):
 
     username: str
     image_url: str = ""
+
+
+class Notification(BaseModel):
+    """Notification model."""
+
+    id: str
+    sender_id: str
+    receiver_id: str

@@ -7,7 +7,14 @@ from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 from starlette.status import HTTP_201_CREATED
 
-from bff.api_models import User, APIException, UserIn, AlbumUserLinkIn, GetUsersOut
+from bff.api_models import (
+    User,
+    APIException,
+    UserIn,
+    AlbumUserLinkIn,
+    GetUsersOut,
+    Notification,
+)
 from bff.config import get_settings, Settings
 
 user_router = APIRouter()
@@ -127,6 +134,24 @@ def get_users_by_search(
     """
     endpoint = f"{settings.user_data_address}/user/search"
     response = requests.get(endpoint, params={"query": query}, timeout=20)
+    if response.status_code != 200:
+        raise APIException(400, "Failed to access user data.")
+    return response.json()
+
+
+@user_router.get("/get_notifications/{username}")
+def get_notifications(
+    username: str, settings: Annotated[Settings, Depends(get_settings)]
+) -> list[Notification]:
+    """
+    Get all notifications for a user.
+
+    :param settings:
+    :param username:
+    :return:
+    """
+    endpoint = f"{settings.user_data_address}/user/notifications/{username}"
+    response = requests.get(endpoint, timeout=20)
     if response.status_code != 200:
         raise APIException(400, "Failed to access user data.")
     return response.json()

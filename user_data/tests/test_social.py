@@ -68,7 +68,10 @@ class TestSocial:
             json={"sharer": mock_user_with_no_albums.username, "receiver": "user2"},
         )
         assert response.status_code == 400
-        assert response.json() == {"message": "Sharer has no albums", "status": "error"}
+        assert response.json() == {
+            "message": "Notification has no albums",
+            "status": "error",
+        }
 
     def test_share_collection_bad_sharer(self, client):
         """Test sharing a collection with a user that does not exist."""
@@ -77,7 +80,10 @@ class TestSocial:
             json={"sharer": "nonexistent", "receiver": "user2"},
         )
         assert response.status_code == 404
-        assert response.json() == {"message": "Sharer not found", "status": "error"}
+        assert response.json() == {
+            "message": "Notification not found",
+            "status": "error",
+        }
 
     def test_share_collection_bad_receiver(self, client, mock_user):
         """Test sharing a collection with a user that does not exist."""
