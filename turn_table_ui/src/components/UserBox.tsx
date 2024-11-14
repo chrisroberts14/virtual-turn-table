@@ -1,12 +1,12 @@
-import DeleteUser from "@/api_calls/DeleteUser.ts";
-import GetIsCollectionPublic from "@/api_calls/GetIsCollectionPublic.tsx";
-import GetUserAlbums from "@/api_calls/GetUserAlbums.tsx";
-import ToggleCollectionPublic from "@/api_calls/ToggleCollectionPublic.tsx";
-import ShareModal from "@/components/ShareModal.tsx";
-import { useError } from "@/contexts/ErrorContext.tsx";
-import { ShareContext } from "@/contexts/ShareContext.tsx";
-import useUserBox from "@/hooks/UseUserBox.tsx";
-import eventEmitter from "@/utils/EventEmitter.ts";
+import DeleteUser from "@/api_calls/DeleteUser";
+import GetIsCollectionPublic from "@/api_calls/GetIsCollectionPublic";
+import GetUserAlbums from "@/api_calls/GetUserAlbums";
+import ToggleCollectionPublic from "@/api_calls/ToggleCollectionPublic";
+import ShareModal from "@/components/ShareModal";
+import { useError } from "@/contexts/ErrorContext";
+import { ShareContext } from "@/contexts/ShareContext";
+import useUserBox from "@/hooks/UseUserBox";
+import eventEmitter from "@/utils/EventEmitter";
 import { Avatar } from "@nextui-org/avatar";
 import {
 	Dropdown,

@@ -1,4 +1,4 @@
-import { albumDetails } from "@/api_calls/BFFEndpoints.tsx";
+import { albumDetails } from "@/api_calls/BFFEndpoints";
 import axios from "axios";
 
 const GetAlbumDetails = async (albumURI: string, accessToken: string) => {

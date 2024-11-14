@@ -1,8 +1,8 @@
-import ShareCollection from "@/api_calls/ShareCollection.tsx";
-import UserSelect from "@/components/UserSelect.tsx";
-import { useError } from "@/contexts/ErrorContext.tsx";
-import { useShare } from "@/contexts/ShareContext.tsx";
-import { useUsername } from "@/contexts/UsernameContext.tsx";
+import ShareCollection from "@/api_calls/ShareCollection";
+import UserSelect from "@/components/UserSelect";
+import { useError } from "@/contexts/ErrorContext";
+import { useShare } from "@/contexts/ShareContext";
+import { useUsername } from "@/contexts/UsernameContext";
 import { Button } from "@nextui-org/button";
 import { Modal, ModalContent } from "@nextui-org/modal";
 

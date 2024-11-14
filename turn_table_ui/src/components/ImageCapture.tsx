@@ -1,10 +1,10 @@
-import ImageToAlbum from "@/api_calls/ImageToAlbum.tsx";
-import Upload from "@/components/Upload.tsx";
-import { useError } from "@/contexts/ErrorContext.tsx";
-import { useNavigation } from "@/contexts/NavigationContext.tsx";
-import { useUpload } from "@/contexts/UploadContext.tsx";
-import type Album from "@/interfaces/Album.tsx";
-import getScreenShot from "@/utils/GetScreenShot.tsx";
+import ImageToAlbum from "@/api_calls/ImageToAlbum";
+import Upload from "@/components/Upload";
+import { useError } from "@/contexts/ErrorContext";
+import { useNavigation } from "@/contexts/NavigationContext";
+import { useUpload } from "@/contexts/UploadContext";
+import type Album from "@/interfaces/Album";
+import getScreenShot from "@/utils/GetScreenShot";
 import { Button } from "@nextui-org/button";
 import { Image } from "@nextui-org/image";
 import { Spinner } from "@nextui-org/spinner";

@@ -1,15 +1,15 @@
-import ErrorDisplay from "@/components/ErrorDisplay.tsx";
-import LoggedOutPage from "@/components/LoggedOutPage.tsx";
-import MusicPlayer from "@/components/MusicPlayer.tsx";
-import NavigationBar from "@/components/NavigationBar.tsx";
-import ScanPage from "@/components/ScanPage.tsx";
-import SocialPage from "@/components/SocialPage.tsx";
-import { ErrorProvider } from "@/contexts/ErrorContext.tsx";
-import { MusicContext } from "@/contexts/MusicContext.tsx";
-import { NavigationContext } from "@/contexts/NavigationContext.tsx";
-import { SpotifyTokenContext } from "@/contexts/SpotifyTokenContext.tsx";
-import { UsernameContext } from "@/contexts/UsernameContext.tsx";
-import useApp from "@/hooks/UseApp.tsx";
+import ErrorDisplay from "@/components/ErrorDisplay";
+import LoggedOutPage from "@/components/LoggedOutPage";
+import MusicPlayer from "@/components/MusicPlayer";
+import NavigationBar from "@/components/NavigationBar";
+import ScanPage from "@/components/ScanPage";
+import SocialPage from "@/components/SocialPage";
+import { ErrorProvider } from "@/contexts/ErrorContext";
+import { MusicContext } from "@/contexts/MusicContext";
+import { NavigationContext } from "@/contexts/NavigationContext";
+import { SpotifyTokenContext } from "@/contexts/SpotifyTokenContext";
+import { UsernameContext } from "@/contexts/UsernameContext";
+import useApp from "@/hooks/UseApp";
 import { useState } from "react";
 
 function App() {

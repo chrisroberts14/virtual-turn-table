@@ -1,10 +1,13 @@
-import { getUserAlbums } from "@/api_calls/BFFEndpoints.tsx";
+import { getPublicCollections } from "@/api_calls/BFFEndpoints";
 import axios from "axios";
 
-const GetUserAlbums = async (username: string) => {
-	// Call to get user's albums
+const GetPublicCollections = async (token: string | null) => {
 	try {
-		const response = await axios.get(`${getUserAlbums}/${username}`);
+		const response = await axios.get(getPublicCollections, {
+			params: {
+				spotify_access_token: token,
+			},
+		});
 		return response.data;
 	} catch (error: unknown) {
 		// Check if the error is an AxiosError (has a response)
@@ -17,4 +20,4 @@ const GetUserAlbums = async (username: string) => {
 	}
 };
 
-export default GetUserAlbums;
+export default GetPublicCollections;

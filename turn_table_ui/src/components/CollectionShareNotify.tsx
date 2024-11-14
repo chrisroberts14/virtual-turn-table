@@ -1,9 +1,9 @@
-import { BFFWebSocket } from "@/api_calls/BFFEndpoints.tsx";
-import GetNotifications from "@/api_calls/GetNotifications.tsx";
-import CollectionShareModal from "@/components/CollectionShareModal.tsx";
-import { CollectionShareConfirmContext } from "@/contexts/CollectionShareConfirmContext.tsx";
-import { useUsername } from "@/contexts/UsernameContext.tsx";
-import type Notification from "@/interfaces/Notification.tsx";
+import { BFFWebSocket } from "@/api_calls/BFFEndpoints";
+import GetNotifications from "@/api_calls/GetNotifications";
+import CollectionShareModal from "@/components/CollectionShareModal";
+import { CollectionShareConfirmContext } from "@/contexts/CollectionShareConfirmContext";
+import { useUsername } from "@/contexts/UsernameContext";
+import type Notification from "@/interfaces/Notification";
 import { Tooltip } from "@nextui-org/tooltip";
 import { useEffect, useState } from "react";
 

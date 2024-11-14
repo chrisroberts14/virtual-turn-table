@@ -1,13 +1,9 @@
-import { getUsersBySearch } from "@/api_calls/BFFEndpoints.tsx";
+import { getIsCollectionPublic } from "@/api_calls/BFFEndpoints";
 import axios from "axios";
 
-const GetUsersBySearch = async (query: string) => {
+const GetIsCollectionPublic = async (username: string) => {
 	try {
-		const response = await axios.get(getUsersBySearch, {
-			params: {
-				query: query,
-			},
-		});
+		const response = await axios.get(`${getIsCollectionPublic}/${username}`);
 		return response.data;
 	} catch (error: unknown) {
 		// Check if the error is an AxiosError (has a response)
@@ -20,4 +16,4 @@ const GetUsersBySearch = async (query: string) => {
 	}
 };
 
-export default GetUsersBySearch;
+export default GetIsCollectionPublic;

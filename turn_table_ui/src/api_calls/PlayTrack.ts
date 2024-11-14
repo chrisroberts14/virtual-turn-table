@@ -1,4 +1,4 @@
-import { playTrack } from "@/api_calls/BFFEndpoints.tsx";
+import { playTrack } from "@/api_calls/BFFEndpoints";
 import axios from "axios";
 
 const PlayTrack = async (token: string, trackURI: string, deviceId: string) => {

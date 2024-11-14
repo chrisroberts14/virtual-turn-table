@@ -1,6 +1,6 @@
-import GetUsersBySearch from "@/api_calls/GetUsersBySearch.tsx";
-import { useShare } from "@/contexts/ShareContext.tsx";
-import type User from "@/interfaces/User.tsx";
+import GetUsersBySearch from "@/api_calls/GetUsersBySearch";
+import { useShare } from "@/contexts/ShareContext";
+import type User from "@/interfaces/User";
 import { Autocomplete, AutocompleteItem } from "@nextui-org/autocomplete";
 import { User as UserComp } from "@nextui-org/user";
 import { useEffect, useState } from "react";

@@ -1,7 +1,7 @@
-import CreateUser from "@/api_calls/CreateUser.tsx";
-import GetUserInfo from "@/api_calls/GetUserInfo.tsx";
-import type Album from "@/interfaces/Album.tsx";
-import { getStateData, storeStateData } from "@/interfaces/StateData.tsx";
+import CreateUser from "@/api_calls/CreateUser";
+import GetUserInfo from "@/api_calls/GetUserInfo";
+import type Album from "@/interfaces/Album";
+import { getStateData, storeStateData } from "@/interfaces/StateData";
 import { useEffect, useState } from "react";
 
 // Hook used in the main app.tsx file

@@ -1,5 +1,5 @@
-import { imageToAlbum } from "@/api_calls/BFFEndpoints.tsx";
-import type Album from "@/interfaces/Album.tsx";
+import { imageToAlbum } from "@/api_calls/BFFEndpoints";
+import type Album from "@/interfaces/Album";
 import axios from "axios";
 import type { Dispatch, SetStateAction } from "react";
 

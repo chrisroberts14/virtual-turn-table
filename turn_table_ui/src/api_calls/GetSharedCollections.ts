@@ -1,11 +1,14 @@
-import { deleteUser } from "@/api_calls/BFFEndpoints";
+import { getSharedCollections } from "@/api_calls/BFFEndpoints";
 import axios from "axios";
 
-const DeleteUser = async (username: string) => {
+const GetSharedCollections = async (
+	username: string | null,
+	token: string | null,
+) => {
 	try {
-		const response = await axios.delete(deleteUser, {
+		const response = await axios.get(`${getSharedCollections}/${username}`, {
 			params: {
-				username: username,
+				spotify_access_token: token,
 			},
 		});
 		return response.data;
@@ -20,4 +23,4 @@ const DeleteUser = async (username: string) => {
 	}
 };
 
-export default DeleteUser;
+export default GetSharedCollections;

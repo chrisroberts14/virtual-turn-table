@@ -1,6 +1,6 @@
-import GetUserInfo from "@/api_calls/GetUserInfo.tsx";
-import { useUsername } from "@/contexts/UsernameContext.tsx";
-import { clearStateData, getStateData } from "@/interfaces/StateData.tsx";
+import GetUserInfo from "@/api_calls/GetUserInfo";
+import { useUsername } from "@/contexts/UsernameContext";
+import { clearStateData, getStateData } from "@/interfaces/StateData";
 import { useEffect, useState } from "react";
 
 const useUserBox = () => {

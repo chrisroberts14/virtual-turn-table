@@ -1,9 +1,10 @@
-import { getPublicCollections } from "@/api_calls/BFFEndpoints.tsx";
+import { userInfo } from "@/api_calls/BFFEndpoints";
 import axios from "axios";
 
-const GetPublicCollections = async (token: string | null) => {
+const GetUserInfo = async (token: string | undefined) => {
+	// Call to get user's information from Spotify
 	try {
-		const response = await axios.get(getPublicCollections, {
+		const response = await axios.get(userInfo, {
 			params: {
 				spotify_access_token: token,
 			},
@@ -20,4 +21,4 @@ const GetPublicCollections = async (token: string | null) => {
 	}
 };
 
-export default GetPublicCollections;
+export default GetUserInfo;

@@ -1,6 +1,6 @@
-import UploadFile from "@/api_calls/UploadFile.tsx";
-import { useError } from "@/contexts/ErrorContext.tsx";
-import { useUpload } from "@/contexts/UploadContext.tsx";
+import UploadFile from "@/api_calls/UploadFile";
+import { useError } from "@/contexts/ErrorContext";
+import { useUpload } from "@/contexts/UploadContext";
 import { Button } from "@nextui-org/button";
 import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
 import { Divider } from "@nextui-org/divider";

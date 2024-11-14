@@ -1,4 +1,4 @@
-import { shareCollection } from "@/api_calls/BFFEndpoints.tsx";
+import { shareCollection } from "@/api_calls/BFFEndpoints";
 import axios from "axios";
 
 const ShareCollection = async (sharer: string | null, receiver: string) => {

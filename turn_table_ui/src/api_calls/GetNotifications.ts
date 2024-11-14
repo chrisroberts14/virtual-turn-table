@@ -1,4 +1,4 @@
-import { getNotifications } from "@/api_calls/BFFEndpoints.tsx";
+import { getNotifications } from "@/api_calls/BFFEndpoints";
 import axios from "axios";
 
 const GetNotifications = async (username: string) => {
