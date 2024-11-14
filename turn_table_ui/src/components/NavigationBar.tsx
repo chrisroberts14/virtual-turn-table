@@ -17,6 +17,7 @@ import { IoShareSocial } from "react-icons/io5";
 
 const NavigationBar = () => {
 	const { currentPage, setCurrentPage, isSignedIn } = useNavigation();
+
 	const switchPage = (key: Key) => {
 		setCurrentPage(key.valueOf() as number);
 	};

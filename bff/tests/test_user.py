@@ -491,3 +491,57 @@ class TestGetNotifications:
             "message": "Failed to access user data.",
             "status": "error",
         }
+
+
+class TestDeleteUser:
+    """Test the /user/{username} endpoint."""
+
+    endpoint = "/user/test_user"
+
+    def test_delete_user(self, client, mocker):
+        """
+        Test working call.
+
+        :return:
+        """
+
+        def mock_request(_, **__):
+            """
+            Mock the request.
+
+            :return:
+            """
+            mock_response = mocker.Mock()
+            mock_response.status_code = 200
+            return mock_response
+
+        mocker.patch("requests.delete", side_effect=mock_request)
+        response = client.delete(self.endpoint)
+        assert response.status_code == 200
+
+    def test_delete_user_bad_request(self, client, mocker):
+        """
+        Test call where the user data service fails.
+
+        :param client:
+        :param mocker:
+        :return:
+        """
+
+        def mock_request(_, **__):
+            """
+            Mock the request.
+
+            :return:
+            """
+            mock_response = mocker.Mock()
+            mock_response.status_code = 400
+            return mock_response
+
+        mocker.patch("requests.delete", side_effect=mock_request)
+        response = client.delete(self.endpoint)
+        assert response.status_code == 400
+        assert response.json() == {
+            "message": "Failed to delete user.",
+            "status": "error",
+        }

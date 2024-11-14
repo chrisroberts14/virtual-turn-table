@@ -155,3 +155,23 @@ def get_notifications(
         )
         for notif in user.received_notifications
     ]
+
+
+@user_router.delete("/{username}")
+def delete_user(username: str, db: Session = Depends(get_db)):
+    """
+    Delete a user.
+
+    :param db:
+    :param username:
+    :return:
+    """
+    db_user = UserDb.get_by_id(db, username)
+    if db_user is None:
+        raise APIException(status_code=404, message="User not found")
+    db.delete(db_user)
+    db.commit()
+    return JSONResponse(
+        status_code=HTTP_200_OK,
+        content={"message": "User deleted", "status": "success"},
+    )

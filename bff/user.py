@@ -155,3 +155,19 @@ def get_notifications(
     if response.status_code != 200:
         raise APIException(400, "Failed to access user data.")
     return response.json()
+
+
+@user_router.delete("/{username}")
+def delete_user(username: str, settings: Annotated[Settings, Depends(get_settings)]):
+    """
+    Delete a user from the database.
+
+    :param settings:
+    :param username:
+    :return:
+    """
+    endpoint = f"{settings.user_data_address}/user/{username}"
+    response = requests.delete(endpoint, timeout=20)
+    if response.status_code != 200:
+        raise APIException(400, "Failed to delete user.")
+    return JSONResponse(status_code=200, content={"status": "success"})

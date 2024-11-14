@@ -219,3 +219,30 @@ class TestUserDataEndpoints:
         response = client.get("/user/notifications/user1")
         assert response.status_code == 404
         assert response.json() == {"message": "User not found", "status": "error"}
+
+
+class TestUserDelete:
+    """Test cases for the user delete endpoint."""
+
+    def test_delete_user(self, client, mock_user):
+        """
+        Test the delete user endpoint.
+
+        :param client:
+        :param mock_user:
+        :return:
+        """
+        response = client.delete(f"/user/{mock_user.username}")
+        assert response.status_code == 200
+        assert response.json() == {"message": "User deleted", "status": "success"}
+
+    def test_delete_user_no_user(self, client):
+        """
+        Test the delete user endpoint with no user.
+
+        :param client:
+        :return:
+        """
+        response = client.delete("/user/user1")
+        assert response.status_code == 404
+        assert response.json() == {"message": "User not found", "status": "error"}

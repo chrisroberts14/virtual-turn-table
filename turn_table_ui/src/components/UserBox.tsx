@@ -1,7 +1,9 @@
+import DeleteUser from "@/api_calls/DeleteUser.ts";
 import GetIsCollectionPublic from "@/api_calls/GetIsCollectionPublic.tsx";
 import GetUserAlbums from "@/api_calls/GetUserAlbums.tsx";
 import ToggleCollectionPublic from "@/api_calls/ToggleCollectionPublic.tsx";
 import ShareModal from "@/components/ShareModal.tsx";
+import { useError } from "@/contexts/ErrorContext.tsx";
 import { ShareContext } from "@/contexts/ShareContext.tsx";
 import useUserBox from "@/hooks/UseUserBox.tsx";
 import eventEmitter from "@/utils/EventEmitter.ts";
@@ -37,6 +39,15 @@ const UserBox = () => {
 	]);
 	const [shareInputValue, setShareInputValue] = useState<string>("");
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+	const { showError } = useError();
+
+	const deleteAccount = async () => {
+		if (!username) {
+			showError("No user logged in");
+			return;
+		}
+		return await DeleteUser(username);
+	};
 
 	useEffect(() => {
 		if (username) {
@@ -89,6 +100,19 @@ const UserBox = () => {
 							}
 						} else if (key === "share") {
 							setIsShareModalOpen(true);
+						} else if (key === "delete") {
+							deleteAccount()
+								.then((response) => {
+									if (response.message === "User deleted") {
+										// Redirect to the login page
+										window.location.href = "/";
+									} else {
+										showError(response.message);
+									}
+								})
+								.catch((error) => {
+									showError(error.message);
+								});
 						}
 					}}
 				>

@@ -2,9 +2,7 @@
 
 import type Album from "@/interfaces/Album.tsx";
 
-interface Collection {
+export interface Collection {
 	user_id: string;
 	albums: Album[];
 }
-
-export default Collection;

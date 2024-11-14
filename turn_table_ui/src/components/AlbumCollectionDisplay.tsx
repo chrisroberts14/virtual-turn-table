@@ -1,18 +1,21 @@
 import GetAlbumDetails from "@/api_calls/GetAlbumDetails.tsx";
 import GetUserAlbums from "@/api_calls/GetUserAlbums.tsx";
+import Collection from "@/components/Collection";
 import { useAlbumSelection } from "@/contexts/AlbumSelectionContext.tsx";
+import { CollectionContext } from "@/contexts/CollectionContext.tsx";
 import { useError } from "@/contexts/ErrorContext.tsx";
 import { useMusic } from "@/contexts/MusicContext.tsx";
 import { useSpotifyToken } from "@/contexts/SpotifyTokenContext.tsx";
 import { useUsername } from "@/contexts/UsernameContext.tsx";
 import type Album from "@/interfaces/Album.tsx";
-import type Collection from "@/interfaces/Collection.tsx";
+import type { Collection as CollectionType } from "@/interfaces/Collection.tsx";
 import eventEmitter from "@/utils/EventEmitter.ts";
+import { Button } from "@nextui-org/button";
 import { Image } from "@nextui-org/image";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface AlbumCollectionDisplayProps {
-	albumCollection?: Collection;
+	albumCollection?: CollectionType;
 	orientation?: "horizontal" | "vertical";
 }
 
@@ -82,10 +85,27 @@ const AlbumCollectionDisplay = ({
 		setHoveredAlbum(album);
 	};
 
+	const [isCollectionOpen, setIsCollectionOpen] = useState(false);
+
+	const toggleOpen = () => {
+		setIsCollectionOpen(!isCollectionOpen);
+	};
+
 	return (
 		<div
 			className={`${orientation === "vertical" ? "flex-col" : ""} flex max-h-full w-full overflow-auto bg-gray-900 rounded-2xl`}
 		>
+			<CollectionContext.Provider
+				value={{
+					albums: albums,
+					setAlbums: () => {},
+					isCollectionOpen: isCollectionOpen,
+					setIsCollectionOpen: setIsCollectionOpen,
+				}}
+			>
+				<Button onClick={toggleOpen}>Open Modal</Button>
+				<Collection />
+			</CollectionContext.Provider>
 			{albums.map((album) => (
 				<div
 					key={album.album_uri}
