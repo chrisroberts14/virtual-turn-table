@@ -1,9 +1,12 @@
 import AlbumConfirm from "@/components/AlbumConfirm.tsx";
 import AlbumHistorySelector from "@/components/AlbumHistorySelector.tsx";
+import Collection from "@/components/Collection";
 import ImageCapture from "@/components/ImageCapture.tsx";
+import { CollectionContext } from "@/contexts/CollectionContext.tsx";
 import { UploadContext } from "@/contexts/UploadContext.tsx";
 import useResizeHandler from "@/hooks/UseResizeHandler.tsx";
 import type Album from "@/interfaces/Album.tsx";
+import { Button } from "@nextui-org/button";
 import { Resizable } from "re-resizable";
 import { useState } from "react";
 
@@ -13,6 +16,11 @@ const ScanPage = () => {
 	const [fadeConfirm, setFadeConfirm] = useState(false);
 	const [currentImage, setCurrentImage] = useState<string | null>(null);
 	const contentHeight = useResizeHandler(240);
+	const [isCollectionOpen, setIsCollectionOpen] = useState(false);
+
+	const toggleOpen = () => {
+		setIsCollectionOpen(!isCollectionOpen);
+	};
 
 	return (
 		<UploadContext.Provider
@@ -70,6 +78,63 @@ const ScanPage = () => {
 							</div>
 						</Resizable>
 						<ImageCapture />
+						<CollectionContext.Provider
+							value={{
+								albums: [
+									{
+										image_url:
+											"https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228",
+										title: "test",
+										tracks_url: "",
+										artists: [],
+										album_uri: "",
+										songs: [],
+									},
+									{
+										image_url:
+											"https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228",
+										title: "test1",
+										tracks_url: "",
+										artists: [],
+										album_uri: "",
+										songs: [],
+									},
+									{
+										image_url:
+											"https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228",
+										title: "test2",
+										tracks_url: "",
+										artists: [],
+										album_uri: "",
+										songs: [],
+									},
+									{
+										image_url:
+											"https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228",
+										title: "test3",
+										tracks_url: "",
+										artists: [],
+										album_uri: "",
+										songs: [],
+									},
+									{
+										image_url:
+											"https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228",
+										title: "test4",
+										tracks_url: "",
+										artists: [],
+										album_uri: "",
+										songs: [],
+									},
+								],
+								setAlbums: () => {},
+								isCollectionOpen: isCollectionOpen,
+								setIsCollectionOpen: setIsCollectionOpen,
+							}}
+						>
+							<Button onClick={toggleOpen}>Open Modal</Button>
+							<Collection />
+						</CollectionContext.Provider>
 					</div>
 				</Resizable>
 				<div className="flex h-full bg-gray-900 w-screen p-1">

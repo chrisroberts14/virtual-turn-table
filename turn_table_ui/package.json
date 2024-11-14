@@ -75,6 +75,7 @@
 		"@types/react-dom": "18.3.1",
 		"@vitejs/plugin-react": "^4.3.3",
 		"@vitest/coverage-v8": "^2.1.4",
+		"@xpd/tailwind-3dtransforms": "^1.0.3",
 		"autoprefixer": "^10.4.19",
 		"jest": "^29.7.0",
 		"jsdom": "^25.0.1",

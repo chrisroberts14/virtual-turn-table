@@ -31,10 +31,16 @@ const CollectionShareNotify = () => {
 	useEffect(() => {
 		if (socket !== null) {
 			socket.onmessage = (event) => {
-				setNotifications([
-					...notifications,
-					JSON.parse(event.data) as Notification,
-				]);
+				if (event.data.id !== undefined) {
+					setNotifications([
+						...notifications,
+						JSON.parse(event.data) as Notification,
+					]);
+				}
+				if (event.data.success) {
+					// Show a success message
+					console.log("Success!");
+				}
 			};
 		}
 	}, [socket, notifications]);
