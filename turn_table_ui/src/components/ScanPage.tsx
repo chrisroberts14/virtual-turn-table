@@ -1,11 +1,16 @@
+import GetAlbumDetails from "@/api_calls/GetAlbumDetails.ts";
+import GetUserAlbums from "@/api_calls/GetUserAlbums.ts";
 import AlbumConfirm from "@/components/AlbumConfirm.tsx";
-import AlbumHistorySelector from "@/components/AlbumHistorySelector.tsx";
+import { CollectionPreviewHorizontal } from "@/components/CollectionPreview.tsx";
 import ImageCapture from "@/components/ImageCapture.tsx";
+import { CollectionContext } from "@/contexts/CollectionContext.tsx";
+import { useSpotifyToken } from "@/contexts/SpotifyTokenContext.tsx";
 import { UploadContext } from "@/contexts/UploadContext.tsx";
+import { useUsername } from "@/contexts/UsernameContext.tsx";
 import useResizeHandler from "@/hooks/UseResizeHandler.tsx";
 import type Album from "@/interfaces/Album.tsx";
 import { Resizable } from "re-resizable";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const ScanPage = () => {
 	const [isUploading, setIsUploading] = useState(false);
@@ -13,6 +18,28 @@ const ScanPage = () => {
 	const [fadeConfirm, setFadeConfirm] = useState(false);
 	const [currentImage, setCurrentImage] = useState<string | null>(null);
 	const contentHeight = useResizeHandler(240);
+	const [albums, setAlbums] = useState<Album[]>([]);
+	const { username } = useUsername();
+	const { token } = useSpotifyToken();
+
+	useEffect(() => {
+		if (username && token) {
+			GetUserAlbums(username).then((albums) => {
+				// Get all album details and create a list of them
+				const albumPromises = albums.map((album_uri: string) => {
+					return GetAlbumDetails(album_uri, token);
+				});
+
+				const fetchAllAlbumDetails = async () => {
+					const albumDetails = await Promise.all(albumPromises);
+					setAlbums(albumDetails);
+				};
+				fetchAllAlbumDetails().then(() => {
+					return;
+				});
+			});
+		}
+	}, [username, token]);
 
 	return (
 		<UploadContext.Provider
@@ -72,8 +99,17 @@ const ScanPage = () => {
 						<ImageCapture />
 					</div>
 				</Resizable>
-				<div className="flex h-full bg-gray-900 w-screen p-1">
-					<AlbumHistorySelector />
+				<div className="flex h-full bg-gray-900 w-screen p-1 overflow-x-hidden">
+					<CollectionContext.Provider
+						value={{
+							albums: albums,
+							setAlbums: () => {},
+							isCollectionOpen: false,
+							setIsCollectionOpen: () => {},
+						}}
+					>
+						<CollectionPreviewHorizontal />
+					</CollectionContext.Provider>
 				</div>
 			</div>
 		</UploadContext.Provider>
