@@ -1,8 +1,8 @@
+import { BFFWebSocket } from "@/api_calls/BFFEndpoints";
 import GetNotifications from "@/api_calls/GetNotifications";
 import CollectionShareModal from "@/components/CollectionShareModal";
 import { CollectionShareConfirmContext } from "@/contexts/CollectionShareConfirmContext";
 import { useUsername } from "@/contexts/UsernameContext";
-import { useWebSocket } from "@/contexts/WebSocketContext.ts";
 import type Notification from "@/interfaces/Notification";
 import { Tooltip } from "@nextui-org/tooltip";
 import { useEffect, useState } from "react";
@@ -11,20 +11,26 @@ const CollectionShareNotify = () => {
 	const [isCollectionShareModalOpen, setIsCollectionShareModalOpen] =
 		useState<boolean>(false);
 	const { username } = useUsername();
+	const [socket, setSocket] = useState<WebSocket | null>(null);
 	const [notifications, setNotifications] = useState<Notification[]>([]);
-	const { ws, setWs } = useWebSocket();
 
 	useEffect(() => {
+		if (username && !socket) {
+			setSocket(new WebSocket(`${BFFWebSocket}/${username}`));
+		}
 		if (username) {
 			GetNotifications(username).then((data: Notification[]) => {
 				setNotifications(data);
 			});
 		}
-	}, [username]);
+		return () => {
+			socket?.close();
+		};
+	}, [username, socket]);
 
 	useEffect(() => {
-		if (ws !== null) {
-			ws.onmessage = (event) => {
+		if (socket !== null) {
+			socket.onmessage = (event) => {
 				const data = JSON.parse(event.data);
 				if (data.id !== undefined) {
 					setNotifications([...notifications, data as Notification]);
@@ -35,13 +41,13 @@ const CollectionShareNotify = () => {
 				}
 			};
 		}
-	}, [ws, notifications]);
+	}, [socket, notifications]);
 
 	return (
 		<CollectionShareConfirmContext.Provider
 			value={{
-				socket: ws,
-				setSocket: setWs,
+				socket,
+				setSocket,
 				notifications,
 				setNotifications,
 				isCollectionShareModalOpen,
