@@ -39,7 +39,7 @@ const Collection = () => {
 			<Modal
 				isOpen={isCollectionOpen}
 				onClose={() => setIsCollectionOpen(false)}
-				className="dark"
+				className="dark max-h-[80%]"
 			>
 				<ModalContent className="text-white">
 					{/* Display the albums like a box where you flick through them */}
@@ -57,13 +57,13 @@ const Collection = () => {
 											<div className="flex flex-col items-center w-full">
 												<div className="text-center w-full overflow-x-auto">
 													<span className="text-nowrap">
-														{albums[currentSelectedIndex].title}
+														{albums[currentSelectedIndex]?.title}
 													</span>
 												</div>
 											</div>
 											<div className="flex flex-col items-center w-full">
 												<div className="text-center w-full">
-													<span className="text-nowrap">{`By ${albums[currentSelectedIndex].artists}`}</span>
+													<span className="text-nowrap">{`By ${albums[currentSelectedIndex]?.artists}`}</span>
 												</div>
 											</div>
 										</CardHeader>

@@ -1,6 +1,6 @@
 import GetPublicCollections from "@/api_calls/GetPublicCollections";
 import GetSharedCollections from "@/api_calls/GetSharedCollections";
-import AlbumCollectionDisplay from "@/components/AlbumCollectionDisplay";
+import { CollectionPreviewVertical } from "@/components/CollectionPreview.tsx";
 import { AlbumSelectionContext } from "@/contexts/AlbumSelectionContext";
 import { useError } from "@/contexts/ErrorContext";
 import { useSpotifyToken } from "@/contexts/SpotifyTokenContext";
@@ -124,14 +124,14 @@ const SocialPage = () => {
 										}}
 										key={`${collection.user_id} - public`}
 									>
-										<Card className="bg-gray-900 min-w-max">
+										<Card className="bg-gray-900 min-w-max max-h-[35%]">
 											<CardHeader>
 												<span className="font-bold text-lg text-wrap text-center w-full">
 													{collection.user_id}
 												</span>
 											</CardHeader>
-											<CardBody className="overflow-y-auto">
-												<AlbumCollectionDisplay orientation="vertical" />
+											<CardBody className="overflow-y-hidden">
+												<CollectionPreviewVertical albums={collection.albums} />
 											</CardBody>
 										</Card>
 									</AlbumSelectionContext.Provider>
@@ -180,14 +180,14 @@ const SocialPage = () => {
 										}}
 										key={`${collection.user_id} - shared`}
 									>
-										<Card className="bg-gray-900 min-w-max">
+										<Card className="bg-gray-900 min-w-max max-h-[35%]">
 											<CardHeader>
 												<span className="font-bold text-lg text-wrap text-center w-full">
 													{collection.user_id}
 												</span>
 											</CardHeader>
-											<CardBody className="overflow-y-auto">
-												<AlbumCollectionDisplay orientation="vertical" />
+											<CardBody className="overflow-y-hidden">
+												<CollectionPreviewVertical albums={collection.albums} />
 											</CardBody>
 										</Card>
 									</AlbumSelectionContext.Provider>
