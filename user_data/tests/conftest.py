@@ -9,7 +9,7 @@ from sqlalchemy.orm import sessionmaker, Session
 
 from user_data import app
 from user_data.db import Base, get_db
-from user_data.db_models import UserDb, AlbumDb
+from user_data.db_models import UserDb, AlbumDb, NotificationDb
 
 DATABASE_URL = "sqlite://"
 engine = create_engine(
@@ -87,7 +87,12 @@ def mock_user(db: Session) -> UserDb:  # pylint: disable=redefined-outer-name
     :return:
     """
     return UserDb.create(
-        db, UserDb(username="user1", albums=[AlbumDb(album_uri="album1")])
+        db,
+        UserDb(
+            username="user1",
+            albums=[AlbumDb(album_uri="album1")],
+            image_url="image_url",
+        ),
     )
 
 
@@ -100,7 +105,7 @@ def mock_user_with_no_albums(db: Session) -> UserDb:  # pylint: disable=redefine
     :param db:
     :return:
     """
-    return UserDb.create(db, UserDb(username="user3"))
+    return UserDb.create(db, UserDb(username="user3", image_url="image_url"))
 
 
 @pytest.fixture(scope="function")
@@ -130,6 +135,7 @@ def mock_user_with_public_album(mock_album: AlbumDb, db: Session) -> UserDb:  # 
             username="user2",
             albums=[mock_album],
             is_collection_public=True,
+            image_url="image_url",
         ),
     )
 
@@ -150,3 +156,26 @@ def user_with_shared_collections(
     mock_user.shared_collections.append(mock_user_with_public_album)
     db.commit()
     return mock_user
+
+
+@pytest.fixture(scope="function")
+def mock_notification(
+    db: Session,  # pylint: disable=redefined-outer-name
+    mock_user,  # pylint: disable=redefined-outer-name
+    mock_user_with_public_album,  # pylint: disable=redefined-outer-name
+) -> NotificationDb:
+    """
+    Create a mock notification.
+
+    :param mock_user_with_public_album:
+    :param mock_user:
+    :param db:
+    :return:
+    """
+    return NotificationDb.create(
+        db,
+        NotificationDb(
+            sender_id=mock_user.username,
+            receiver_id=mock_user_with_public_album.username,
+        ),
+    )

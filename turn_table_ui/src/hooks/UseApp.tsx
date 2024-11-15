@@ -1,7 +1,7 @@
-import CreateUser from "@/api_calls/CreateUser.tsx";
-import GetUserInfo from "@/api_calls/GetUserInfo.tsx";
-import type Album from "@/interfaces/Album.tsx";
-import { getStateData, storeStateData } from "@/interfaces/StateData.tsx";
+import CreateUser from "@/api_calls/CreateUser";
+import GetUserInfo from "@/api_calls/GetUserInfo";
+import type Album from "@/interfaces/Album";
+import { getStateData, storeStateData } from "@/interfaces/StateData";
 import { useEffect, useState } from "react";
 
 // Hook used in the main app.tsx file
@@ -47,7 +47,7 @@ const useApp = () => {
 			// Create a user if they are logging in
 			// This does nothing if the user already exists
 			GetUserInfo(token).then((user) => {
-				CreateUser(user.display_name, user.email).catch((error) => {
+				CreateUser(user.display_name, user.image_url).catch((error) => {
 					console.error(error);
 				});
 				// Set the location back to the root (removes all the query parameters)

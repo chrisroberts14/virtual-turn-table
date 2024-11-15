@@ -1,3 +1,4 @@
+import CollectionShareNotify from "@/components/CollectionShareNotify.tsx";
 import Login from "@/components/Login.tsx";
 import { Logo } from "@/components/Logo.tsx";
 import UserBox from "@/components/UserBox.tsx";
@@ -12,9 +13,11 @@ import { Tab, Tabs } from "@nextui-org/tabs";
 import type { Key } from "@react-types/shared";
 import { FaPlay } from "react-icons/fa";
 import { IoScan } from "react-icons/io5";
+import { IoShareSocial } from "react-icons/io5";
 
 const NavigationBar = () => {
 	const { currentPage, setCurrentPage, isSignedIn } = useNavigation();
+
 	const switchPage = (key: Key) => {
 		setCurrentPage(key.valueOf() as number);
 	};
@@ -59,7 +62,7 @@ const NavigationBar = () => {
 							key={2}
 							title={
 								<div className="flex items-center space-x-2">
-									<IoScan />
+									<IoShareSocial />
 									<span> Social </span>
 								</div>
 							}
@@ -69,6 +72,9 @@ const NavigationBar = () => {
 			</NavbarContent>
 			<NavbarContent justify="end">
 				<NavbarItem>{isSignedIn ? <UserBox /> : <Login />}</NavbarItem>
+			</NavbarContent>
+			<NavbarContent className="absolute">
+				<CollectionShareNotify />
 			</NavbarContent>
 		</Navbar>
 	);

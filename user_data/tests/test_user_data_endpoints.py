@@ -33,9 +33,15 @@ class TestUserDataEndpoints:
         :param client:
         :return:
         """
-        response = client.post("/user/create_user", json={"username": "user1"})
+        response = client.post(
+            "/user/create_user", json={"username": "user1", "image_url": "test"}
+        )
         assert response.status_code == 201
-        assert response.json() == {"username": "user1", "albums": []}
+        assert response.json() == {
+            "username": "user1",
+            "albums": [],
+            "image_url": "test",
+        }
 
     def test_create_user_already_exists(self, client, mock_user):
         """
@@ -45,12 +51,32 @@ class TestUserDataEndpoints:
         :return:
         """
         response = client.post(
-            "/user/create_user", json={"username": "user1", "email": "test"}
+            "/user/create_user",
+            json={"username": mock_user.username, "image_url": mock_user.image_url},
         )
         assert response.status_code == 201
         assert response.json() == {
             "username": mock_user.username,
             "albums": [{"album_uri": "album1"}],
+            "image_url": mock_user.image_url,
+        }
+
+    def test_create_user_new_image(self, client, mock_user):
+        """
+        Test the create user endpoint with a new image checking it gets updated.
+
+        :param client:
+        :return:
+        """
+        response = client.post(
+            "/user/create_user",
+            json={"username": mock_user.username, "image_url": "test2"},
+        )
+        assert response.status_code == 201
+        assert response.json() == {
+            "username": mock_user.username,
+            "albums": [{"album_uri": "album1"}],
+            "image_url": "test2",
         }
 
     def test_create_album(self, client):
@@ -133,3 +159,90 @@ class TestUserDataEndpoints:
             },
         )
         assert response.status_code == 200
+
+    def test_is_collection_public(self, client, mock_user):
+        """
+        Test the is collection public endpoint.
+
+        :param client:
+        :param mock_user:
+        :return:
+        """
+        response = client.get(f"/user/is_collection_public/{mock_user.username}")
+        assert response.status_code == 200
+        assert response.json() is False
+
+    def test_is_collection_public_no_user(self, client):
+        """
+        Test the is collection public endpoint with no user.
+
+        :param client:
+        :return:
+        """
+        response = client.get("/user/is_collection_public/user1")
+        assert response.status_code == 404
+        assert response.json() == {"message": "User not found", "status": "error"}
+
+    def test_get_users_by_search(self, client, mock_user):
+        """
+        Test the get users by search endpoint.
+
+        :param client:
+        :param mock_user:
+        :return:
+        """
+        response = client.get("/user/search", params={"query": "user"})
+        assert response.status_code == 200
+        assert response.json() == [
+            {"username": mock_user.username, "image_url": mock_user.image_url}
+        ]
+
+    def test_get_notifications(self, client, mock_user):
+        """
+        Test the get notifications endpoint.
+
+        :param client:
+        :param mock_user:
+        :return:
+        """
+        response = client.get(f"/user/notifications/{mock_user.username}")
+        assert response.status_code == 200
+        assert response.json() == []
+
+    def test_get_notifications_no_user(self, client):
+        """
+        Test the get notifications endpoint with no user.
+
+        :param client:
+        :return:
+        """
+        response = client.get("/user/notifications/user1")
+        assert response.status_code == 404
+        assert response.json() == {"message": "User not found", "status": "error"}
+
+
+class TestUserDelete:
+    """Test cases for the user delete endpoint."""
+
+    def test_delete_user(self, client, mock_user):
+        """
+        Test the delete user endpoint.
+
+        :param client:
+        :param mock_user:
+        :return:
+        """
+        response = client.delete(f"/user/{mock_user.username}")
+        assert response.status_code == 200
+        assert response.json() == {"message": "User deleted", "status": "success"}
+
+    def test_delete_user_no_user(self, client):
+        """
+        Test the delete user endpoint with no user.
+
+        :param client:
+        :return:
+        """
+        response = client.delete("/user/user1")
+        assert response.status_code == 404
+        assert response.json() == {"message": "User not found", "status": "error"}

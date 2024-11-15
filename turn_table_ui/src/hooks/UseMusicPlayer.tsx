@@ -1,8 +1,8 @@
-import PlayTrack from "@/api_calls/PlayTrack.tsx";
-import PlayerSetup from "@/api_calls/PlayerSetup.tsx";
-import { useMusic } from "@/contexts/MusicContext.tsx";
-import { useNavigation } from "@/contexts/NavigationContext.tsx";
-import { useSpotifyToken } from "@/contexts/SpotifyTokenContext.tsx";
+import PlayTrack from "@/api_calls/PlayTrack";
+import PlayerSetup from "@/api_calls/PlayerSetup";
+import { useMusic } from "@/contexts/MusicContext";
+import { useNavigation } from "@/contexts/NavigationContext";
+import { useSpotifyToken } from "@/contexts/SpotifyTokenContext";
 import type Song from "@/interfaces/Song.tsx";
 import {
 	type StateData,

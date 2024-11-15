@@ -4,6 +4,7 @@ import { vi } from "vitest";
 import ScanPage from "../../src/components/ScanPage";
 import { useError } from "../../src/contexts/ErrorContext";
 import { useMusic } from "../../src/contexts/MusicContext";
+import { NavigationContext } from "../../src/contexts/NavigationContext";
 import { useSpotifyToken } from "../../src/contexts/SpotifyTokenContext";
 import { useUsername } from "../../src/contexts/UsernameContext";
 
@@ -53,7 +54,18 @@ describe("ScanPage", () => {
 
 	it("should render correctly", () => {
 		act(() => {
-			render(<ScanPage />);
+			render(
+				<NavigationContext.Provider
+					value={{
+						isSignedIn: true,
+						setIsSignedIn: vi.fn(),
+						currentPage: 0,
+						setCurrentPage: vi.fn(),
+					}}
+				>
+					<ScanPage />
+				</NavigationContext.Provider>,
+			);
 		});
 	});
 });

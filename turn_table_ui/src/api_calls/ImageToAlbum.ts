@@ -1,12 +1,12 @@
-import { createUser } from "@/api_calls/BFFEndpoints.tsx";
+import { imageToAlbum } from "@/api_calls/BFFEndpoints";
 import axios from "axios";
 
-const CreateUser = async (username: string, email: string) => {
-	// Call to create a new user
+const ImageToAlbum = async (image: string) => {
+	// Call to convert an image into an album
 	try {
 		const response = await axios.post(
-			createUser,
-			{ username: username, email: email },
+			imageToAlbum,
+			{ image: image },
 			{
 				headers: {
 					"Content-Type": "application/json",
@@ -16,10 +16,12 @@ const CreateUser = async (username: string, email: string) => {
 		return response.data;
 	} catch (error: unknown) {
 		if (axios.isAxiosError(error)) {
+			// Handle Axios errors (network errors)
 			throw new Error(error.response?.data?.message || "An error occurred");
 		}
+		// Handle non-Axios errors (e.g., programming errors)
 		throw new Error("An unexpected error occurred");
 	}
 };
 
-export default CreateUser;
+export default ImageToAlbum;

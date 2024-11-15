@@ -22,6 +22,7 @@ class User(BaseModel):
     """User model."""
 
     username: str
+    image_url: str = ""
     albums: list[Album] = []
 
 
@@ -37,3 +38,18 @@ class ShareCollectionIn(BaseModel):
 
     sharer: str
     receiver: str
+
+
+class UserSearchOut(BaseModel):
+    """Model for output of search for users."""
+
+    username: str
+    image_url: str = ""
+
+
+class Notification(BaseModel):
+    """Notification model."""
+
+    id: str
+    sender_id: str
+    receiver_id: str

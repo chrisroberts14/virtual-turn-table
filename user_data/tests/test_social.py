@@ -1,5 +1,7 @@
 """Tests for social sharing functionality."""
 
+from uuid import uuid4
+
 
 class TestSocial:
     """Test social sharing functionality."""
@@ -9,7 +11,11 @@ class TestSocial:
         response = client.get("/social/get_public_collections")
         assert response.status_code == 200
         assert response.json() == [
-            {"username": mock_user_with_public_album.username, "albums": ["album2"]}
+            {
+                "username": mock_user_with_public_album.username,
+                "albums": ["album2"],
+                "image_url": "image_url",
+            }
         ]
 
     def test_get_shared_collections(
@@ -21,7 +27,11 @@ class TestSocial:
         )
         assert response.status_code == 200
         assert response.json() == [
-            {"username": mock_user_with_public_album.username, "albums": ["album2"]}
+            {
+                "username": mock_user_with_public_album.username,
+                "albums": ["album2"],
+                "image_url": "image_url",
+            }
         ]
 
     def test_get_shared_collections_bad_user(self, client):
@@ -60,7 +70,10 @@ class TestSocial:
             json={"sharer": mock_user_with_no_albums.username, "receiver": "user2"},
         )
         assert response.status_code == 400
-        assert response.json() == {"message": "Sharer has no albums", "status": "error"}
+        assert response.json() == {
+            "message": "Sharer has no albums",
+            "status": "error",
+        }
 
     def test_share_collection_bad_sharer(self, client):
         """Test sharing a collection with a user that does not exist."""
@@ -69,7 +82,10 @@ class TestSocial:
             json={"sharer": "nonexistent", "receiver": "user2"},
         )
         assert response.status_code == 404
-        assert response.json() == {"message": "Sharer not found", "status": "error"}
+        assert response.json() == {
+            "message": "Sharer not found",
+            "status": "error",
+        }
 
     def test_share_collection_bad_receiver(self, client, mock_user):
         """Test sharing a collection with a user that does not exist."""
@@ -95,3 +111,67 @@ class TestSocial:
         response = client.put("/social/toggle_collection_public/nonexistent")
         assert response.status_code == 404
         assert response.json() == {"message": "User not found", "status": "error"}
+
+
+class TestShareReject:
+    """Test the /social/share_reject endpoint."""
+
+    endpoint = "/social/share_reject"
+
+    def test_share_reject(self, client, mock_notification):
+        """
+        Test rejecting a shared collection.
+
+        :param client:
+        :param mock_notification:
+        :return:
+        """
+        response = client.put(f"{self.endpoint}/{mock_notification.id}")
+        assert response.status_code == 200
+        assert response.json() == {"message": "Notification deleted"}
+
+    def test_share_reject_bad_notification(self, client):
+        """
+        Test rejecting a shared collection with a bad notification.
+
+        :param client:
+        :return:
+        """
+        response = client.put(f"{self.endpoint}/{uuid4()}")
+        assert response.status_code == 404
+        assert response.json() == {
+            "message": "Notification not found",
+            "status": "error",
+        }
+
+
+class TestShareAccept:
+    """Test the /social/share_accept endpoint."""
+
+    endpoint = "/social/share_accept"
+
+    def test_share_accept(self, client, mock_notification):
+        """
+        Test accepting a shared collection.
+
+        :param client:
+        :param mock_notification:
+        :return:
+        """
+        response = client.put(f"{self.endpoint}/{mock_notification.id}")
+        assert response.status_code == 200
+        assert response.json() == {"message": "Collection shared"}
+
+    def test_share_accept_bad_notification(self, client):
+        """
+        Test accepting a shared collection with a bad notification.
+
+        :param client:
+        :return:
+        """
+        response = client.put(f"{self.endpoint}/{uuid4()}")
+        assert response.status_code == 404
+        assert response.json() == {
+            "message": "Notification not found",
+            "status": "error",
+        }

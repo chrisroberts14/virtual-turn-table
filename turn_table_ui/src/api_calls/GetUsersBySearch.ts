@@ -1,12 +1,11 @@
-import { userInfo } from "@/api_calls/BFFEndpoints.tsx";
+import { getUsersBySearch } from "@/api_calls/BFFEndpoints";
 import axios from "axios";
 
-const GetUserInfo = async (token: string | undefined) => {
-	// Call to get user's information from Spotify
+const GetUsersBySearch = async (query: string) => {
 	try {
-		const response = await axios.get(userInfo, {
+		const response = await axios.get(getUsersBySearch, {
 			params: {
-				spotify_access_token: token,
+				query: query,
 			},
 		});
 		return response.data;
@@ -21,4 +20,4 @@ const GetUserInfo = async (token: string | undefined) => {
 	}
 };
 
-export default GetUserInfo;
+export default GetUsersBySearch;

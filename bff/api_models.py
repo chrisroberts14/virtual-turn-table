@@ -17,12 +17,14 @@ class User(BaseModel):
     id: str
     display_name: str
     image_url: str
+    is_collection_public: bool = False
 
 
 class UserIn(BaseModel):
     """User model to be stored in the database."""
 
     username: str
+    image_url: str
 
 
 class Song(BaseModel):
@@ -79,3 +81,25 @@ class ShareCollectionIn(BaseModel):
 
     sharer: str
     receiver: str
+
+
+class GetUsersOut(BaseModel):
+    """Model for getting users."""
+
+    username: str
+    image_url: str
+
+
+class Notification(BaseModel):
+    """Notification model."""
+
+    id: str
+    sender_id: str
+    receiver_id: str
+
+
+class WebSocketMessage(BaseModel):
+    """Model for websocket responses from the frontend."""
+
+    notification_id: str
+    accepted: bool

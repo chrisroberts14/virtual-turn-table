@@ -1,7 +1,16 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const SoundWave = () => {
-	const [bars, setBars] = useState(Array(100).fill(50));
+	const getBarCount = useCallback(() => {
+		if (window.innerWidth < 640) {
+			return 50;
+		}
+		if (window.innerWidth < 1024) {
+			return 75;
+		}
+		return 100;
+	}, []);
+	const [bars, setBars] = useState(Array(getBarCount()).fill(50));
 	// Create keys which are "Bar - n" where n is the index of the bar
 	const keys = Array(100)
 		.fill(0)
@@ -14,6 +23,16 @@ const SoundWave = () => {
 
 		return () => clearInterval(interval);
 	}, [bars]);
+
+	useEffect(() => {
+		const handleResize = () => {
+			const newBarCount = getBarCount();
+			setBars(Array(newBarCount).fill(50));
+		};
+
+		window.addEventListener("resize", handleResize);
+		return () => window.removeEventListener("resize", handleResize);
+	}, [getBarCount]);
 
 	return (
 		<div className="flex justify-center items-center h-24 w-full space-x-1 overflow-hidden bg-gray-900">

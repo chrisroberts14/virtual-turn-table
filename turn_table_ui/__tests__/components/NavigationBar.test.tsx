@@ -5,10 +5,44 @@ import { useError } from "../../src/contexts/ErrorContext";
 import { useNavigation } from "../../src/contexts/NavigationContext";
 import { useUsername } from "../../src/contexts/UsernameContext";
 import "@testing-library/jest-dom";
+import GetIsCollectionPublic from "../../src/api_calls/GetIsCollectionPublic";
+import GetNotifications from "../../src/api_calls/GetNotifications";
+import GetUserAlbums from "../../src/api_calls/GetUserAlbums";
 
 vi.mock("../../src/contexts/NavigationContext");
 vi.mock("../../src/contexts/ErrorContext");
 vi.mock("../../src/contexts/UsernameContext");
+vi.mock("../../src/api_calls/GetUserAlbums");
+vi.mock("../../src/api_calls/GetIsCollectionPublic");
+vi.mock("../../src/api_calls/GetNotifications");
+
+class WebSocketMock {
+	private url: string;
+	private readyState: number;
+	public onopen: () => void;
+	public onmessage: (event: { data: string }) => void;
+	public onerror: () => void;
+	public onclose: () => void;
+
+	constructor(url: string) {
+		this.url = url;
+		this.readyState = 1; // Open
+		this.onopen = vi.fn();
+		this.onmessage = vi.fn();
+		this.onerror = vi.fn();
+		this.onclose = vi.fn();
+	}
+
+	send(data: string) {
+		// You can add functionality to handle data sent to the mock
+		this.onmessage({ data });
+	}
+
+	close() {
+		this.readyState = 3; // Closed
+		this.onclose();
+	}
+}
 
 describe("Navigation Bar", () => {
 	beforeEach(() => {
@@ -17,6 +51,12 @@ describe("Navigation Bar", () => {
 
 		// @ts-ignore
 		(useUsername as vi.Mock).mockReturnValue({ useUsername: vi.fn() });
+
+		// @ts-ignore
+		(GetUserAlbums as vi.Mock).mockReturnValue(Promise.resolve([]));
+
+		// @ts-ignore
+		(GetIsCollectionPublic as vi.Mock).mockReturnValue(Promise.resolve(false));
 	});
 
 	it("renders the navigation bar with the logo and title", () => {
@@ -43,9 +83,10 @@ describe("Navigation Bar", () => {
 
 		render(<NavigationBar />);
 
-		// Assert that both tabs are rendered
+		// Assert that all tabs are rendered
 		expect(screen.getByRole("tab", { name: /Play/i })).toBeInTheDocument();
 		expect(screen.getByRole("tab", { name: /Scan/i })).toBeInTheDocument();
+		expect(screen.getByRole("tab", { name: /Social/i })).toBeInTheDocument();
 	});
 
 	it("calls setCurrentPage when a tab is clicked", () => {
@@ -68,6 +109,9 @@ describe("Navigation Bar", () => {
 	});
 
 	it("renders UserBox when signed in, otherwise renders Login", () => {
+		// @ts-ignore
+		global.WebSocket = WebSocketMock;
+
 		// Case when user is signed in
 		// @ts-ignore
 		(useNavigation as vi.Mock).mockReturnValue({
@@ -86,13 +130,16 @@ describe("Navigation Bar", () => {
 			username: "test_user",
 		});
 
+		// @ts-ignore
+		(GetNotifications as vi.Mock).mockReturnValue(Promise.resolve([]));
+
 		const { rerender } = render(<NavigationBar />);
-		expect(screen.getByText(/User/i)).toBeInTheDocument(); // Adjust for UserBox content
+		expect(screen.getByText(/User/i)).toBeInTheDocument();
 
 		// Case when user is not signed in
 		// @ts-ignore
 		(useNavigation as vi.Mock).mockReturnValue({
-			nextPage: "play",
+			currentPage: 0,
 			setNextPage: vi.fn(),
 			isSignedIn: false,
 		});
