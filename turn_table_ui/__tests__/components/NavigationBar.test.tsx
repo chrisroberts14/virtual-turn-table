@@ -6,6 +6,7 @@ import { useNavigation } from "../../src/contexts/NavigationContext";
 import { useUsername } from "../../src/contexts/UsernameContext";
 import "@testing-library/jest-dom";
 import GetIsCollectionPublic from "../../src/api_calls/GetIsCollectionPublic";
+import GetNotifications from "../../src/api_calls/GetNotifications";
 import GetUserAlbums from "../../src/api_calls/GetUserAlbums";
 
 vi.mock("../../src/contexts/NavigationContext");
@@ -13,6 +14,7 @@ vi.mock("../../src/contexts/ErrorContext");
 vi.mock("../../src/contexts/UsernameContext");
 vi.mock("../../src/api_calls/GetUserAlbums");
 vi.mock("../../src/api_calls/GetIsCollectionPublic");
+vi.mock("../../src/api_calls/GetNotifications");
 
 class WebSocketMock {
 	private url: string;
@@ -127,6 +129,9 @@ describe("Navigation Bar", () => {
 		(useUsername as vi.Mock).mockReturnValue({
 			username: "test_user",
 		});
+
+		// @ts-ignore
+		(GetNotifications as vi.Mock).mockReturnValue(Promise.resolve([]));
 
 		const { rerender } = render(<NavigationBar />);
 		expect(screen.getByText(/User/i)).toBeInTheDocument();
