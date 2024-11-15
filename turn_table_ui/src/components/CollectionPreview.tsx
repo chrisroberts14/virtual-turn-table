@@ -21,7 +21,9 @@ export const CollectionPreviewHorizontal = () => {
 	useEffect(() => {
 		let animationFrame: number;
 		const sliderTrack = sliderTrackRef.current;
-		// @ts-ignore
+		if (albums.length === 0 || !sliderTrack) {
+			return;
+		}
 		const itemWidth = sliderTrack?.offsetWidth / albums.length;
 
 		const animate = () => {
@@ -29,7 +31,7 @@ export const CollectionPreviewHorizontal = () => {
 				return;
 			}
 			setScrollAmount((prev) => {
-				const nextScroll = prev + 2;
+				const nextScroll = prev + 1;
 				if (Math.abs(nextScroll) > (sliderTrack?.offsetWidth || 0)) {
 					return -(itemWidth * albums.length);
 				}
