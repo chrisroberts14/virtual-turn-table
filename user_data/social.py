@@ -14,11 +14,10 @@ social_router = APIRouter()
 
 
 @social_router.get("/get_public_collections", status_code=HTTP_200_OK)
-def get_public_collections(count: int = 5, db: Session = Depends(get_db)) -> list[dict]:
+def get_public_collections(db: Session = Depends(get_db)) -> list[dict]:
     """
     Get the first `count` public collections.
 
-    :param count:
     :param db:
     :return:
     """
@@ -28,10 +27,7 @@ def get_public_collections(count: int = 5, db: Session = Depends(get_db)) -> lis
             "image_url": user.image_url,
             "albums": [album.album_uri for album in user.albums],
         }
-        for user in db.query(UserDb)
-        .filter(UserDb.is_collection_public.is_(True))
-        .limit(count)
-        .all()
+        for user in db.query(UserDb).filter(UserDb.is_collection_public.is_(True)).all()
     ]
 
 

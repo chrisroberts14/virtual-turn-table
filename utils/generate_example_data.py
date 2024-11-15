@@ -17,6 +17,31 @@ album_ids = [
     "4GQmfMtt1JhIQLK3L6p5lo",
     "36mLYlXANoKVHSlTfok68g",
     "1mOyLIaNd9HgSw12iXASND",
+    "0XOseclZGO4NnaBz5Shjxp",
+    "3AMHMM2aNG6k3d7ybcQ5bY",
+    "0C0OFASoQC57yC12vQhCwN",
+    "2VuZJsJBPLwg9BeQFQle8G",
+    "46VcvAWpybuvO2ZnShwC2N",
+    "75l5Bqvc0BH45UhJrS04Xj",
+    "4kUbTSoTsbKP5MRdYMDBx1",
+    "6DadUIElI6GgDh8XCscyxn",
+    "1DNojVW079FU9YnAMk3Cgr",
+    "3EVZWeTZ5XDe8Z1O746XP3",
+    "1k0GwSFLuaMSQKs9Q9MQyD",
+    "1R8kkopLT4IAxzMMkjic6X",
+    "6MJlXwm9rJV1sWBhNKIZG0",
+    "2brwuyGZ2lLqWnBX6U4MQT",
+    "3ly9T2L4pqTZijFgQssd3x",
+    "3usnShwygMXVZB4IV5dwnU",
+    "4AF1M7bGCFL3LHCtXUUXw5",
+    "2T0iwqVWzr4Y63x4kKO5DW",
+    "3DrgM5X3yX1JP1liNLAOHI",
+    "1ID4yRgxYUutcLKzYDcln4",
+    "6ZB8qaR9JNuS0Q0bG1nbcH",
+    "0tX0WZ8mgkOS3Fwd8OzFDQ",
+    "53klcezw81ytuAIwCzod3Z",
+    "2sAePf08xIp4tnDlMUCV8B",
+    "7eed9MBclFPjjjvotfR2e9",
 ]
 
 
@@ -30,7 +55,7 @@ def main():
     create_user_endpoint = "http://localhost:8000/user/create_user"
     add_album_link_endpoint = "http://localhost:8000/user/add_album"
     for i in range(10):
-        username = f"demo-user-{i}"
+        username = f"test-user-{i}"
         user = {"username": username, "image_url": ""}
         response = requests.post(create_user_endpoint, json=user, timeout=5)
         if response.status_code != 201:

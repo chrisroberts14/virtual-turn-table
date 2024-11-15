@@ -10,7 +10,6 @@ import type { Collection } from "@/interfaces/Collection";
 import { Card, CardBody, CardHeader } from "@nextui-org/card";
 import { Skeleton } from "@nextui-org/skeleton";
 import { Spinner } from "@nextui-org/spinner";
-import { Resizable } from "re-resizable";
 import { useEffect } from "react";
 import { useState } from "react";
 
@@ -71,23 +70,7 @@ const SocialPage = () => {
 			className="flex w-screen bg-gray-700"
 			style={{ height: contentHeight }}
 		>
-			<Resizable
-				className="text-left p-2 pb-8"
-				minWidth="20%"
-				maxWidth="80%"
-				minHeight="100%"
-				defaultSize={{ width: "50%", height: "100%" }}
-				enable={{
-					top: false,
-					right: true,
-					bottom: false,
-					left: false,
-					topRight: false,
-					bottomRight: false,
-					bottomLeft: false,
-					topLeft: false,
-				}}
-			>
+			<div className="w-[50%] p-2">
 				<header className="font-bold text-xl pb-2">Public Collections</header>
 				{publicCollections === null ||
 				(publicCollections.length === 1 &&
@@ -104,7 +87,7 @@ const SocialPage = () => {
 						</div>
 					</Skeleton>
 				) : (
-					<div className="overflow-x-auto flex space-x-2 h-full justify-start">
+					<div className="overflow-x-auto flex flex-wrap h-full justify-start gap-2">
 						{
 							/* Add a list of public collections here */
 							publicCollections?.map((collection) => {
@@ -124,9 +107,9 @@ const SocialPage = () => {
 										}}
 										key={`${collection.user_id} - public`}
 									>
-										<Card className="bg-gray-900 min-w-max max-h-[35%]">
+										<Card className="bg-gray-900 w-[132px] h-[240px]">
 											<CardHeader>
-												<span className="font-bold text-lg text-wrap text-center w-full">
+												<span className="font-bold text-lg text-nowrap text-center w-full">
 													{collection.user_id}
 												</span>
 											</CardHeader>
@@ -140,8 +123,8 @@ const SocialPage = () => {
 						}
 					</div>
 				)}
-			</Resizable>
-			<div className="pb-8 text-right p-2 border-l-5 border-black min-w-[20%] w-full justify-end">
+			</div>
+			<div className="pb-8 text-right border-l-5 border-black w-[50%] justify-end p-2 flex-wrap">
 				<header className="font-bold text-xl pb-2">Shared With You</header>
 				{sharedCollections === null ? (
 					<div className="h-full w-full text-center content-center">
@@ -158,7 +141,7 @@ const SocialPage = () => {
 					</Skeleton>
 				) : (
 					<div
-						className="overflow-x-auto flex space-x-reverse space-x-2 h-full"
+						className="overflow-x-auto flex flex-wrap h-full gap-2"
 						style={{ direction: "rtl" }}
 					>
 						{
@@ -180,7 +163,7 @@ const SocialPage = () => {
 										}}
 										key={`${collection.user_id} - shared`}
 									>
-										<Card className="bg-gray-900 min-w-max max-h-[35%]">
+										<Card className="bg-gray-900 min-w-max w-[132px] h-[240px]">
 											<CardHeader>
 												<span className="font-bold text-lg text-wrap text-center w-full">
 													{collection.user_id}
