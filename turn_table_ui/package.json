@@ -41,7 +41,7 @@
 		"@react-aria/visually-hidden": "3.8.17",
 		"@sentry/react": "^8.36.0",
 		"@sentry/vite-plugin": "^2.22.6",
-		"@types/node": "^22.8.7",
+		"@types/node": "^22.9.0",
 		"axios": "^1.7.7",
 		"clsx": "2.1.1",
 		"dotenv": "^16.4.5",
