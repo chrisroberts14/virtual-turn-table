@@ -17,6 +17,8 @@ interface UploadContextType {
 	setFadeConfirm: Dispatch<SetStateAction<boolean>>;
 	currentImage: string | null;
 	setCurrentImage: Dispatch<SetStateAction<string | null>>;
+	top10: Album[];
+	setTop10: Dispatch<SetStateAction<Album[]>>;
 }
 
 export const UploadContext = createContext<UploadContextType | undefined>(

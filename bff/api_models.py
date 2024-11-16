@@ -103,3 +103,10 @@ class WebSocketMessage(BaseModel):
 
     notification_id: str
     accepted: bool
+
+
+class ImageToAlbumResponse(BaseModel):
+    """Model for the image to album response."""
+
+    best_guess: Album
+    top_10_results: list[Album]

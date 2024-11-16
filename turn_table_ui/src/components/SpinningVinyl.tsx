@@ -45,7 +45,7 @@ const SpinningVinyl = () => {
 	};
 
 	return (
-		<div className="relative aspect-square">
+		<div className="relative aspect-square h-[80%]">
 			<svg
 				className="z-0 h-full w-full absolute aspect-square"
 				role="img"

@@ -10,7 +10,7 @@ from fastapi import APIRouter, UploadFile, Depends
 from google.cloud import vision
 from google.oauth2 import service_account
 
-from image_to_album.api_models import Album, Song, APIException
+from image_to_album.api_models import Album, Song, APIException, ImageSearchResult
 from image_to_album.config import Settings
 
 logger = logging.getLogger(__name__)
@@ -33,7 +33,7 @@ def get_settings():
 @imgs_router.post("/reverse_image_search/")
 async def reverse_image_search(
     file: UploadFile, settings: Annotated[Settings, Depends(get_settings)]
-) -> str:
+) -> ImageSearchResult:
     """
     Upload an image to the API.
 
@@ -59,7 +59,13 @@ async def reverse_image_search(
     # pylint: disable=no-member
     image = vision.Image(content=file.file.read())
     response = client.web_detection(image=image)
-    return response.web_detection.best_guess_labels[0].label
+    top_pages = [
+        page.page_title for page in response.web_detection.pages_with_matching_images
+    ]
+    return ImageSearchResult(
+        best_guess=response.web_detection.best_guess_labels[0].label,
+        top_10_results=top_pages,
+    )
 
 
 @album_router.post("/get_album/")

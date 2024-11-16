@@ -69,16 +69,19 @@ const MusicPlayer = () => {
 					}}
 				>
 					<div className="flex flex-row h-full w-full">
-						<div className="animate-slideRight overflow-y-auto overflow-x-hidden w-full md:w-[25%] bg-content1">
-							{currentAlbum ? (
+						{currentAlbum ? (
+							<div className="animate-slideRight overflow-y-auto overflow-x-hidden w-full md:w-[25%] bg-content1">
 								<div className="overflow-y-auto h-full max-w-full">
 									<SongList />
 								</div>
-							) : null}
-						</div>
+							</div>
+						) : null}
 						{window.visualViewport != null &&
 						window.visualViewport.width > 675 ? (
-							<div className="flex p-10 bg-gray-700 justify-center z-0 w-full">
+							<div
+								className="p-10 bg-gray-700 z-0 w-full content-center justify-items-center"
+								style={{}}
+							>
 								<SpinningVinyl />
 							</div>
 						) : null}
