@@ -18,7 +18,7 @@ const ScanPage = () => {
 	const [fadeConfirm, setFadeConfirm] = useState(false);
 	const [currentImage, setCurrentImage] = useState<string | null>(null);
 	const contentHeight = useResizeHandler(240);
-	const [albums, setAlbums] = useState<Album[]>([]);
+	const [albums, setAlbums] = useState<Album[] | undefined>(undefined);
 	const { username } = useUsername();
 	const { token } = useSpotifyToken();
 
@@ -106,6 +106,7 @@ const ScanPage = () => {
 							setAlbums: () => {},
 							isCollectionOpen: false,
 							setIsCollectionOpen: () => {},
+							username: username,
 						}}
 					>
 						<CollectionPreviewHorizontal />
