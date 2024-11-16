@@ -30,3 +30,10 @@ class Album(BaseModel):
     album_uri: str
     tracks_url: str
     songs: list[Song]
+
+
+class ImageSearchResult(BaseModel):
+    """Image search result model."""
+
+    best_guess: str
+    top_10_results: list[str]

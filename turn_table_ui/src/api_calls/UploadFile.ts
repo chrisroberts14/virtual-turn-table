@@ -6,6 +6,7 @@ import type { Dispatch, SetStateAction } from "react";
 const UploadFile = async (
 	file: File,
 	setScannedAlbum: Dispatch<SetStateAction<Album | null>>,
+	setTop10: Dispatch<SetStateAction<Album[]>>,
 ) => {
 	const convertToBase64 = (file: File) => {
 		// Image needs to be converted to base64 to be sent to the backend
@@ -30,9 +31,8 @@ const UploadFile = async (
 			},
 		)
 		.then((response) => {
-			// Success set the scanned album
-			const newAlbum: Album = response.data;
-			setScannedAlbum(newAlbum);
+			setScannedAlbum(response.data.best_guess);
+			setTop10(response.data.top_10_results);
 		})
 		.catch((error) => {
 			// Throw an error if the request fails

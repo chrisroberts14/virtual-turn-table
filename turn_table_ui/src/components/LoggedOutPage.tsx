@@ -24,21 +24,23 @@ const LoggedOutPage = () => {
 
 			<div className="flex flex-col w-fill pt-5">
 				<div className="flex h-screen w-full justify-center pt-2">
-					<div className="flex pb-52 w-full justify-center">
+					<div className="flex pb-48 w-full justify-center align-middle">
 						<div className="min-w-[20%] content-center">
 							<SpeakerWaves rotation={180} />
 						</div>
-						{
-							// @ts-ignore
-							<SongControlContext.Provider value={{ isPaused: false }}>
-								{
-									// @ts-ignore
-									<MusicContext.Provider value={{ currentAlbum: null }}>
-										<SpinningVinyl />
-									</MusicContext.Provider>
-								}
-							</SongControlContext.Provider>
-						}
+						<div className="w-[60%] content-center justify-items-center">
+							{
+								// @ts-ignore
+								<SongControlContext.Provider value={{ isPaused: false }}>
+									{
+										// @ts-ignore
+										<MusicContext.Provider value={{ currentAlbum: null }}>
+											<SpinningVinyl />
+										</MusicContext.Provider>
+									}
+								</SongControlContext.Provider>
+							}
+						</div>
 						<div className="min-w-[20%] content-center">
 							<SpeakerWaves rotation={0} />
 						</div>

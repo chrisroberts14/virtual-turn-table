@@ -17,6 +17,7 @@ const ScanPage = () => {
 	const [scannedAlbum, setScannedAlbum] = useState<Album | null>(null);
 	const [fadeConfirm, setFadeConfirm] = useState(false);
 	const [currentImage, setCurrentImage] = useState<string | null>(null);
+	const [top10, setTop10] = useState<Album[]>([]);
 	const contentHeight = useResizeHandler(240);
 	const [albums, setAlbums] = useState<Album[] | undefined>(undefined);
 	const { username } = useUsername();
@@ -52,6 +53,8 @@ const ScanPage = () => {
 				setFadeConfirm,
 				currentImage,
 				setCurrentImage,
+				top10,
+				setTop10,
 			}}
 		>
 			<div className="flex flex-col h-screen">
