@@ -45,29 +45,19 @@ function App() {
 									<MusicContext.Provider
 										value={{ currentAlbum, setCurrentAlbum }}
 									>
-										<div className="flex flex-row h-full">
-											<div
-												className="flex transition-transform duration-500 ease-in-out h-full"
-												style={{
-													transform: `translateX(-${currentPage * 100}%)`,
-												}}
-											>
+										<div
+											className="flex flex-row h-full transition-transform duration-500 ease-in-out"
+											style={{
+												transform: `translateX(-${Number(currentPage) * 100}%)`,
+											}}
+										>
+											<div className="flex h-full w-screen">
 												<MusicPlayer />
 											</div>
-											<div
-												className="flex transition-transform duration-500 ease-in-out h-full"
-												style={{
-													transform: `translateX(-${currentPage * 100}%)`,
-												}}
-											>
+											<div className="flex h-full w-screen">
 												<ScanPage />
 											</div>
-											<div
-												className="flex transition-transform duration-500 ease-in-out h-full"
-												style={{
-													transform: `translateX(-${currentPage * 100}%)`,
-												}}
-											>
+											<div className="flex h-full w-screen">
 												<SocialPage />
 											</div>
 										</div>

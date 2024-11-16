@@ -5,6 +5,7 @@ import { Button } from "@nextui-org/button";
 import { Card, CardFooter, CardHeader } from "@nextui-org/card";
 import { Image } from "@nextui-org/image";
 import { Modal, ModalBody, ModalContent } from "@nextui-org/modal";
+import { Skeleton } from "@nextui-org/skeleton";
 import { useState } from "react";
 import { FaArrowDown, FaArrowUp, FaPlay } from "react-icons/fa";
 
@@ -15,6 +16,9 @@ const Collection = () => {
 	const { setCurrentAlbum } = useMusic();
 
 	const goUp = () => {
+		if (albums === undefined) {
+			return;
+		}
 		if (currentSelectedIndex === 0) {
 			setCurrentSelectedIndex(albums.length - 1);
 		} else {
@@ -23,6 +27,9 @@ const Collection = () => {
 	};
 
 	const goDown = () => {
+		if (albums === undefined) {
+			return;
+		}
 		if (currentSelectedIndex === albums.length - 1) {
 			setCurrentSelectedIndex(0);
 		} else {
@@ -48,7 +55,11 @@ const Collection = () => {
 						The collection of {username}
 					</header>
 					<ModalBody className="text-white h-[80%]">
-						{albums.length === 0 ? (
+						{albums === undefined ? (
+							<div className="h-full w-full">
+								<Skeleton />
+							</div>
+						) : albums.length === 0 ? (
 							// Can get away with this because the user can't share
 							// an empty collection so the only time you can open one
 							// is if it is your own
@@ -86,7 +97,7 @@ const Collection = () => {
 								</Card>
 								<div className="flex flex-row space-x-5">
 									<div className="min-h-[600px] flex flex-col overflow-y-hiden min-w-[85%] perspective-1000 p-2">
-										{albums.map((album: Album, index: number) => {
+										{albums?.map((album: Album, index: number) => {
 											let translateY = 0;
 											let translateZ = 0;
 											if (index > currentSelectedIndex) {
@@ -123,7 +134,7 @@ const Collection = () => {
 										<Button onClick={goUp} isIconOnly>
 											<FaArrowUp />
 										</Button>
-										{currentSelectedIndex + 1} / {albums.length}
+										{currentSelectedIndex + 1} / {albums?.length}
 										<Button onClick={goDown} isIconOnly>
 											<FaArrowDown />
 										</Button>

@@ -68,31 +68,20 @@ const MusicPlayer = () => {
 						topLeft: false,
 					}}
 				>
-					<div className="flex flex-row h-full">
-						<div className="animate-slideRight overflow-y-auto overflow-x-hidden md:max-w-[25%] bg-content1">
+					<div className="flex flex-row h-full w-full">
+						<div className="animate-slideRight overflow-y-auto overflow-x-hidden w-full md:w-[25%] bg-content1">
 							{currentAlbum ? (
-								<Resizable
-									enable={{
-										top: false,
-										right: true,
-										bottom: false,
-										left: false,
-										topRight: false,
-										bottomRight: false,
-										bottomLeft: false,
-										topLeft: false,
-									}}
-									maxHeight={contentHeight}
-								>
-									<div className="overflow-y-auto h-full max-w-full">
-										<SongList />
-									</div>
-								</Resizable>
+								<div className="overflow-y-auto h-full max-w-full">
+									<SongList />
+								</div>
 							) : null}
 						</div>
-						<div className="flex p-10 bg-gray-700 justify-center flex-grow z-0 sm:visible">
-							<SpinningVinyl />
-						</div>
+						{window.visualViewport != null &&
+						window.visualViewport.width > 675 ? (
+							<div className="flex p-10 bg-gray-700 justify-center z-0 w-full">
+								<SpinningVinyl />
+							</div>
+						) : null}
 					</div>
 				</Resizable>
 				<div className="flex-grow bg-gray-900 flex justify-center pt-2 pl-2 w-screen h-full z-10">
