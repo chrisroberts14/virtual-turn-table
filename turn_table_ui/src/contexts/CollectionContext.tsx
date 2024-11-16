@@ -10,7 +10,8 @@ interface CollectionContext {
 	albums: Album[];
 	setAlbums: Dispatch<SetStateAction<Album[]>>;
 	isCollectionOpen: boolean;
-	setIsCollectionOpen: Dispatch<SetStateAction<boolean>>;
+	setIsCollectionOpen: (value: boolean) => void;
+	username: string;
 }
 
 export const CollectionContext = createContext<CollectionContext | undefined>(
