@@ -1,7 +1,7 @@
 import GetPublicCollections from "@/api_calls/GetPublicCollections";
 import GetSharedCollections from "@/api_calls/GetSharedCollections";
 import { CollectionPreviewVertical } from "@/components/CollectionPreview.tsx";
-import { AlbumSelectionContext } from "@/contexts/AlbumSelectionContext";
+import { CollectionContext } from "@/contexts/CollectionContext.tsx";
 import { useError } from "@/contexts/ErrorContext";
 import { useSpotifyToken } from "@/contexts/SpotifyTokenContext";
 import { useUsername } from "@/contexts/UsernameContext";
@@ -98,26 +98,29 @@ const SocialPage = () => {
 									return null;
 								}
 								return (
-									<AlbumSelectionContext.Provider
-										value={{
-											albums: collection.albums,
-											setAlbums: () => {},
-											hoveredAlbum: null,
-											setHoveredAlbum: () => {},
-										}}
-										key={`${collection.user_id} - public`}
+									<Card
+										className="bg-gray-900 w-[132px] h-[240px]"
+										key={`${collection.user_id} - private`}
 									>
-										<Card className="bg-gray-900 w-[132px] h-[240px]">
-											<CardHeader>
-												<span className="font-bold text-lg text-nowrap text-center w-full">
-													{collection.user_id}
-												</span>
-											</CardHeader>
-											<CardBody className="overflow-y-hidden">
-												<CollectionPreviewVertical albums={collection.albums} />
-											</CardBody>
-										</Card>
-									</AlbumSelectionContext.Provider>
+										<CardHeader>
+											<span className="font-bold text-lg text-nowrap text-center w-full">
+												{collection.user_id}
+											</span>
+										</CardHeader>
+										<CardBody className="overflow-y-hidden">
+											<CollectionContext.Provider
+												value={{
+													albums: collection.albums,
+													setAlbums: () => {},
+													isCollectionOpen: false,
+													setIsCollectionOpen: () => {},
+													username: collection.user_id,
+												}}
+											>
+												<CollectionPreviewVertical />
+											</CollectionContext.Provider>
+										</CardBody>
+									</Card>
 								);
 							})
 						}
@@ -147,6 +150,10 @@ const SocialPage = () => {
 						{
 							/* Add a list of shared collections here */
 							sharedCollections?.map((collection) => {
+								let isCollectionOpen = false;
+								const setIsCollectionOpen = (value: boolean) => {
+									isCollectionOpen = value;
+								};
 								if (
 									collection.user_id === username ||
 									collection.albums.length === 0
@@ -154,26 +161,29 @@ const SocialPage = () => {
 									return null;
 								}
 								return (
-									<AlbumSelectionContext.Provider
-										value={{
-											albums: collection.albums,
-											setAlbums: () => {},
-											hoveredAlbum: null,
-											setHoveredAlbum: () => {},
-										}}
-										key={`${collection.user_id} - shared`}
+									<Card
+										className="bg-gray-900 min-w-max w-[132px] h-[240px]"
+										key={`${collection.user_id} - public`}
 									>
-										<Card className="bg-gray-900 min-w-max w-[132px] h-[240px]">
-											<CardHeader>
-												<span className="font-bold text-lg text-wrap text-center w-full">
-													{collection.user_id}
-												</span>
-											</CardHeader>
-											<CardBody className="overflow-y-hidden">
-												<CollectionPreviewVertical albums={collection.albums} />
-											</CardBody>
-										</Card>
-									</AlbumSelectionContext.Provider>
+										<CardHeader>
+											<span className="font-bold text-lg text-wrap text-center w-full">
+												{collection.user_id}
+											</span>
+										</CardHeader>
+										<CardBody className="overflow-y-hidden">
+											<CollectionContext.Provider
+												value={{
+													albums: collection.albums,
+													setAlbums: () => {},
+													isCollectionOpen: isCollectionOpen,
+													setIsCollectionOpen,
+													username: collection.user_id,
+												}}
+											>
+												<CollectionPreviewVertical />
+											</CollectionContext.Provider>
+										</CardBody>
+									</Card>
 								);
 							})
 						}

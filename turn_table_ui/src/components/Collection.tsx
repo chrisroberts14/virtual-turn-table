@@ -9,7 +9,8 @@ import { useState } from "react";
 import { FaArrowDown, FaArrowUp, FaPlay } from "react-icons/fa";
 
 const Collection = () => {
-	const { albums, isCollectionOpen, setIsCollectionOpen } = useCollection();
+	const { albums, isCollectionOpen, setIsCollectionOpen, username } =
+		useCollection();
 	const [currentSelectedIndex, setCurrentSelectedIndex] = useState(0);
 	const { setCurrentAlbum } = useMusic();
 
@@ -39,13 +40,18 @@ const Collection = () => {
 			<Modal
 				isOpen={isCollectionOpen}
 				onClose={() => setIsCollectionOpen(false)}
-				className="dark max-h-[80%]"
+				className="dark align-center justify-center pb-10"
 			>
 				<ModalContent className="text-white">
 					{/* Display the albums like a box where you flick through them */}
-					<header className="text-center font-bold text-lg">Collection</header>
+					<header className="text-center font-bold text-lg">
+						The collection of {username}
+					</header>
 					<ModalBody className="text-white h-[80%]">
 						{albums.length === 0 ? (
+							// Can get away with this because the user can't share
+							// an empty collection so the only time you can open one
+							// is if it is your own
 							<div className="flex flex-col items-center justify-center h-full w-full">
 								You have no albums in your collection.
 							</div>

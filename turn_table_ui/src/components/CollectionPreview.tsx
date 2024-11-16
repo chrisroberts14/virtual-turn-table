@@ -12,7 +12,7 @@ import { useEffect, useRef, useState } from "react";
 
 export const CollectionPreviewHorizontal = () => {
 	// Albums are sliding along the x-axis in a horizontal row
-	const { albums } = useCollection();
+	const { albums, username } = useCollection();
 	const sliderTrackRef = useRef<HTMLDivElement | null>(null);
 	const [scrollAmount, setScrollAmount] = useState(0);
 	const [isHovering, setIsHovering] = useState(false);
@@ -24,9 +24,9 @@ export const CollectionPreviewHorizontal = () => {
 		if (albums.length === 0 || !sliderTrack) {
 			return;
 		}
-		const itemWidth = sliderTrack?.offsetWidth / albums.length;
 
 		const animate = () => {
+			const itemWidth = sliderTrack?.offsetWidth / albums.length;
 			if (isHovering) {
 				return;
 			}
@@ -59,15 +59,16 @@ export const CollectionPreviewHorizontal = () => {
 					{" "}
 					Your Collection{" "}
 				</header>
+				<Button onClick={() => setIsCollectionOpen(true)}>More Detail</Button>
 				<CollectionContext.Provider
 					value={{
-						albums,
-						setAlbums: () => {},
 						isCollectionOpen,
 						setIsCollectionOpen,
+						albums,
+						setAlbums: () => {},
+						username,
 					}}
 				>
-					<Button onClick={() => setIsCollectionOpen(true)}>More Detail</Button>
 					<Collection />
 				</CollectionContext.Provider>
 			</div>
@@ -80,7 +81,7 @@ export const CollectionPreviewHorizontal = () => {
 					{albums.map((album: Album) => (
 						<div
 							key={album.title}
-							className="aspect-square max-w-[150px]"
+							className="aspect-square w-[150px]"
 							onMouseOver={handleMouseEnter}
 							onMouseLeave={handleMouseLeave}
 							onFocus={handleMouseEnter}
@@ -113,18 +114,13 @@ export const CollectionPreviewHorizontal = () => {
 	);
 };
 
-interface CollectionPreviewVerticalProps {
-	albums: Album[];
-}
-
-export const CollectionPreviewVertical = ({
-	albums,
-}: CollectionPreviewVerticalProps) => {
+export const CollectionPreviewVertical = () => {
 	// Albums are appearing from the bottom of the div then going back down and the next one comes up
 	// Then a button which opens a modal for actual album selection
-	const [isCollectionOpen, setIsCollectionOpen] = useState(false);
+	const { albums, username } = useCollection();
 	const [currentAlbumIndex, setCurrentAlbumIndex] = useState(0);
 	const intervalLength = Math.random() * 7000 + 3000;
+	const [isCollectionOpen, setIsCollectionOpen] = useState(false);
 
 	useEffect(() => {
 		const interval = setInterval(() => {
@@ -134,14 +130,7 @@ export const CollectionPreviewVertical = ({
 	}, [albums, intervalLength]);
 
 	return (
-		<CollectionContext.Provider
-			value={{
-				albums,
-				setAlbums: () => {},
-				isCollectionOpen,
-				setIsCollectionOpen,
-			}}
-		>
+		<>
 			<div className="w-full h-full text-center overflow-hidden">
 				{/* Create images that sit on top of each other and move up the one that is the current index */}
 				{albums.map((album: Album, index: number) => {
@@ -160,7 +149,17 @@ export const CollectionPreviewVertical = ({
 				})}
 			</div>
 			<Button onClick={() => setIsCollectionOpen(true)}>Open</Button>
-			<Collection />
-		</CollectionContext.Provider>
+			<CollectionContext.Provider
+				value={{
+					isCollectionOpen,
+					setIsCollectionOpen,
+					albums,
+					setAlbums: () => {},
+					username,
+				}}
+			>
+				<Collection />
+			</CollectionContext.Provider>
+		</>
 	);
 };
