@@ -40,7 +40,8 @@ class TestGetPublicCollections:
 
         mocker.patch("requests.get", side_effect=mock_request)
         response = client.get(
-            self.endpoint, params={"spotify_access_token": "test_token"}
+            self.endpoint,
+            params={"spotify_access_token": "test_token", "offset": 0, "limit": 1},
         )
         assert response.status_code == 400
         assert response.json() == {
@@ -91,7 +92,8 @@ class TestGetPublicCollections:
 
         mocker.patch("requests.get", side_effect=mock_request)
         response = client.get(
-            self.endpoint, params={"spotify_access_token": "test_token"}
+            self.endpoint,
+            params={"spotify_access_token": "test_token", "offset": 0, "limit": 1},
         )
         result = response.json()
         assert response.status_code == 200
@@ -140,7 +142,8 @@ class TestGetPublicCollections:
 
         mocker.patch("requests.get", side_effect=mock_request)
         response = client.get(
-            self.endpoint, params={"spotify_access_token": "test_token"}
+            self.endpoint,
+            params={"spotify_access_token": "test_token", "offset": 0, "limit": 1},
         )
         assert response.status_code == 400
         assert response.json() == {
@@ -197,7 +200,8 @@ class TestGetSharedCollections:
 
         mocker.patch("requests.get", side_effect=mock_request)
         response = client.get(
-            self.endpoint, params={"spotify_access_token": "test_token"}
+            self.endpoint,
+            params={"spotify_access_token": "test_token", "offset": 0, "limit": 1},
         )
         result = response.json()
         assert response.status_code == 200
@@ -242,7 +246,8 @@ class TestGetSharedCollections:
 
         mocker.patch("requests.get", side_effect=mock_request)
         response = client.get(
-            self.endpoint, params={"spotify_access_token": "test_token"}
+            self.endpoint,
+            params={"spotify_access_token": "test_token", "offset": 0, "limit": 1},
         )
         result = response.json()
         assert response.status_code == 200
@@ -269,7 +274,8 @@ class TestGetSharedCollections:
 
         mocker.patch("requests.get", side_effect=mock_request)
         response = client.get(
-            self.endpoint, params={"spotify_access_token": "test_token"}
+            self.endpoint,
+            params={"spotify_access_token": "test_token", "offset": 0, "limit": 1},
         )
         assert response.status_code == 400
         assert response.json() == {
@@ -307,7 +313,8 @@ class TestGetSharedCollections:
 
         mocker.patch("requests.get", side_effect=mock_request)
         response = client.get(
-            self.endpoint, params={"spotify_access_token": "test_token"}
+            self.endpoint,
+            params={"spotify_access_token": "test_token", "offset": 0, "limit": 1},
         )
         assert response.status_code == 400
         assert response.json() == {

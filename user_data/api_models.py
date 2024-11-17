@@ -53,3 +53,11 @@ class Notification(BaseModel):
     id: str
     sender_id: str
     receiver_id: str
+
+
+class Collection(BaseModel):
+    """Collection model."""
+
+    username: str
+    image_url: str
+    albums: list[str]

@@ -79,11 +79,16 @@ def convert_response_to_collection(
 
 @social_router.get("/get_public_collections")
 def get_public_collections(
-    spotify_access_token: str, settings: Annotated[Settings, Depends(get_settings)]
+    offset: int,
+    limit: int,
+    spotify_access_token: str,
+    settings: Annotated[Settings, Depends(get_settings)],
 ) -> list[Collection]:
     """Get all public collections."""
     endpoint = f"{settings.user_data_address}/social/get_public_collections"
-    response = requests.get(endpoint, timeout=20)
+    response = requests.get(
+        endpoint, timeout=20, params={"offset": offset, "count": limit}
+    )
     if response.status_code != 200:
         raise APIException(400, "Failed to get public collections")
     result = response.json()
@@ -98,6 +103,8 @@ def get_public_collections(
 
 @social_router.get("/get_shared_collections/{username}")
 def get_shared_collections(
+    offset: int,
+    limit: int,
     username: str,
     spotify_access_token: str,
     settings: Annotated[Settings, Depends(get_settings)],
@@ -105,13 +112,17 @@ def get_shared_collections(
     """
     Get all collections shared with a user.
 
+    :param offset:
+    :param limit:
     :param username:
     :param spotify_access_token:
     :param settings:
     :return:
     """
     endpoint = f"{settings.user_data_address}/social/get_shared_collections/{username}"
-    response = requests.get(endpoint, timeout=20)
+    response = requests.get(
+        endpoint, timeout=20, params={"offset": offset, "count": limit}
+    )
     if response.status_code != 200:
         raise APIException(400, "Failed to get shared collections")
     result = response.json()
