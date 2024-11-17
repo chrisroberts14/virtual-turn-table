@@ -18,12 +18,15 @@ const Upload: React.FC<{
 	const [file, setFile] = useState<File | null>(null);
 	const [fileImage, setFileImage] = useState<string | null>(null);
 	const { showError } = useError();
-	const { setIsUploading, setScannedAlbum, isUploading } = useUpload();
+	const { setIsUploading, setScannedAlbum, isUploading, fadeConfirm } =
+		useUpload();
 
 	const handleUpload = async () => {
 		if (file) {
 			setIsUploading(true);
-			triggerConfirmSlide();
+			if (!fadeConfirm) {
+				triggerConfirmSlide();
+			}
 			await UploadFile(file, setScannedAlbum, setTop10).catch((error) => {
 				showError(error.message);
 			});

@@ -19,14 +19,20 @@ const AlbumConfirm = () => {
 		fadeConfirm,
 		setFadeConfirm,
 		setCurrentImage,
+		isUploading,
 	} = useUpload();
 	const { setCurrentAlbum } = useMusic();
 	const [isOnTop10Select, setIsOnTop10Select] = useState(false);
 
 	const triggerConfirmSlide = () => {
 		setFadeConfirm(!fadeConfirm);
-		setIsOnTop10Select(false);
 	};
+
+	useEffect(() => {
+		if (fadeConfirm || isUploading) {
+			setIsOnTop10Select(false);
+		}
+	}, [fadeConfirm, isUploading]);
 
 	useEffect(() => {
 		if (scannedAlbum) {

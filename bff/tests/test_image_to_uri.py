@@ -24,7 +24,15 @@ class TestImageToURI:
             :return:
             """
             if url.endswith("/reverse_image_search/"):
-                mock_response_data = "Arcade Fire We"
+                mock_response_data = {
+                    "best_guess": "Arcade Fire We",
+                    "top_10_results": [
+                        "Arcade Fire We",
+                        "Arcade Fire We",
+                        "Arcade Fire We",
+                        "Arcade Fire We",
+                    ],
+                }
             else:
                 mock_response_data = Album(
                     title="We",
@@ -46,18 +54,25 @@ class TestImageToURI:
             "/image_search/image_to_album/",
             json={"image": f"data:image/jpeg;base64,{base_64_image}"},
         )
-        assert response.status_code == 200
-        assert (
-            response.json()
-            == Album(
-                title="We",
-                artists=["Arcade Fire"],
-                image_url="test_url",
-                album_uri="4EVnJfjXZjbyb8f2XvIVc2",
-                tracks_url="test_tracks_url",
-                songs=[],
-            ).model_dump()
+
+        result_album = Album(
+            title="We",
+            artists=["Arcade Fire"],
+            image_url="test_url",
+            album_uri="4EVnJfjXZjbyb8f2XvIVc2",
+            tracks_url="test_tracks_url",
+            songs=[],
         )
+        assert response.status_code == 200
+        assert response.json() == {
+            "best_guess": result_album.model_dump(),
+            "top_10_results": [
+                result_album.model_dump(),
+                result_album.model_dump(),
+                result_album.model_dump(),
+                result_album.model_dump(),
+            ],
+        }
 
     def test_failed_image_search(self, client, mocker, mock_image):
         """
@@ -108,21 +123,20 @@ class TestImageToURI:
             :param url:
             :return:
             """
+            mock_response = mocker.Mock()
             if url.endswith("/reverse_image_search/"):
-                mock_response_data = "Arcade Fire We"
+                mock_response.json.return_value = {
+                    "best_guess": "Arcade Fire We",
+                    "top_10_results": [
+                        "Arcade Fire We",
+                        "Arcade Fire We",
+                        "Arcade Fire We",
+                        "Arcade Fire We",
+                    ],
+                }
                 mock_response_code = 200
             else:
-                mock_response_data = Album(
-                    title="We",
-                    artists=["Arcade Fire"],
-                    image_url="test_url",
-                    album_uri="4EVnJfjXZjbyb8f2XvIVc2",
-                    tracks_url="test_tracks_url",
-                    songs=[],
-                ).model_dump()
                 mock_response_code = 500
-            mock_response = mocker.Mock()
-            mock_response.json.return_value = mock_response_data
             mock_response.status_code = mock_response_code
             return mock_response
 
