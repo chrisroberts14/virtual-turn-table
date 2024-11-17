@@ -1,5 +1,6 @@
 """User API endpoints."""
 
+import json
 from typing import Annotated
 
 import requests
@@ -16,6 +17,7 @@ from bff.api_models import (
     Notification,
 )
 from bff.config import get_settings, Settings
+from bff.websocket import manager
 
 user_router = APIRouter()
 
@@ -77,7 +79,7 @@ def create_user(user: UserIn, settings: Annotated[Settings, Depends(get_settings
 
 
 @user_router.post("/add_album", status_code=HTTP_201_CREATED)
-def add_album(
+async def add_album(
     data_in: AlbumUserLinkIn, settings: Annotated[Settings, Depends(get_settings)]
 ):
     """
@@ -99,6 +101,7 @@ def add_album(
     response = requests.post(endpoint, json=data_in.model_dump(), timeout=20)
     if response.status_code != 201:
         raise APIException(400, "Failed to add album link.")
+    await manager.send_message(json.dumps({"message": "Album added"}), data_in.user_id)
 
 
 @user_router.get("/get_user_albums/{user_name}")

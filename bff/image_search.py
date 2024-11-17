@@ -37,8 +37,6 @@ def image_to_album(
     # Get the URI
     endpoint = f"{settings.image_to_album_address}/album/get_album/?image_name={data['best_guess']}"
     best_guess_album = requests.post(endpoint, timeout=20)
-    if response.status_code != 200:
-        raise APIException(500, "Album search failed please try again.")
 
     top_10_results = []
     with ThreadPoolExecutor() as executor:
@@ -48,7 +46,7 @@ def image_to_album(
             futures.append(executor.submit(requests.post, endpoint, timeout=20))
         for future in as_completed(futures):
             response = future.result()
-            if response.status_code != 200:
+            if response.status_code != 200 or best_guess_album.status_code != 200:
                 raise APIException(500, "Album search failed please try again.")
             top_10_results.append(Album(**response.json()))
 
