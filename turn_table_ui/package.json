@@ -41,7 +41,7 @@
 		"@nextui-org/tooltip": "^2.0.41",
 		"@nextui-org/use-infinite-scroll": "^2.1.5",
 		"@nextui-org/user": "^2.0.34",
-		"@react-aria/visually-hidden": "3.8.17",
+		"@react-aria/visually-hidden": "3.8.18",
 		"@types/node": "^22.9.0",
 		"axios": "^1.7.7",
 		"clsx": "2.1.1",
