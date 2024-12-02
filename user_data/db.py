@@ -1,28 +1,14 @@
 """Database configuration and connection."""
 
-from pathlib import Path
+import os
 from typing import Generator
 
-from sqlalchemy import create_engine, event
+from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import declarative_base, Session
 
 
-engine = create_engine(
-    f"sqlite:///{Path(__file__).parent}/db/user_data.db",
-    connect_args={"check_same_thread": False},
-)
-
-
-# Enable foreign key constraints on connection
-def _enable_foreign_keys(dbapi_connection, _):  # pragma: no cover
-    cursor = dbapi_connection.cursor()
-    cursor.execute("PRAGMA foreign_keys=ON")
-    cursor.close()
-
-
-# Use the event listener to apply the function on new connections
-event.listen(engine, "connect", _enable_foreign_keys)
+engine = create_engine(f"postgresql://{os.getenv("VTT_POSTGRESQL_URL")}", echo=True)
 
 Base = declarative_base()
 

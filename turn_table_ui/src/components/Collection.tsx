@@ -47,7 +47,7 @@ const Collection = () => {
 			<Modal
 				isOpen={isCollectionOpen}
 				onClose={() => setIsCollectionOpen(false)}
-				className="dark align-center justify-center pb-10"
+				className="dark align-center justify-center pb-10 max-h-[90%]"
 			>
 				<ModalContent className="text-white">
 					{/* Display the albums like a box where you flick through them */}
@@ -69,7 +69,7 @@ const Collection = () => {
 						) : (
 							<>
 								<Card>
-									<Card className="max-h-full">
+									<Card className="max-h-[5%]">
 										<CardHeader className="justify-center flex flex-col space-y-2">
 											<div className="flex flex-col items-center w-full">
 												<div className="text-center w-full overflow-x-auto">
@@ -96,7 +96,7 @@ const Collection = () => {
 									</Card>
 								</Card>
 								<div className="flex flex-row space-x-5">
-									<div className="min-h-[600px] flex flex-col overflow-y-hiden min-w-[85%] perspective-1000 p-2">
+									<div className="min-h-[500px] flex flex-col overflow-y-hidden min-w-[85%] perspective-1000 p-2 overflow-x-hidden">
 										{albums?.map((album: Album, index: number) => {
 											let translateY = 0;
 											let translateZ = 0;
