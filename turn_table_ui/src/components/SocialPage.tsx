@@ -72,7 +72,8 @@ const SocialPage = () => {
 		>
 			<div className="w-[50%] p-2">
 				<header className="font-bold text-xl pb-2">Public Collections</header>
-				{publicCollections === null ||
+				{publicCollections?.length === 0 ||
+				publicCollections === null ||
 				(publicCollections.length === 1 &&
 					publicCollections[0].user_id === username) ? (
 					<div className="h-full w-full text-center content-center">
