@@ -13,7 +13,7 @@
 	},
 	"dependencies": {
 		"@headlessui/react": "^2.2.0",
-		"@mui/icons-material": "^6.1.6",
+		"@mui/icons-material": "^6.1.9",
 		"@nextui-org/autocomplete": "^2.1.7",
 		"@nextui-org/avatar": "^2.0.33",
 		"@nextui-org/button": "2.0.38",
