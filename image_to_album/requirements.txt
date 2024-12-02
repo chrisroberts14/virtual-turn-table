@@ -2,7 +2,7 @@ fastapi[standard]~=0.115.5
 filelock~=3.16.1
 
 google-cloud-vision~=3.8.1
-httpx~=0.27.2
+httpx~=0.28.0
 Jinja2~=3.1.4
 
 pydantic_settings~=2.6.1
