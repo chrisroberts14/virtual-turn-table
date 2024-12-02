@@ -17,10 +17,10 @@ import { useState } from "react";
 const SocialPage = () => {
 	const [publicCollections, setPublicCollections] = useState<
 		Collection[] | null
-	>([]);
+	>(null);
 	const [sharedCollections, setSharedCollections] = useState<
 		Collection[] | null
-	>([]);
+	>(null);
 	const { token } = useSpotifyToken();
 	const { username } = useUsername();
 	const contentHeight = useResizeHandler(64);
@@ -53,32 +53,37 @@ const SocialPage = () => {
 
 	const fetchPublicCollections = async () => {
 		setIsPublicLoading(true);
-		const publicCollectionsResult: Collection[] = await GetPublicCollections(
-			publicOffset,
-			limit,
-			token,
-		)
-			.then((result) => {
-				setPublicOffset(publicOffset + limit);
-				if (result === null) {
-					showError("Failed to fetch public collections");
-					return;
-				}
-				if (result.length < limit || result.length === 0) {
-					setIsPublicEnd(true);
-				}
-				// Append the new collections to the existing collections
-				if (publicCollections === null) {
-					setPublicCollections(result);
-				} else {
-					setPublicCollections([...publicCollections, ...result]);
-				}
-				return result;
-			})
-			.catch(() => {
-				return null;
-			});
-		if (publicCollectionsResult === null) {
+		const publicCollectionsResult: Collection[] | undefined | null =
+			await GetPublicCollections(publicOffset, limit, token)
+				.then((result: Collection[] | null | undefined) => {
+					setPublicOffset(publicOffset + limit);
+					if (result === null || result === undefined) {
+						showError("Failed to fetch public collections");
+						return;
+					}
+					if (result.length < limit || result.length === 0) {
+						setIsPublicEnd(true);
+					}
+					// Filter out the collections that are owned by the user
+					const filteredResult = result.filter(
+						(collection) => collection.user_id !== username,
+					);
+
+					// Append the new collections to the existing collections
+					if (publicCollections === null) {
+						setPublicCollections(filteredResult);
+					} else {
+						setPublicCollections([...publicCollections, ...filteredResult]);
+					}
+					return result;
+				})
+				.catch(() => {
+					return null;
+				});
+		if (
+			publicCollectionsResult === null ||
+			publicCollectionsResult === undefined
+		) {
 			return null;
 		}
 		setIsPublicLoading(false);
@@ -135,7 +140,7 @@ const SocialPage = () => {
 							There are no public collections
 						</span>
 					</div>
-				) : publicCollections?.length === 0 ? (
+				) : isPublicLoading ? (
 					<Skeleton className="rounded-2xl h-full">
 						<div className="h-full">
 							<Spinner />
@@ -196,14 +201,14 @@ const SocialPage = () => {
 			</div>
 			<div className="text-right border-l-5 border-black w-[50%] justify-end p-2 flex-wrap">
 				<header className="font-bold text-xl pb-2">Shared With You</header>
-				{sharedCollections === null ? (
+				{sharedCollections?.length === 0 ? (
 					<div className="h-full w-full text-center content-center">
 						{" "}
 						<span className="text-xl font-extrabold">
 							You have no shared collections
 						</span>{" "}
 					</div>
-				) : sharedCollections?.length === 0 ? (
+				) : sharedCollections === null ? (
 					<Skeleton className="rounded-2xl h-full">
 						<div className="h-full">
 							<Spinner />

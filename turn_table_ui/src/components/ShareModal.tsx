@@ -2,6 +2,7 @@ import ShareCollection from "@/api_calls/ShareCollection";
 import UserSelect from "@/components/UserSelect";
 import { useError } from "@/contexts/ErrorContext";
 import { useShare } from "@/contexts/ShareContext";
+import { useSuccess } from "@/contexts/SuccessContext.tsx";
 import { useUsername } from "@/contexts/UsernameContext";
 import { Button } from "@nextui-org/button";
 import { Modal, ModalContent } from "@nextui-org/modal";
@@ -9,6 +10,7 @@ import { Modal, ModalContent } from "@nextui-org/modal";
 const ShareModal = () => {
 	const { username } = useUsername();
 	const { showError } = useError();
+	const { showSuccess } = useSuccess();
 	const {
 		shareInputValue,
 		setShareInputValue,
@@ -19,9 +21,13 @@ const ShareModal = () => {
 	const handleShare = () => {
 		setIsShareModalOpen(false);
 		// Share the users collection
-		ShareCollection(username, shareInputValue).catch(() => {
-			showError("Failed to share collection");
-		});
+		ShareCollection(username, shareInputValue)
+			.then(() => {
+				showSuccess("Collection shared");
+			})
+			.catch(() => {
+				showError("Failed to share collection");
+			});
 		setShareInputValue("");
 	};
 

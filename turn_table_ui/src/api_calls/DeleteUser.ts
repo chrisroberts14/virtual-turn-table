@@ -3,11 +3,7 @@ import axios from "axios";
 
 const DeleteUser = async (username: string) => {
 	try {
-		const response = await axios.delete(deleteUser, {
-			params: {
-				username: username,
-			},
-		});
+		const response = await axios.delete(`${deleteUser}/${username}`);
 		return response.data;
 	} catch (error: unknown) {
 		// Check if the error is an AxiosError (has a response)

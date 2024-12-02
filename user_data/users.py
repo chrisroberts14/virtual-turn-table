@@ -169,8 +169,7 @@ def delete_user(username: str, db: Session = Depends(get_db)):
     db_user = UserDb.get_by_id(db, username)
     if db_user is None:
         raise APIException(status_code=404, message="User not found")
-    db.delete(db_user)
-    db.commit()
+    db_user.delete(db, db_user.username)
     return JSONResponse(
         status_code=HTTP_200_OK,
         content={"message": "User deleted", "status": "success"},
