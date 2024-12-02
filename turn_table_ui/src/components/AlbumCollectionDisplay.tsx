@@ -97,6 +97,7 @@ const AlbumCollectionDisplay = ({
 		>
 			<CollectionContext.Provider
 				value={{
+					username: username,
 					albums: albums,
 					setAlbums: () => {},
 					isCollectionOpen: isCollectionOpen,

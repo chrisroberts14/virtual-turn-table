@@ -7,7 +7,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import declarative_base, Session
 
-
+print(f"postgresql://{os.getenv("VTT_POSTGRESQL_URL")}")
 engine = create_engine(f"postgresql://{os.getenv("VTT_POSTGRESQL_URL")}", echo=True)
 
 Base = declarative_base()
