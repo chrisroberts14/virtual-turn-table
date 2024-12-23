@@ -23,7 +23,7 @@ user_router = APIRouter()
 
 
 @user_router.get("/get_user_info")
-def get_user_info(
+async def get_user_info(
     spotify_access_token: str, settings: Annotated[Settings, Depends(get_settings)]
 ) -> User:
     """
@@ -62,7 +62,9 @@ def get_user_info(
 
 
 @user_router.post("/create_user")
-def create_user(user: UserIn, settings: Annotated[Settings, Depends(get_settings)]):
+async def create_user(
+    user: UserIn, settings: Annotated[Settings, Depends(get_settings)]
+):
     """
     Create a user in the database.
 
@@ -105,7 +107,7 @@ async def add_album(
 
 
 @user_router.get("/get_user_albums/{user_name}")
-def get_users_albums(
+async def get_users_albums(
     user_name: str, settings: Annotated[Settings, Depends(get_settings)]
 ) -> list[str]:
     """
@@ -124,7 +126,7 @@ def get_users_albums(
 
 
 @user_router.get("/search")
-def get_users_by_search(
+async def get_users_by_search(
     query: str,
     settings: Annotated[Settings, Depends(get_settings)],
 ) -> list[GetUsersOut]:
@@ -143,7 +145,7 @@ def get_users_by_search(
 
 
 @user_router.get("/get_notifications/{username}")
-def get_notifications(
+async def get_notifications(
     username: str, settings: Annotated[Settings, Depends(get_settings)]
 ) -> list[Notification]:
     """
@@ -161,7 +163,7 @@ def get_notifications(
 
 
 @user_router.get("/is_collection_public/{username}")
-def is_collection_public(
+async def is_collection_public(
     username: str, settings: Annotated[Settings, Depends(get_settings)]
 ) -> bool:
     """
@@ -179,7 +181,9 @@ def is_collection_public(
 
 
 @user_router.delete("/{username}")
-def delete_user(username: str, settings: Annotated[Settings, Depends(get_settings)]):
+async def delete_user(
+    username: str, settings: Annotated[Settings, Depends(get_settings)]
+):
     """
     Delete a user from the database.
 

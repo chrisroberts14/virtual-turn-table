@@ -4,7 +4,7 @@ import json
 from typing import Annotated
 
 import requests
-from fastapi import FastAPI, Request, Depends, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, Request, Depends, WebSocket
 from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -64,7 +64,7 @@ app.add_middleware(
 
 
 @app.get("/")
-def docs_redirect() -> RedirectResponse:
+async def docs_redirect() -> RedirectResponse:
     """
     Redirect to the docs.
 
@@ -74,7 +74,7 @@ def docs_redirect() -> RedirectResponse:
 
 
 @app.get("/health")
-def check_health():
+async def check_health():
     """
     Endpoint to check health of the api for use with docker compose.
 
@@ -98,28 +98,25 @@ async def websocket_endpoint(
     :return:
     """
     await manager.connect(websocket, username)
-    try:
-        while True:
-            data = await websocket.receive_text()
-            response = WebSocketMessage(**json.loads(data))
-            if response.accepted is True:
-                response = requests.put(
-                    f"{settings.user_data_address}/social/share_accept/{response.notification_id}",
-                    timeout=20,
-                )
-                if response.status_code != 200:
-                    await manager.send_message(json.dumps({"success": False}), username)
-                else:
-                    await manager.send_message(json.dumps({"success": True}), username)
+    async for data in websocket.iter_text():
+        response = WebSocketMessage(**json.loads(data))
+        if response.accepted is True:
+            response = requests.put(
+                f"{settings.user_data_address}/social/share_accept/{response.notification_id}",
+                timeout=20,
+            )
+            if response.status_code != 200:
+                await manager.send_message(json.dumps({"success": False}), username)
             else:
-                response = requests.put(
-                    f"{settings.user_data_address}/social/share_reject/{response.notification_id}",
-                    timeout=20,
-                )
-                if response.status_code != 200:
-                    await manager.send_message(json.dumps({"success": False}), username)
-                else:
-                    await manager.send_message(json.dumps({"success": True}), username)
+                await manager.send_message(json.dumps({"success": True}), username)
+        else:
+            response = requests.put(
+                f"{settings.user_data_address}/social/share_reject/{response.notification_id}",
+                timeout=20,
+            )
+            if response.status_code != 200:
+                await manager.send_message(json.dumps({"success": False}), username)
+            else:
+                await manager.send_message(json.dumps({"success": True}), username)
 
-    except WebSocketDisconnect:
-        manager.disconnect(websocket, username)
+    manager.disconnect(websocket, username)
