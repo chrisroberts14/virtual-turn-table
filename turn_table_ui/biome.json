@@ -14,7 +14,8 @@
 			"dist/*",
 			"coverage/*",
 			"__tests__/api_calls/PlayerSetup.test.tsx",
-			"__tests__/components/MusicPlayer.test.tsx"
+			"__tests__/components/MusicPlayer.test.tsx",
+			"tailwind.config.cjs"
 		]
 	},
 	"formatter": {
