@@ -7,6 +7,7 @@ import { CollectionContext } from "@/contexts/CollectionContext.tsx";
 import { useSpotifyToken } from "@/contexts/SpotifyTokenContext.tsx";
 import { UploadContext } from "@/contexts/UploadContext.tsx";
 import { useUsername } from "@/contexts/UsernameContext.tsx";
+import { useWebSocket } from "@/contexts/WebSocketContext.ts";
 import useResizeHandler from "@/hooks/UseResizeHandler.tsx";
 import type Album from "@/interfaces/Album.tsx";
 import { Resizable } from "re-resizable";
@@ -17,12 +18,31 @@ const ScanPage = () => {
 	const [scannedAlbum, setScannedAlbum] = useState<Album | null>(null);
 	const [fadeConfirm, setFadeConfirm] = useState(false);
 	const [currentImage, setCurrentImage] = useState<string | null>(null);
+	const [top10, setTop10] = useState<Album[]>([]);
 	const contentHeight = useResizeHandler(240);
-	const [albums, setAlbums] = useState<Album[]>([]);
+	const [albums, setAlbums] = useState<Album[] | undefined>(undefined);
 	const { username } = useUsername();
 	const { token } = useSpotifyToken();
+	const { ws } = useWebSocket();
 
 	useEffect(() => {
+		if (username && token) {
+			updateAlbums();
+		}
+	}, [username, token]);
+
+	useEffect(() => {
+		if (ws) {
+			ws.onmessage = (event) => {
+				const data = JSON.parse(event.data);
+				if (data.message === "Album added") {
+					updateAlbums();
+				}
+			};
+		}
+	}, [ws]);
+
+	const updateAlbums = () => {
 		if (username && token) {
 			GetUserAlbums(username).then((albums) => {
 				// Get all album details and create a list of them
@@ -39,7 +59,7 @@ const ScanPage = () => {
 				});
 			});
 		}
-	}, [username, token]);
+	};
 
 	return (
 		<UploadContext.Provider
@@ -52,6 +72,8 @@ const ScanPage = () => {
 				setFadeConfirm,
 				currentImage,
 				setCurrentImage,
+				top10,
+				setTop10,
 			}}
 		>
 			<div className="flex flex-col h-screen">
@@ -106,6 +128,7 @@ const ScanPage = () => {
 							setAlbums: () => {},
 							isCollectionOpen: false,
 							setIsCollectionOpen: () => {},
+							username: username,
 						}}
 					>
 						<CollectionPreviewHorizontal />
