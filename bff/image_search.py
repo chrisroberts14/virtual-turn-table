@@ -14,7 +14,7 @@ image_search_router = APIRouter()
 
 
 @image_search_router.post("/image_to_album/")
-def image_to_album(
+async def image_to_album(
     img: ImagePayload, settings: Annotated[Settings, Depends(get_settings)]
 ) -> ImageToAlbumResponse:
     """

@@ -9,7 +9,7 @@ music_router = APIRouter()
 
 
 @music_router.get("/album_details")
-def get_album_details(spotify_access_token: str, album_id: str) -> Album:
+async def get_album_details(spotify_access_token: str, album_id: str) -> Album:
     """
     Gets the album details given a specific uri.
 
@@ -44,7 +44,7 @@ def get_album_details(spotify_access_token: str, album_id: str) -> Album:
 
 
 @music_router.post("/play_track/")
-def play_track(data: PlaySong):
+async def play_track(data: PlaySong):
     """
     Play a track on the user's device.
 

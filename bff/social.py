@@ -78,7 +78,7 @@ def convert_response_to_collection(
 
 
 @social_router.get("/get_public_collections")
-def get_public_collections(
+async def get_public_collections(
     offset: int,
     limit: int,
     spotify_access_token: str,
@@ -102,7 +102,7 @@ def get_public_collections(
 
 
 @social_router.get("/get_shared_collections/{username}")
-def get_shared_collections(
+async def get_shared_collections(
     offset: int,
     limit: int,
     username: str,
@@ -152,7 +152,7 @@ async def share_collection(
 
 
 @social_router.put("/toggle_collection_public/{username}")
-def toggle_collection_public(
+async def toggle_collection_public(
     username: str, settings: Annotated[Settings, Depends(get_settings)]
 ):
     """
