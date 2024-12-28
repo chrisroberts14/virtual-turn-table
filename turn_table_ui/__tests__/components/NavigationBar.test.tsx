@@ -8,6 +8,8 @@ import "@testing-library/jest-dom";
 import GetIsCollectionPublic from "../../src/api_calls/GetIsCollectionPublic";
 import GetNotifications from "../../src/api_calls/GetNotifications";
 import GetUserAlbums from "../../src/api_calls/GetUserAlbums";
+import { useSuccess } from "../../src/contexts/SuccessContext";
+import WebSocketMock from "../utils/WebSocketMock";
 
 vi.mock("../../src/contexts/NavigationContext");
 vi.mock("../../src/contexts/ErrorContext");
@@ -15,39 +17,15 @@ vi.mock("../../src/contexts/UsernameContext");
 vi.mock("../../src/api_calls/GetUserAlbums");
 vi.mock("../../src/api_calls/GetIsCollectionPublic");
 vi.mock("../../src/api_calls/GetNotifications");
-
-class WebSocketMock {
-	private url: string;
-	private readyState: number;
-	public onopen: () => void;
-	public onmessage: (event: { data: string }) => void;
-	public onerror: () => void;
-	public onclose: () => void;
-
-	constructor(url: string) {
-		this.url = url;
-		this.readyState = 1; // Open
-		this.onopen = vi.fn();
-		this.onmessage = vi.fn();
-		this.onerror = vi.fn();
-		this.onclose = vi.fn();
-	}
-
-	send(data: string) {
-		// You can add functionality to handle data sent to the mock
-		this.onmessage({ data });
-	}
-
-	close() {
-		this.readyState = 3; // Closed
-		this.onclose();
-	}
-}
+vi.mock("../../src/contexts/SuccessContext");
 
 describe("Navigation Bar", () => {
 	beforeEach(() => {
 		// @ts-ignore
 		(useError as vi.Mock).mockReturnValue({ useError: vi.fn() });
+
+		// @ts-ignore
+		(useSuccess as vi.Mock).mockReturnValue({ useSuccess: vi.fn() });
 
 		// @ts-ignore
 		(useUsername as vi.Mock).mockReturnValue({ useUsername: vi.fn() });

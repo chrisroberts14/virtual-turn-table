@@ -78,7 +78,7 @@ const SocialPage = () => {
 					return result;
 				})
 				.catch(() => {
-					return null;
+					throw null;
 				});
 		if (
 			publicCollectionsResult === null ||
@@ -190,7 +190,7 @@ const SocialPage = () => {
 						<div className="w-full text-center h-[7%] content-center">
 							<Button
 								className="max-w-[25%]"
-								onClick={fetchPublicCollections}
+								onPress={fetchPublicCollections}
 								isLoading={isPublicLoading}
 								isDisabled={isPublicEnd}
 							>
@@ -265,7 +265,7 @@ const SocialPage = () => {
 						<div className="w-full h-[7%] text-center content-center">
 							<Button
 								className="max-w-[25%]"
-								onClick={fetchSharedCollections}
+								onPress={fetchSharedCollections}
 								isLoading={isSharedLoading}
 								isDisabled={isSharedEnd}
 							>

@@ -99,7 +99,9 @@ const AlbumConfirm = () => {
 									<Button
 										isDisabled={buttonsDisabled}
 										style={{ background: "#8c0606" }}
-										onClick={rejectAlbum}
+										onPress={() => {
+											rejectAlbum();
+										}}
 									>
 										No
 									</Button>
@@ -107,7 +109,7 @@ const AlbumConfirm = () => {
 									<Button
 										isDisabled={buttonsDisabled}
 										style={{ background: "#0b6b02" }}
-										onClick={confirmAlbum}
+										onPress={confirmAlbum}
 									>
 										Yes
 									</Button>

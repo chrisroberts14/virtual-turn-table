@@ -66,7 +66,7 @@ const Upload: React.FC<{
 					<Divider />
 					<CardFooter className="justify-center">
 						<Button
-							onClick={handleUpload}
+							onPress={handleUpload}
 							className="submit"
 							isDisabled={isUploading || !file}
 						>

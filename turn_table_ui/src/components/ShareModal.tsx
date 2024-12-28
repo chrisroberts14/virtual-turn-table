@@ -50,7 +50,7 @@ const ShareModal = () => {
 					<UserSelect />
 					<Button
 						className="bg-primary font-bold text-white"
-						onClick={handleShare}
+						onPress={handleShare}
 						title="Share button"
 						disabled={shareInputValue === ""}
 					>

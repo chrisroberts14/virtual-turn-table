@@ -138,7 +138,7 @@ const ImageCapture = () => {
 								<div className="space-x-2">
 									<Button
 										className="bg-blue-600"
-										onClick={getAlbumFromCamera}
+										onPress={getAlbumFromCamera}
 										disabled={isUploading}
 									>
 										Capture
@@ -146,7 +146,7 @@ const ImageCapture = () => {
 									{cameras.length > 1 && (
 										<Button
 											className="bg-blue-600"
-											onClick={switchCamera}
+											onPress={switchCamera}
 											disabled={cameras.length <= 1}
 										>
 											Switch Camera

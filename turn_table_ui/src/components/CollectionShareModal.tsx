@@ -75,10 +75,10 @@ const CollectionShareModal = () => {
 								<TableCell>{notification.sender_id}</TableCell>
 								<TableCell>
 									<div className="flex justify-center space-x-2">
-										<Button onClick={() => confirmShare(notification)}>
+										<Button onPress={() => confirmShare(notification)}>
 											Accept
 										</Button>
-										<Button onClick={() => rejectShare(notification)}>
+										<Button onPress={() => rejectShare(notification)}>
 											Reject
 										</Button>
 									</div>

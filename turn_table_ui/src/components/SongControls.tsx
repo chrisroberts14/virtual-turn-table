@@ -55,7 +55,7 @@ const SongControls = () => {
 		<div className="flex flex-col p-2 z-30 pt-10" title="Song Controls">
 			<div className="flex flex-row justify-center space-x-2">
 				<Button
-					onClick={prevSong}
+					onPress={prevSong}
 					isDisabled={!currentSong}
 					title="Previous Track"
 					isIconOnly
@@ -63,14 +63,14 @@ const SongControls = () => {
 					<RxTrackPrevious />
 				</Button>
 				<Button
-					onClick={togglePlayPause}
+					onPress={togglePlayPause}
 					isDisabled={!currentSong}
 					title="Play/Pause"
 				>
 					{isPaused ? <FaPlay /> : <FaPause />}
 				</Button>
 				<Button
-					onClick={nextSong}
+					onPress={nextSong}
 					isDisabled={!currentSong}
 					title="Next Track"
 					isIconOnly

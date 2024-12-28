@@ -62,7 +62,7 @@ const CollectionShareNotify = () => {
 					>
 						<div
 							className="bg-green-500 text-white rounded-full w-10 h-10 flex justify-center items-center"
-							onClick={() => setIsCollectionShareModalOpen(true)}
+							onPress={() => setIsCollectionShareModalOpen(true)}
 							onKeyDown={() => setIsCollectionShareModalOpen(true)}
 							onKeyUp={() => setIsCollectionShareModalOpen(true)}
 						>

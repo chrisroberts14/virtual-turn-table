@@ -88,7 +88,7 @@ const Collection = () => {
 											<Button
 												color="success"
 												endContent={<FaPlay />}
-												onClick={() => handlePlay(albums[currentSelectedIndex])}
+												onPress={() => handlePlay(albums[currentSelectedIndex])}
 											>
 												Play
 											</Button>
@@ -131,11 +131,11 @@ const Collection = () => {
 										})}
 									</div>
 									<div className="flex flex-col space-y-2 justify-center align-center text-center">
-										<Button onClick={goUp} isIconOnly>
+										<Button onPress={goUp} isIconOnly>
 											<FaArrowUp />
 										</Button>
 										{currentSelectedIndex + 1} / {albums?.length}
-										<Button onClick={goDown} isIconOnly>
+										<Button onPress={goDown} isIconOnly>
 											<FaArrowDown />
 										</Button>
 									</div>

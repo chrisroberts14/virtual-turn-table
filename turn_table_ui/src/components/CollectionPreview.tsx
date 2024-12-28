@@ -64,7 +64,7 @@ export const CollectionPreviewHorizontal = () => {
 					Your Collection{" "}
 				</header>
 				{albums !== undefined ? (
-					<Button onClick={() => setIsCollectionOpen(true)}>More Detail</Button>
+					<Button onPress={() => setIsCollectionOpen(true)}>More Detail</Button>
 				) : (
 					<Skeleton>
 						<Button />
@@ -114,7 +114,7 @@ export const CollectionPreviewHorizontal = () => {
 										width={150}
 										height={150}
 										className="hover:scale-110"
-										onClick={() => handleClick(album)}
+										onPress={() => handleClick(album)}
 									/>
 								</Tooltip>
 							</div>
@@ -167,7 +167,7 @@ export const CollectionPreviewVertical = () => {
 						})
 					: null}
 			</div>
-			<Button onClick={() => setIsCollectionOpen(true)}>Open</Button>
+			<Button onPress={() => setIsCollectionOpen(true)}>Open</Button>
 			<CollectionContext.Provider
 				value={{
 					isCollectionOpen,

@@ -26,7 +26,7 @@ describe("AlbumConfirm", () => {
 
 	beforeEach(() => {
 		// @ts-ignore
-		(useUsername as vi.mock).mockReturnValue({
+		(vi.mocked(useUsername) as vi.mock).mockReturnValue({
 			username: "test_user",
 		});
 
@@ -42,6 +42,7 @@ describe("AlbumConfirm", () => {
 			fadeConfirm: true,
 			setFadeConfirm: vi.fn(),
 			setCurrentImage: vi.fn(),
+			top10: [],
 		});
 
 		// @ts-ignore
@@ -55,6 +56,7 @@ describe("AlbumConfirm", () => {
 	it("should set albums to null when rejectAlbum is called", async () => {
 		render(<AlbumConfirm />);
 		await waitFor(async () => {
+			await screen.findByText("No");
 			await userEvent.click(screen.getByText("No"));
 			expect(useMusic().setCurrentAlbum).toHaveBeenCalledWith(null);
 			expect(useUpload().setScannedAlbum).toHaveBeenCalledWith(null);

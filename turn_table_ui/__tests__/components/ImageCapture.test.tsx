@@ -135,7 +135,9 @@ describe("ImageCapture camera", () => {
 		(GetScreenShot as vi.mock).mockReturnValue("image");
 
 		// @ts-ignore
-		(ImageToAlbum as vi.mock).mockReturnValue(Promise.resolve(album));
+		(ImageToAlbum as vi.mock).mockReturnValue(
+			Promise.resolve({ best_guess: album, top_10_results: [] }),
+		);
 	});
 
 	it("should render when cameras are found", async () => {

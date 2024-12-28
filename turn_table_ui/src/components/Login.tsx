@@ -9,7 +9,7 @@ const Login = () => {
 		window.location.href = `https://accounts.spotify.com/authorize?response_type=token&client_id=${encodeURIComponent(clientId)}&scope=${encodeURIComponent(scope)}&redirect_uri=${encodeURIComponent(redirectUri)}`;
 	};
 
-	return <Button onClick={handleLogin}>Login</Button>;
+	return <Button onPress={handleLogin}>Login</Button>;
 };
 
 export default Login;
