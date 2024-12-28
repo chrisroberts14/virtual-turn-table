@@ -7,6 +7,7 @@ import ShareCollection from "../../src/api_calls/ShareCollection";
 import { useError } from "../../src/contexts/ErrorContext";
 import { useShare } from "../../src/contexts/ShareContext";
 import { useSpotifyToken } from "../../src/contexts/SpotifyTokenContext";
+import { useSuccess } from "../../src/contexts/SuccessContext";
 import { useUsername } from "../../src/contexts/UsernameContext";
 
 vi.mock("../../src/contexts/UsernameContext");
@@ -15,6 +16,7 @@ vi.mock("../../src/contexts/SpotifyTokenContext");
 vi.mock("../../src/api_calls/GetUsersBySearch");
 vi.mock("../../src/api_calls/ShareCollection");
 vi.mock("../../src/contexts/ShareContext");
+vi.mock("../../src/contexts/SuccessContext");
 
 describe("ShareModal", () => {
 	beforeEach(() => {
@@ -43,10 +45,14 @@ describe("ShareModal", () => {
 			isShareModalOpen: true,
 			setIsShareModalOpen: vi.fn(),
 		});
+
+		// @ts-ignore
+		(useSuccess as vi.mock).mockReturnValue({
+			showSuccess: vi.fn(),
+		});
 	});
 
 	it("should render ShareModal", () => {
-		const setIsOpen = vi.fn();
 		render(<ShareModal />);
 		expect(screen.getByTitle("Share button")).toBeInTheDocument();
 	});

@@ -1,27 +1,33 @@
 import UploadFile from "@/api_calls/UploadFile";
 import { useError } from "@/contexts/ErrorContext";
 import { useUpload } from "@/contexts/UploadContext";
+import type Album from "@/interfaces/Album.tsx";
 import { Button } from "@nextui-org/button";
 import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
 import { Divider } from "@nextui-org/divider";
 import { Image } from "@nextui-org/image";
 import { Input } from "@nextui-org/input";
 import type React from "react";
+import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 
-const Upload: React.FC<{ triggerConfirmSlide: () => void }> = ({
-	triggerConfirmSlide,
-}) => {
+const Upload: React.FC<{
+	triggerConfirmSlide: () => void;
+	setTop10: Dispatch<SetStateAction<Album[]>>;
+}> = ({ triggerConfirmSlide, setTop10 }) => {
 	const [file, setFile] = useState<File | null>(null);
 	const [fileImage, setFileImage] = useState<string | null>(null);
 	const { showError } = useError();
-	const { setIsUploading, setScannedAlbum, isUploading } = useUpload();
+	const { setIsUploading, setScannedAlbum, isUploading, fadeConfirm } =
+		useUpload();
 
 	const handleUpload = async () => {
 		if (file) {
 			setIsUploading(true);
-			triggerConfirmSlide();
-			await UploadFile(file, setScannedAlbum).catch((error) => {
+			if (!fadeConfirm) {
+				triggerConfirmSlide();
+			}
+			await UploadFile(file, setScannedAlbum, setTop10).catch((error) => {
 				showError(error.message);
 			});
 		}
@@ -60,7 +66,7 @@ const Upload: React.FC<{ triggerConfirmSlide: () => void }> = ({
 					<Divider />
 					<CardFooter className="justify-center">
 						<Button
-							onClick={handleUpload}
+							onPress={handleUpload}
 							className="submit"
 							isDisabled={isUploading || !file}
 						>

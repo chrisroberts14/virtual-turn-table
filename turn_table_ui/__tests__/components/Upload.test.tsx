@@ -37,7 +37,14 @@ describe("Upload", () => {
 
 	it("should correctly upload a file", async () => {
 		const triggerConfirmSlide = vi.fn();
-		render(<Upload triggerConfirmSlide={triggerConfirmSlide} />);
+		render(
+			<Upload
+				triggerConfirmSlide={triggerConfirmSlide}
+				setTop10={() => {
+					return;
+				}}
+			/>,
+		);
 		const fileSelector = screen.getByTitle("Upload file input");
 		await userEvent.upload(fileSelector, mockFile);
 		const uploadButton = screen.getByText("Upload a file");
@@ -45,14 +52,25 @@ describe("Upload", () => {
 
 		await waitFor(() => {
 			expect(triggerConfirmSlide).toHaveBeenCalled();
-			expect(UploadFile).toHaveBeenCalledWith(mockFile, expect.any(Function));
+			expect(UploadFile).toHaveBeenCalledWith(
+				mockFile,
+				expect.any(Function),
+				expect.any(Function),
+			);
 		});
 	});
 
 	it("should show an error if the upload fails", async () => {
 		// @ts-ignore
 		(UploadFile as vi.mock).mockRejectedValue(new Error("Upload failed"));
-		render(<Upload triggerConfirmSlide={vi.fn()} />);
+		render(
+			<Upload
+				triggerConfirmSlide={vi.fn()}
+				setTop10={() => {
+					return;
+				}}
+			/>,
+		);
 		const fileSelector = screen.getByTitle("Upload file input");
 		await userEvent.upload(fileSelector, mockFile);
 		const uploadButton = screen.getByText("Upload a file");

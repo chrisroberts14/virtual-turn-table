@@ -9,10 +9,12 @@ vi.mock("axios");
 describe("UploadFile", () => {
 	let mockFile: File;
 	let mockSetScannedAlbum: Dispatch<SetStateAction<Album | null>>;
+	let mockSetTop10: Dispatch<SetStateAction<Album[]>>;
 
 	beforeEach(() => {
 		mockFile = new File([""], "test.jpg", { type: "image/jpeg" });
 		mockSetScannedAlbum = vi.fn();
+		mockSetTop10 = vi.fn();
 	});
 
 	it("should set the scanned album", async () => {
@@ -20,17 +22,16 @@ describe("UploadFile", () => {
 		(axios.post as vi.Mock).mockImplementation(() =>
 			Promise.resolve({
 				data: {
-					songs: [{ title: "Song 1" }, { title: "Song 2" }],
-				} as Album,
+					best_guess: { title: "Song 1" },
+					top_10_results: [{ title: "Song 1" }, { title: "Song 2" }],
+				},
 			}),
 		);
 		await act(async () => {
-			await UploadFile(mockFile, mockSetScannedAlbum);
+			await UploadFile(mockFile, mockSetScannedAlbum, mockSetTop10);
 		});
 
-		expect(mockSetScannedAlbum).toHaveBeenCalledWith({
-			songs: [{ title: "Song 1" }, { title: "Song 2" }],
-		});
+		expect(mockSetScannedAlbum).toHaveBeenCalledWith({ title: "Song 1" });
 	});
 
 	it("should throw an error if fails", async () => {

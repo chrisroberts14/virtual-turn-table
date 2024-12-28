@@ -8,7 +8,9 @@ class TestSocial:
 
     def test_get_public_collections(self, client, mock_user_with_public_album):
         """Test getting public collections."""
-        response = client.get("/social/get_public_collections")
+        response = client.get(
+            "/social/get_public_collections", params={"offset": 0, "count": 1}
+        )
         assert response.status_code == 200
         assert response.json() == [
             {
@@ -23,7 +25,8 @@ class TestSocial:
     ):
         """Test getting shared collections."""
         response = client.get(
-            f"/social/get_shared_collections/{user_with_shared_collections.username}"
+            f"/social/get_shared_collections/{user_with_shared_collections.username}",
+            params={"offset": 0, "count": 1},
         )
         assert response.status_code == 200
         assert response.json() == [
@@ -36,7 +39,10 @@ class TestSocial:
 
     def test_get_shared_collections_bad_user(self, client):
         """Test getting shared collections for a user that does not exist."""
-        response = client.get("/social/get_shared_collections/nonexistent")
+        response = client.get(
+            "/social/get_shared_collections/nonexistent",
+            params={"offset": 0, "count": 1},
+        )
         assert response.status_code == 404
         assert response.json() == {"message": "User not found", "status": "error"}
 

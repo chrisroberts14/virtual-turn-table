@@ -1,5 +1,6 @@
 import AddAlbum from "@/api_calls/AddAlbum";
 import AlbumDisplay from "@/components/AlbumDisplay";
+import Top10Select from "@/components/Top10Select.tsx";
 import { useMusic } from "@/contexts/MusicContext";
 import { useUpload } from "@/contexts/UploadContext";
 import { useUsername } from "@/contexts/UsernameContext";
@@ -18,12 +19,20 @@ const AlbumConfirm = () => {
 		fadeConfirm,
 		setFadeConfirm,
 		setCurrentImage,
+		isUploading,
 	} = useUpload();
 	const { setCurrentAlbum } = useMusic();
+	const [isOnTop10Select, setIsOnTop10Select] = useState(false);
 
 	const triggerConfirmSlide = () => {
 		setFadeConfirm(!fadeConfirm);
 	};
+
+	useEffect(() => {
+		if (fadeConfirm || isUploading) {
+			setIsOnTop10Select(false);
+		}
+	}, [fadeConfirm, isUploading]);
 
 	useEffect(() => {
 		if (scannedAlbum) {
@@ -46,7 +55,8 @@ const AlbumConfirm = () => {
 	};
 
 	const rejectAlbum = () => {
-		triggerConfirmSlide();
+		//triggerConfirmSlide();
+		setIsOnTop10Select(true);
 		setCurrentAlbum(null);
 		setScannedAlbum(null);
 		setCurrentImage(null);
@@ -56,52 +66,64 @@ const AlbumConfirm = () => {
 		<div className="h-full flex flex-row max-h-full">
 			<Card className="text-center w-full">
 				<CardHeader className="justify-center">Album selection</CardHeader>
-				<CardBody className="flex flex-shrink max-h-[70%]">
-					<div className="max-h-[20%] pb-[100%] justify-center text-center w-full">
-						<div>
-							<AlbumDisplay album={scannedAlbum} />
-						</div>
-					</div>
-					<Spacer className="flex flex-shrink" />
-					<div className="w-full">
-						{scannedAlbum ? (
-							<Card className="bg-default-200 h-full overflow-y-auto">
+				{!isOnTop10Select ? (
+					<>
+						<CardBody className="flex flex-shrink max-h-[70%]">
+							<div className="max-h-[20%] pb-[100%] justify-center text-center w-full">
 								<div>
-									<div className="text-center">{scannedAlbum.title}</div>
-									<div className="text-center">
-										{scannedAlbum.artists.join(", ")}
-									</div>
+									<AlbumDisplay album={scannedAlbum} />
 								</div>
-							</Card>
-						) : (
-							<Skeleton className="h-full">
-								<div />
-							</Skeleton>
-						)}
-					</div>
-				</CardBody>
-				<CardFooter className="flex flex-grow justify-center">
-					<div className="flex flex-col flex-grow px-6">
-						<p className="pb-4">Is this the correct album?</p>
-						<div className="flex flex-row flex-grow px-6">
-							<Button
-								isDisabled={buttonsDisabled}
-								style={{ background: "#8c0606" }}
-								onClick={rejectAlbum}
-							>
-								No
-							</Button>
-							<Spacer className="flex flex-grow" />
-							<Button
-								isDisabled={buttonsDisabled}
-								style={{ background: "#0b6b02" }}
-								onClick={confirmAlbum}
-							>
-								Yes
-							</Button>
-						</div>
-					</div>
-				</CardFooter>
+							</div>
+							<Spacer className="flex flex-shrink" />
+							<div className="w-full">
+								{scannedAlbum ? (
+									<Card className="bg-default-200 h-full overflow-y-auto">
+										<div>
+											<div className="text-center">{scannedAlbum.title}</div>
+											<div className="text-center">
+												{scannedAlbum.artists.join(", ")}
+											</div>
+										</div>
+									</Card>
+								) : (
+									<Skeleton className="h-full">
+										<div />
+									</Skeleton>
+								)}
+							</div>
+						</CardBody>
+						<CardFooter className="flex flex-grow justify-center">
+							<div className="flex flex-col flex-grow px-6">
+								<p className="pb-4">Is this the correct album?</p>
+								<div className="flex flex-row flex-grow px-6">
+									<Button
+										isDisabled={buttonsDisabled}
+										style={{ background: "#8c0606" }}
+										onPress={() => {
+											rejectAlbum();
+										}}
+									>
+										No
+									</Button>
+									<Spacer className="flex flex-grow" />
+									<Button
+										isDisabled={buttonsDisabled}
+										style={{ background: "#0b6b02" }}
+										onPress={() => {
+											confirmAlbum();
+										}}
+									>
+										Yes
+									</Button>
+								</div>
+							</div>
+						</CardFooter>
+					</>
+				) : (
+					<CardBody className="flex flex-shrink">
+						<Top10Select />
+					</CardBody>
+				)}
 			</Card>
 		</div>
 	);

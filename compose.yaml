@@ -11,6 +11,8 @@ services:
         retries: 3
     env_file:
       - .env
+    networks:
+      - app_net
 
   bff:
     build: bff
@@ -26,6 +28,8 @@ services:
       - .env
     depends_on:
       - image_to_album
+    networks:
+        - app_net
 
   ui:
     build: turn_table_ui
@@ -36,6 +40,8 @@ services:
       - .env
     depends_on:
       - bff
+    networks:
+        - app_net
 
   user_data:
     build: user_data
@@ -51,8 +57,38 @@ services:
       - .env
     depends_on:
       - bff
+      - user_data_db
+    networks:
+        - app_net
+
+  user_data_db:
+    image: postgres:17-alpine
+    container_name: user_data_db
+    env_file:
+      - .env
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "myuser", "-d", "vtt"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
     volumes:
-      - user_data_db:/app/user_data/db
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+        - app_net
+
+  adminer:
+    image: adminer
+    ports:
+      - "8080:8080"
+    depends_on:
+      - user_data_db
+
 
 volumes:
-  user_data_db:
+  postgres_data:
+
+networks:
+    app_net:
+        driver: bridge

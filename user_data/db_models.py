@@ -15,7 +15,7 @@ user_album_link_table = Table(
     "user_album_link_table",
     Base.metadata,
     Column("username", String(50), ForeignKey("users.username"), primary_key=True),
-    Column("album_uri", String(20), ForeignKey("albums.album_uri"), primary_key=True),
+    Column("album_uri", String(30), ForeignKey("albums.album_uri"), primary_key=True),
 )
 
 shared_collection_link_table = Table(
@@ -56,6 +56,20 @@ class Crud:  # pylint: disable=too-few-public-methods
         """
         return db.get(cls, id_)
 
+    @classmethod
+    def delete(cls, db: Session, id_):
+        """
+        Delete an object by its id.
+
+        :param db:
+        :param id_:
+        :return:
+        """
+        obj = cls.get_by_id(db, id_)
+        db.delete(obj)
+        db.commit()
+        return obj
+
 
 class NotificationDb(Base, Crud):
     """Notification database model."""
@@ -68,10 +82,14 @@ class NotificationDb(Base, Crud):
     receiver_id: Mapped[str] = mapped_column(String(50), ForeignKey("users.username"))
 
     sender: Mapped["UserDb"] = relationship(
-        "UserDb", foreign_keys=[sender_id], back_populates="sent_notifications"
+        "UserDb",
+        foreign_keys=[sender_id],
+        back_populates="sent_notifications",
     )
     receiver: Mapped["UserDb"] = relationship(
-        "UserDb", foreign_keys=[receiver_id], back_populates="received_notifications"
+        "UserDb",
+        foreign_keys=[receiver_id],
+        back_populates="received_notifications",
     )
 
 
@@ -122,7 +140,7 @@ class AlbumDb(Base, Crud):
 
     __tablename__ = "albums"
 
-    album_uri: Mapped[str] = mapped_column(String(20), primary_key=True, unique=True)
+    album_uri: Mapped[str] = mapped_column(String(30), primary_key=True, unique=True)
     users: Mapped[List[UserDb]] = relationship(
         "UserDb", secondary=user_album_link_table, back_populates="albums"
     )

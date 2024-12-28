@@ -97,13 +97,14 @@ const AlbumCollectionDisplay = ({
 		>
 			<CollectionContext.Provider
 				value={{
+					username: username,
 					albums: albums,
 					setAlbums: () => {},
 					isCollectionOpen: isCollectionOpen,
 					setIsCollectionOpen: setIsCollectionOpen,
 				}}
 			>
-				<Button onClick={toggleOpen}>Open Modal</Button>
+				<Button onPress={toggleOpen}>Open Modal</Button>
 				<Collection />
 			</CollectionContext.Provider>
 			{albums.map((album) => (

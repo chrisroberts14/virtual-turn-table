@@ -50,8 +50,6 @@ const useApp = () => {
 				CreateUser(user.display_name, user.image_url).catch((error) => {
 					console.error(error);
 				});
-				// Set the location back to the root (removes all the query parameters)
-				window.location.href = "/";
 			});
 		} else if (currentState?.spotify_access_token) {
 			// Is already signed in

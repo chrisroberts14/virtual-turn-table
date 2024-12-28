@@ -10,6 +10,7 @@ import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import GetIsCollectionPublic from "../../src/api_calls/GetIsCollectionPublic";
 import GetUserAlbums from "../../src/api_calls/GetUserAlbums";
+import { useSuccess } from "../../src/contexts/SuccessContext";
 
 vi.mock("../../src/api_calls/GetUserInfo");
 vi.mock("../../src/interfaces/StateData");
@@ -17,16 +18,21 @@ vi.mock("../../src/api_calls/CreateUser");
 vi.mock("../../src/contexts/ErrorContext");
 vi.mock("../../src/api_calls/GetUserAlbums");
 vi.mock("../../src/api_calls/GetIsCollectionPublic");
+vi.mock("../../src/contexts/SuccessContext");
 
 describe("UserBox", () => {
 	const setUsername = vi.fn();
 	const username = "John Doe";
 	const mockShowError = vi.fn();
+	const mockShowSuccess = vi.fn();
 	const clearStateDataMock = vi.fn();
 
 	beforeEach(() => {
 		// @ts-ignore
 		(useError as vi.Mock).mockReturnValue({ showError: mockShowError });
+
+		// @ts-ignore
+		(useSuccess as vi.Mock).mockReturnValue({ showSuccess: mockShowSuccess });
 
 		// @ts-ignore
 		(GetUserInfo as vi.Mock).mockResolvedValue({

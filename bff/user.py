@@ -1,5 +1,6 @@
 """User API endpoints."""
 
+import json
 from typing import Annotated
 
 import requests
@@ -16,12 +17,13 @@ from bff.api_models import (
     Notification,
 )
 from bff.config import get_settings, Settings
+from bff.websocket import manager
 
 user_router = APIRouter()
 
 
 @user_router.get("/get_user_info")
-def get_user_info(
+async def get_user_info(
     spotify_access_token: str, settings: Annotated[Settings, Depends(get_settings)]
 ) -> User:
     """
@@ -41,26 +43,28 @@ def get_user_info(
     username = spotify_data["display_name"]
 
     endpoint = f"{settings.user_data_address}/user/is_collection_public/{username}"
-    is_collection_public = requests.get(endpoint, timeout=20)
+    collection_public = requests.get(endpoint, timeout=20)
     # The 404 implies the user could not be found so they may just not be in the database yet
     # So don't raise an exception just set it to the default of false
-    if is_collection_public.status_code == 404:
-        is_collection_public = False
-    elif is_collection_public.status_code != 200:
+    if collection_public.status_code == 404:
+        collection_public = False
+    elif collection_public.status_code != 200:
         raise APIException(400, "Failed to access user data.")
     else:
-        is_collection_public = is_collection_public.json()
+        collection_public = collection_public.json()
 
     return User(
         id=spotify_data["id"],
         display_name=username,
         image_url=spotify_data["images"][0]["url"],
-        is_collection_public=is_collection_public,
+        is_collection_public=collection_public,
     )
 
 
 @user_router.post("/create_user")
-def create_user(user: UserIn, settings: Annotated[Settings, Depends(get_settings)]):
+async def create_user(
+    user: UserIn, settings: Annotated[Settings, Depends(get_settings)]
+):
     """
     Create a user in the database.
 
@@ -77,7 +81,7 @@ def create_user(user: UserIn, settings: Annotated[Settings, Depends(get_settings
 
 
 @user_router.post("/add_album", status_code=HTTP_201_CREATED)
-def add_album(
+async def add_album(
     data_in: AlbumUserLinkIn, settings: Annotated[Settings, Depends(get_settings)]
 ):
     """
@@ -99,10 +103,11 @@ def add_album(
     response = requests.post(endpoint, json=data_in.model_dump(), timeout=20)
     if response.status_code != 201:
         raise APIException(400, "Failed to add album link.")
+    await manager.send_message(json.dumps({"message": "Album added"}), data_in.user_id)
 
 
 @user_router.get("/get_user_albums/{user_name}")
-def get_users_albums(
+async def get_users_albums(
     user_name: str, settings: Annotated[Settings, Depends(get_settings)]
 ) -> list[str]:
     """
@@ -121,7 +126,7 @@ def get_users_albums(
 
 
 @user_router.get("/search")
-def get_users_by_search(
+async def get_users_by_search(
     query: str,
     settings: Annotated[Settings, Depends(get_settings)],
 ) -> list[GetUsersOut]:
@@ -140,7 +145,7 @@ def get_users_by_search(
 
 
 @user_router.get("/get_notifications/{username}")
-def get_notifications(
+async def get_notifications(
     username: str, settings: Annotated[Settings, Depends(get_settings)]
 ) -> list[Notification]:
     """
@@ -157,8 +162,28 @@ def get_notifications(
     return response.json()
 
 
+@user_router.get("/is_collection_public/{username}")
+async def is_collection_public(
+    username: str, settings: Annotated[Settings, Depends(get_settings)]
+) -> bool:
+    """
+    Check if a user's collection is public.
+
+    :param settings:
+    :param username:
+    :return:
+    """
+    endpoint = f"{settings.user_data_address}/user/is_collection_public/{username}"
+    response = requests.get(endpoint, timeout=20)
+    if response.status_code != 200:
+        raise APIException(400, "Failed to access user data.")
+    return response.json()
+
+
 @user_router.delete("/{username}")
-def delete_user(username: str, settings: Annotated[Settings, Depends(get_settings)]):
+async def delete_user(
+    username: str, settings: Annotated[Settings, Depends(get_settings)]
+):
     """
     Delete a user from the database.
 
@@ -170,4 +195,4 @@ def delete_user(username: str, settings: Annotated[Settings, Depends(get_setting
     response = requests.delete(endpoint, timeout=20)
     if response.status_code != 200:
         raise APIException(400, "Failed to delete user.")
-    return JSONResponse(status_code=200, content={"status": "success"})
+    return JSONResponse(status_code=200, content={"success": True})

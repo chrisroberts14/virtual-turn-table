@@ -2,6 +2,8 @@ import { getSharedCollections } from "@/api_calls/BFFEndpoints";
 import axios from "axios";
 
 const GetSharedCollections = async (
+	offset: number,
+	limit: number,
 	username: string | null,
 	token: string | null,
 ) => {
@@ -9,6 +11,8 @@ const GetSharedCollections = async (
 		const response = await axios.get(`${getSharedCollections}/${username}`, {
 			params: {
 				spotify_access_token: token,
+				offset: offset,
+				limit: limit,
 			},
 		});
 		return response.data;

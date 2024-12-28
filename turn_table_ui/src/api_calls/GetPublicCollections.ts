@@ -1,11 +1,17 @@
 import { getPublicCollections } from "@/api_calls/BFFEndpoints";
 import axios from "axios";
 
-const GetPublicCollections = async (token: string | null) => {
+const GetPublicCollections = async (
+	offset: number,
+	limit: number,
+	token: string | null,
+) => {
 	try {
 		const response = await axios.get(getPublicCollections, {
 			params: {
 				spotify_access_token: token,
+				offset: offset,
+				limit: limit,
 			},
 		});
 		return response.data;

@@ -6,7 +6,12 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_200_OK, HTTP_201_CREATED
 
-from user_data.api_models import APIException, ShareCollectionIn, Notification
+from user_data.api_models import (
+    APIException,
+    ShareCollectionIn,
+    Notification,
+    Collection,
+)
 from user_data.db import get_db
 from user_data.db_models import UserDb, NotificationDb
 
@@ -14,32 +19,39 @@ social_router = APIRouter()
 
 
 @social_router.get("/get_public_collections", status_code=HTTP_200_OK)
-def get_public_collections(count: int = 5, db: Session = Depends(get_db)) -> list[dict]:
+def get_public_collections(
+    offset: int, count: int, db: Session = Depends(get_db)
+) -> list[Collection]:
     """
-    Get the first `count` public collections.
+    Get count public collections starting from offset.
 
+    :param offset:
     :param count:
     :param db:
     :return:
     """
     return [
-        {
-            "username": user.username,
-            "image_url": user.image_url,
-            "albums": [album.album_uri for album in user.albums],
-        }
+        Collection(
+            username=user.username,
+            image_url=user.image_url,
+            albums=[album.album_uri for album in user.albums],
+        )
         for user in db.query(UserDb)
         .filter(UserDb.is_collection_public.is_(True))
+        .offset(offset)
         .limit(count)
-        .all()
     ]
 
 
 @social_router.get("/get_shared_collections/{username}", status_code=HTTP_200_OK)
-def get_shared_collections(username: str, db: Session = Depends(get_db)) -> list[dict]:
+def get_shared_collections(
+    offset: int, count: int, username: str, db: Session = Depends(get_db)
+) -> list[Collection]:
     """
-    Get all collections shared with a user.
+    Get count shared collections starting from offset for a user.
 
+    :param count:
+    :param offset:
     :param db:
     :param username:
     :return:
@@ -47,13 +59,14 @@ def get_shared_collections(username: str, db: Session = Depends(get_db)) -> list
     user = UserDb.get_by_id(db, username)
     if user is None:
         raise APIException(status_code=404, message="User not found")
+    offset_collections = user.shared_collections[offset : offset + count]
     return [
-        {
-            "username": shared_user.username,
-            "image_url": shared_user.image_url,
-            "albums": [album.album_uri for album in shared_user.albums],
-        }
-        for shared_user in user.shared_collections
+        Collection(
+            username=shared_user.username,
+            image_url=shared_user.image_url,
+            albums=[album.album_uri for album in shared_user.albums],
+        )
+        for shared_user in offset_collections
     ]
 
 

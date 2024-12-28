@@ -5,104 +5,15 @@ from functools import lru_cache
 from typing import Annotated
 
 import requests
-from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
-from bff.api_models import Collection, Album, Song, APIException, WebSocketMessage
+from bff.api_models import Collection, Album, Song, APIException
 from bff.config import Settings, get_settings
 from bff.api_models import ShareCollectionIn
+from bff.websocket import manager
 
 social_router = APIRouter()
-
-connections: dict[str, list[WebSocket]] = {}
-
-
-class ConnectionManager:
-    """Websocket connection manager."""
-
-    def __init__(self):
-        """Initialize the connection manager."""
-        self.active_connections: dict[str, list[WebSocket]] = {}
-
-    async def connect(self, websocket: WebSocket, username: str):
-        """
-        Connect to the websocket.
-
-        :param websocket:
-        :param username:
-        :return:
-        """
-        await websocket.accept()
-        if username not in self.active_connections:
-            self.active_connections[username] = []
-        self.active_connections[username].append(websocket)
-
-    def disconnect(self, websocket: WebSocket, username: str):
-        """
-        Disconnect from the websocket.
-
-        :param websocket:
-        :param username:
-        :return:
-        """
-        self.active_connections[username].remove(websocket)
-
-    async def send_message(self, message: str, username: str):
-        """
-        Send a message to the websocket.
-
-        :param message:
-        :param username:
-        :return:
-        """
-        if username in self.active_connections:
-            for connection in self.active_connections[username]:
-                await connection.send_text(message)
-
-
-manager = ConnectionManager()
-
-
-@social_router.websocket("/ws/{username}")
-async def websocket_endpoint(
-    websocket: WebSocket,
-    username: str,
-    settings: Annotated[Settings, Depends(get_settings)],
-):
-    """
-    Websocket endpoint for the social service.
-
-    :param settings:
-    :param websocket:
-    :param username:
-    :return:
-    """
-    await manager.connect(websocket, username)
-    try:
-        while True:
-            data = await websocket.receive_text()
-            response = WebSocketMessage(**json.loads(data))
-            if response.accepted is True:
-                response = requests.put(
-                    f"{settings.user_data_address}/social/share_accept/{response.notification_id}",
-                    timeout=20,
-                )
-                if response.status_code != 200:
-                    await manager.send_message(json.dumps({"success": False}), username)
-                else:
-                    await manager.send_message(json.dumps({"success": True}), username)
-            else:
-                response = requests.put(
-                    f"{settings.user_data_address}/social/share_reject/{response.notification_id}",
-                    timeout=20,
-                )
-                if response.status_code != 200:
-                    await manager.send_message(json.dumps({"success": False}), username)
-                else:
-                    await manager.send_message(json.dumps({"success": True}), username)
-
-    except WebSocketDisconnect:
-        manager.disconnect(websocket, username)
 
 
 @lru_cache(maxsize=128)
@@ -167,12 +78,17 @@ def convert_response_to_collection(
 
 
 @social_router.get("/get_public_collections")
-def get_public_collections(
-    spotify_access_token: str, settings: Annotated[Settings, Depends(get_settings)]
+async def get_public_collections(
+    offset: int,
+    limit: int,
+    spotify_access_token: str,
+    settings: Annotated[Settings, Depends(get_settings)],
 ) -> list[Collection]:
     """Get all public collections."""
     endpoint = f"{settings.user_data_address}/social/get_public_collections"
-    response = requests.get(endpoint, timeout=20)
+    response = requests.get(
+        endpoint, timeout=20, params={"offset": offset, "count": limit}
+    )
     if response.status_code != 200:
         raise APIException(400, "Failed to get public collections")
     result = response.json()
@@ -186,7 +102,9 @@ def get_public_collections(
 
 
 @social_router.get("/get_shared_collections/{username}")
-def get_shared_collections(
+async def get_shared_collections(
+    offset: int,
+    limit: int,
     username: str,
     spotify_access_token: str,
     settings: Annotated[Settings, Depends(get_settings)],
@@ -194,13 +112,17 @@ def get_shared_collections(
     """
     Get all collections shared with a user.
 
+    :param offset:
+    :param limit:
     :param username:
     :param spotify_access_token:
     :param settings:
     :return:
     """
     endpoint = f"{settings.user_data_address}/social/get_shared_collections/{username}"
-    response = requests.get(endpoint, timeout=20)
+    response = requests.get(
+        endpoint, timeout=20, params={"offset": offset, "count": limit}
+    )
     if response.status_code != 200:
         raise APIException(400, "Failed to get shared collections")
     result = response.json()
@@ -230,7 +152,7 @@ async def share_collection(
 
 
 @social_router.put("/toggle_collection_public/{username}")
-def toggle_collection_public(
+async def toggle_collection_public(
     username: str, settings: Annotated[Settings, Depends(get_settings)]
 ):
     """

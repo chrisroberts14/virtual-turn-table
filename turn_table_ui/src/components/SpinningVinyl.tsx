@@ -45,7 +45,7 @@ const SpinningVinyl = () => {
 	};
 
 	return (
-		<div className="relative max-w-[70%] aspect-square">
+		<div className="relative aspect-square h-[80%]">
 			<svg
 				className="z-0 h-full w-full absolute aspect-square"
 				role="img"
@@ -55,10 +55,10 @@ const SpinningVinyl = () => {
 			</svg>
 			{currentAlbum && (
 				<div
-					className={`z-20 flex h-full w-full absolute p-10 transition-transform ${isAlbumCoverOffScreen ? "-translate-y-[300%] duration-2000" : "translate-y-0"}`}
+					className={`z-20 flex h-full w-full absolute transition-transform ${isAlbumCoverOffScreen ? "-translate-y-[300%] duration-2000" : "translate-y-0"}`}
 				>
 					<Image
-						className="z-20 w-[100%] h-[100%]"
+						className="z-20 min-h-full min-w-full"
 						src={currentAlbum.image_url}
 					/>
 				</div>

@@ -5,7 +5,9 @@ import ToggleCollectionPublic from "@/api_calls/ToggleCollectionPublic";
 import ShareModal from "@/components/ShareModal";
 import { useError } from "@/contexts/ErrorContext";
 import { ShareContext } from "@/contexts/ShareContext";
+import { useSuccess } from "@/contexts/SuccessContext.tsx";
 import useUserBox from "@/hooks/UseUserBox";
+import { clearStateData } from "@/interfaces/StateData.tsx";
 import eventEmitter from "@/utils/EventEmitter";
 import { Avatar } from "@nextui-org/avatar";
 import {
@@ -40,12 +42,14 @@ const UserBox = () => {
 	const [shareInputValue, setShareInputValue] = useState<string>("");
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 	const { showError } = useError();
+	const { showSuccess } = useSuccess();
 
 	const deleteAccount = async () => {
 		if (!username) {
 			showError("No user logged in");
 			return;
 		}
+		clearStateData();
 		return await DeleteUser(username);
 	};
 
@@ -96,6 +100,11 @@ const UserBox = () => {
 								ToggleCollectionPublic(username).then(() => {
 									// Set the state to the opposite of the current state
 									setIsCollectionPublic(!isCollectionPublic);
+									showSuccess(
+										isCollectionPublic
+											? "Collection is now private"
+											: "Collection is now public",
+									);
 								});
 							}
 						} else if (key === "share") {
@@ -103,7 +112,8 @@ const UserBox = () => {
 						} else if (key === "delete") {
 							deleteAccount()
 								.then((response) => {
-									if (response.message === "User deleted") {
+									showSuccess("Account deleted");
+									if (response.status === "success") {
 										// Redirect to the login page
 										window.location.href = "/";
 									} else {
@@ -123,7 +133,7 @@ const UserBox = () => {
 								: "Your collection"
 						}
 					>
-						{isCollectionPublic ? (
+						{!isCollectionPublic ? (
 							<DropdownItem
 								key={"togglePublic"}
 								description="Share your collection pubicly"

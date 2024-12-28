@@ -6,3 +6,5 @@ export interface Collection {
 	user_id: string;
 	albums: Album[];
 }
+
+export default Collection;

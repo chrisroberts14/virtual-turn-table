@@ -3,7 +3,6 @@ import Upload from "@/components/Upload";
 import { useError } from "@/contexts/ErrorContext";
 import { useNavigation } from "@/contexts/NavigationContext";
 import { useUpload } from "@/contexts/UploadContext";
-import type Album from "@/interfaces/Album";
 import getScreenShot from "@/utils/GetScreenShot";
 import { Button } from "@nextui-org/button";
 import { Image } from "@nextui-org/image";
@@ -22,6 +21,7 @@ const ImageCapture = () => {
 		setFadeConfirm,
 		currentImage,
 		setCurrentImage,
+		setTop10,
 	} = useUpload();
 	const webcamRef = useRef<Webcam | null>(null);
 	const { showError } = useError();
@@ -56,8 +56,9 @@ const ImageCapture = () => {
 		}
 		setCurrentImage(imageSrc);
 		ImageToAlbum(imageSrc)
-			.then((album: Album) => {
-				setScannedAlbum(album);
+			.then((data) => {
+				setScannedAlbum(data.best_guess);
+				setTop10(data.top_10_results);
 				setIsUploading(false);
 			})
 			.catch((error) => {
@@ -91,7 +92,10 @@ const ImageCapture = () => {
 					Detecting cameras...
 					<br />
 					<Spinner className="pt-2 pb-4" title="Detecting cameras..." />
-					<Upload triggerConfirmSlide={triggerConfirmSlide} />
+					<Upload
+						triggerConfirmSlide={triggerConfirmSlide}
+						setTop10={setTop10}
+					/>
 				</div>
 			) : (
 				<div className="flex flex-col">
@@ -134,7 +138,7 @@ const ImageCapture = () => {
 								<div className="space-x-2">
 									<Button
 										className="bg-blue-600"
-										onClick={getAlbumFromCamera}
+										onPress={getAlbumFromCamera}
 										disabled={isUploading}
 									>
 										Capture
@@ -142,7 +146,7 @@ const ImageCapture = () => {
 									{cameras.length > 1 && (
 										<Button
 											className="bg-blue-600"
-											onClick={switchCamera}
+											onPress={switchCamera}
 											disabled={cameras.length <= 1}
 										>
 											Switch Camera
@@ -162,7 +166,10 @@ const ImageCapture = () => {
 									</div>
 								}
 							>
-								<Upload triggerConfirmSlide={triggerConfirmSlide} />
+								<Upload
+									triggerConfirmSlide={triggerConfirmSlide}
+									setTop10={setTop10}
+								/>
 							</Tab>
 						</Tabs>
 					</div>

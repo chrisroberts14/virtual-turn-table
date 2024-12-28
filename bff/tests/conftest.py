@@ -39,5 +39,5 @@ def clear_cache():
 @pytest.fixture(scope="function")
 def websocket_client(client):  # pylint: disable=redefined-outer-name
     """Fixture for the websocket client."""
-    with client.websocket_connect("/social/ws/test_user") as websocket:
+    with client.websocket_connect("/ws/test_user") as websocket:
         yield websocket

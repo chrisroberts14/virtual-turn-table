@@ -46,6 +46,10 @@ module.exports = {
 					"0%": { transform: "translateX(0)", opacity: "1" },
 					"100%": { transform: "translateX(-100%)", opacity: "0" },
 				},
+				scroll: {
+					"0%": { transform: "translateX(0)" },
+					"100%": { transform: "translateX(100%)" },
+				},
 			},
 			animation: {
 				slideUp: "slideUp 0.5s ease-out",
@@ -55,6 +59,7 @@ module.exports = {
 				slideOutToRight: "slideOutToRight 0.5s ease-out",
 				slideInFromRight: "slideInFromRight 0.5s ease-out",
 				slideOutToLeft: "slideOutToLeft 0.5s ease-out",
+				scroll: "scroll 2s linear infinite",
 			},
 		},
 	},

@@ -1,69 +1,128 @@
 import GetPublicCollections from "@/api_calls/GetPublicCollections";
 import GetSharedCollections from "@/api_calls/GetSharedCollections";
-import AlbumCollectionDisplay from "@/components/AlbumCollectionDisplay";
-import { AlbumSelectionContext } from "@/contexts/AlbumSelectionContext";
+import { CollectionPreviewVertical } from "@/components/CollectionPreview.tsx";
+import { CollectionContext } from "@/contexts/CollectionContext.tsx";
 import { useError } from "@/contexts/ErrorContext";
 import { useSpotifyToken } from "@/contexts/SpotifyTokenContext";
 import { useUsername } from "@/contexts/UsernameContext";
 import useResizeHandler from "@/hooks/UseResizeHandler";
 import type { Collection } from "@/interfaces/Collection";
+import { Button } from "@nextui-org/button";
 import { Card, CardBody, CardHeader } from "@nextui-org/card";
 import { Skeleton } from "@nextui-org/skeleton";
 import { Spinner } from "@nextui-org/spinner";
-import { Resizable } from "re-resizable";
 import { useEffect } from "react";
 import { useState } from "react";
 
 const SocialPage = () => {
 	const [publicCollections, setPublicCollections] = useState<
 		Collection[] | null
-	>([]);
+	>(null);
 	const [sharedCollections, setSharedCollections] = useState<
 		Collection[] | null
-	>([]);
+	>(null);
 	const { token } = useSpotifyToken();
 	const { username } = useUsername();
 	const contentHeight = useResizeHandler(64);
 	const { showError } = useError();
+	const [publicOffset, setPublicOffset] = useState(0);
+	const [sharedOffset, setSharedOffset] = useState(0);
+	const [isPublicLoading, setIsPublicLoading] = useState(false);
+	const [isSharedLoading, setIsSharedLoading] = useState(false);
+	const [isPublicEnd, setIsPublicEnd] = useState(false);
+	const [isSharedEnd, setIsSharedEnd] = useState(false);
+	const [limit, setLimit] = useState(10);
 
 	useEffect(() => {
 		if (!token || !username) {
 			return;
 		}
-		fetchCollections().then(
-			(value: { pub: Collection[]; shar: Collection[] } | null) => {
-				if (!value) {
-					showError("Failed to fetch collections");
-					return;
-				}
-				setPublicCollections(value.pub);
-				setSharedCollections(value.shar);
-				if (value.pub.length === 0) {
-					setPublicCollections(null);
-				}
-				if (value.shar.length === 0) {
-					setSharedCollections(null);
-				}
-			},
-		);
+		// The limit is set based on the width of the screen
+		if (window.innerWidth < 768) {
+			setLimit(5);
+		} else {
+			setLimit(11);
+		}
+		fetchPublicCollections().catch(() => {
+			showError("Failed to fetch public collections");
+		});
+		fetchSharedCollections().catch(() => {
+			showError("Failed to fetch shared collections");
+		});
 	}, [token, username, showError]);
 
-	const fetchCollections = async () => {
-		const publicCollectionsResult: Collection[] = await GetPublicCollections(
-			token,
-		).catch(() => {
-			return null;
-		});
-		const sharedCollectionsResult: Collection[] = await GetSharedCollections(
-			username,
-			token,
-		).catch(() => {
-			return null;
-		});
-		if (publicCollectionsResult === null || !sharedCollectionsResult === null) {
+	const fetchPublicCollections = async () => {
+		setIsPublicLoading(true);
+		const publicCollectionsResult: Collection[] | undefined | null =
+			await GetPublicCollections(publicOffset, limit, token)
+				.then((result: Collection[] | null | undefined) => {
+					setPublicOffset(publicOffset + limit);
+					if (result === null || result === undefined) {
+						showError("Failed to fetch public collections");
+						return;
+					}
+					if (result.length < limit || result.length === 0) {
+						setIsPublicEnd(true);
+					}
+					// Filter out the collections that are owned by the user
+					const filteredResult = result.filter(
+						(collection) => collection.user_id !== username,
+					);
+
+					// Append the new collections to the existing collections
+					if (publicCollections === null) {
+						setPublicCollections(filteredResult);
+					} else {
+						setPublicCollections([...publicCollections, ...filteredResult]);
+					}
+					return result;
+				})
+				.catch(() => {
+					throw null;
+				});
+		if (
+			publicCollectionsResult === null ||
+			publicCollectionsResult === undefined
+		) {
 			return null;
 		}
-		return { pub: publicCollectionsResult, shar: sharedCollectionsResult };
+		setIsPublicLoading(false);
+		return publicCollectionsResult;
+	};
+
+	const fetchSharedCollections = async () => {
+		setIsSharedLoading(true);
+		const sharedCollectionsResult: Collection[] = await GetSharedCollections(
+			sharedOffset,
+			limit,
+			username,
+			token,
+		)
+			.then((result) => {
+				setSharedOffset(sharedOffset + limit);
+				if (result === null) {
+					showError("Failed to fetch shared collections");
+					return;
+				}
+				if (result.length < limit || result.length === 0) {
+					setIsSharedEnd(true);
+				}
+				// Append the new collections to the existing collections
+				if (sharedCollections === null) {
+					setSharedCollections(result);
+				} else {
+					setSharedCollections([...sharedCollections, ...result]);
+				}
+				return result;
+			})
+			.catch(() => {
+				return null;
+			});
+		if (sharedCollectionsResult === null) {
+			return null;
+		}
+		setIsSharedLoading(false);
+		return sharedCollectionsResult;
 	};
 
 	return (
@@ -71,25 +130,10 @@ const SocialPage = () => {
 			className="flex w-screen bg-gray-700"
 			style={{ height: contentHeight }}
 		>
-			<Resizable
-				className="text-left p-2 pb-8"
-				minWidth="20%"
-				maxWidth="80%"
-				minHeight="100%"
-				defaultSize={{ width: "50%", height: "100%" }}
-				enable={{
-					top: false,
-					right: true,
-					bottom: false,
-					left: false,
-					topRight: false,
-					bottomRight: false,
-					bottomLeft: false,
-					topLeft: false,
-				}}
-			>
+			<div className="w-[50%] p-2">
 				<header className="font-bold text-xl pb-2">Public Collections</header>
-				{publicCollections === null ||
+				{publicCollections?.length === 0 ||
+				publicCollections === null ||
 				(publicCollections.length === 1 &&
 					publicCollections[0].user_id === username) ? (
 					<div className="h-full w-full text-center content-center">
@@ -97,104 +141,138 @@ const SocialPage = () => {
 							There are no public collections
 						</span>
 					</div>
-				) : publicCollections?.length === 0 ? (
+				) : isPublicLoading ? (
 					<Skeleton className="rounded-2xl h-full">
 						<div className="h-full">
 							<Spinner />
 						</div>
 					</Skeleton>
 				) : (
-					<div className="overflow-x-auto flex space-x-2 h-full justify-start">
-						{
-							/* Add a list of public collections here */
-							publicCollections?.map((collection) => {
-								if (
-									collection.user_id === username ||
-									collection.albums.length === 0
-								) {
-									return null;
-								}
-								return (
-									<AlbumSelectionContext.Provider
-										value={{
-											albums: collection.albums,
-											setAlbums: () => {},
-											hoveredAlbum: null,
-											setHoveredAlbum: () => {},
-										}}
-										key={`${collection.user_id} - public`}
-									>
-										<Card className="bg-gray-900 min-w-max">
+					<>
+						<div className="overflow-x-auto flex flex-wrap justify-start gap-2 h-[90%]">
+							{
+								/* Add a list of public collections here */
+								publicCollections?.map((collection) => {
+									if (
+										collection.user_id === username ||
+										collection.albums.length === 0
+									) {
+										return null;
+									}
+									return (
+										<Card
+											className="bg-gray-900 w-[132px] h-[240px]"
+											key={`${collection.user_id} - private`}
+										>
 											<CardHeader>
-												<span className="font-bold text-lg text-wrap text-center w-full">
+												<span className="font-bold text-lg text-nowrap text-center w-full">
 													{collection.user_id}
 												</span>
 											</CardHeader>
-											<CardBody className="overflow-y-auto">
-												<AlbumCollectionDisplay orientation="vertical" />
+											<CardBody className="overflow-y-hidden">
+												<CollectionContext.Provider
+													value={{
+														albums: collection.albums,
+														setAlbums: () => {},
+														isCollectionOpen: false,
+														setIsCollectionOpen: () => {},
+														username: collection.user_id,
+													}}
+												>
+													<CollectionPreviewVertical />
+												</CollectionContext.Provider>
 											</CardBody>
 										</Card>
-									</AlbumSelectionContext.Provider>
-								);
-							})
-						}
-					</div>
+									);
+								})
+							}
+						</div>
+						<div className="w-full text-center h-[7%] content-center">
+							<Button
+								className="max-w-[25%]"
+								onPress={fetchPublicCollections}
+								isLoading={isPublicLoading}
+								isDisabled={isPublicEnd}
+							>
+								{!isPublicEnd ? "Load More" : "No more collections"}
+							</Button>
+						</div>
+					</>
 				)}
-			</Resizable>
-			<div className="pb-8 text-right p-2 border-l-5 border-black min-w-[20%] w-full justify-end">
+			</div>
+			<div className="text-right border-l-5 border-black w-[50%] justify-end p-2 flex-wrap">
 				<header className="font-bold text-xl pb-2">Shared With You</header>
-				{sharedCollections === null ? (
+				{sharedCollections?.length === 0 ? (
 					<div className="h-full w-full text-center content-center">
 						{" "}
 						<span className="text-xl font-extrabold">
 							You have no shared collections
 						</span>{" "}
 					</div>
-				) : sharedCollections?.length === 0 ? (
+				) : sharedCollections === null ? (
 					<Skeleton className="rounded-2xl h-full">
 						<div className="h-full">
 							<Spinner />
 						</div>
 					</Skeleton>
 				) : (
-					<div
-						className="overflow-x-auto flex space-x-reverse space-x-2 h-full"
-						style={{ direction: "rtl" }}
-					>
-						{
-							/* Add a list of shared collections here */
-							sharedCollections?.map((collection) => {
-								if (
-									collection.user_id === username ||
-									collection.albums.length === 0
-								) {
-									return null;
-								}
-								return (
-									<AlbumSelectionContext.Provider
-										value={{
-											albums: collection.albums,
-											setAlbums: () => {},
-											hoveredAlbum: null,
-											setHoveredAlbum: () => {},
-										}}
-										key={`${collection.user_id} - shared`}
-									>
-										<Card className="bg-gray-900 min-w-max">
+					<>
+						<div
+							className="overflow-x-auto flex flex-wrap gap-2 h-[90%]"
+							style={{ direction: "rtl" }}
+						>
+							{
+								/* Add a list of shared collections here */
+								sharedCollections?.map((collection) => {
+									let isCollectionOpen = false;
+									const setIsCollectionOpen = (value: boolean) => {
+										isCollectionOpen = value;
+									};
+									if (
+										collection.user_id === username ||
+										collection.albums.length === 0
+									) {
+										return null;
+									}
+									return (
+										<Card
+											className="bg-gray-900 min-w-max w-[132px] h-[240px]"
+											key={`${collection.user_id} - public`}
+										>
 											<CardHeader>
 												<span className="font-bold text-lg text-wrap text-center w-full">
 													{collection.user_id}
 												</span>
 											</CardHeader>
-											<CardBody className="overflow-y-auto">
-												<AlbumCollectionDisplay orientation="vertical" />
+											<CardBody className="overflow-y-hidden">
+												<CollectionContext.Provider
+													value={{
+														albums: collection.albums,
+														setAlbums: () => {},
+														isCollectionOpen: isCollectionOpen,
+														setIsCollectionOpen,
+														username: collection.user_id,
+													}}
+												>
+													<CollectionPreviewVertical />
+												</CollectionContext.Provider>
 											</CardBody>
 										</Card>
-									</AlbumSelectionContext.Provider>
-								);
-							})
-						}
-					</div>
+									);
+								})
+							}
+						</div>
+						<div className="w-full h-[7%] text-center content-center">
+							<Button
+								className="max-w-[25%]"
+								onPress={fetchSharedCollections}
+								isLoading={isSharedLoading}
+								isDisabled={isSharedEnd}
+							>
+								{!isSharedEnd ? "Load More" : "No more collections"}
+							</Button>
+						</div>
+					</>
 				)}
 			</div>
 		</div>

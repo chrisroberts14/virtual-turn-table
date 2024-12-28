@@ -7,10 +7,11 @@ import {
 } from "react";
 
 interface CollectionContext {
-	albums: Album[];
+	albums: Album[] | undefined;
 	setAlbums: Dispatch<SetStateAction<Album[]>>;
 	isCollectionOpen: boolean;
-	setIsCollectionOpen: Dispatch<SetStateAction<boolean>>;
+	setIsCollectionOpen: (value: boolean) => void;
+	username: string | null;
 }
 
 export const CollectionContext = createContext<CollectionContext | undefined>(
