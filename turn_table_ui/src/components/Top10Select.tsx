@@ -51,7 +51,7 @@ const Top10Select = () => {
 						key={album.album_uri}
 						className="relative transition duration-300 hover:scale-110"
 						style={{ height: 125 }}
-						onPress={() => {
+						onClick={() => {
 							handleClick(album);
 						}}
 						onKeyDown={() => {
