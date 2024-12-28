@@ -1,4 +1,4 @@
-"""Social endpoints for the BFF."""
+"""Endpoints in the BFF related to social features."""
 
 import json
 from functools import lru_cache
@@ -6,7 +6,6 @@ from typing import Annotated
 
 import requests
 from fastapi import APIRouter, Depends
-from fastapi.responses import JSONResponse
 
 from bff.api_models import Collection, Album, Song, APIException
 from bff.config import Settings, get_settings
@@ -21,6 +20,7 @@ def get_albums(album_uris: tuple[str], spotify_access_token: str):
     """
     Helper function which caches previous calls.
 
+    This is
     so we don't end up calling the spotify API multiple times for the same collection.
 
     :param spotify_access_token:
@@ -40,6 +40,50 @@ def get_albums(album_uris: tuple[str], spotify_access_token: str):
     return result.json()
 
 
+def convert_track_item_to_song(track_item: dict, album_uri: str) -> Song:
+    """
+    Convert a track item to a Song object.
+
+    :param track_item:
+    :return:
+    """
+    return Song(
+        title=track_item["name"],
+        artists=[artist["name"] for artist in track_item["artists"]],
+        uri=track_item["uri"],
+        album_uri=album_uri,
+        duration_ms=track_item["duration_ms"],
+    )
+
+
+def convert_album_response_to_albums(
+    response: dict, spotify_access_token: str
+) -> list[Album]:
+    """
+    Convert the album response from the user_data service to a list of Album objects.
+
+    :param response:
+    :param spotify_access_token:
+    :return:
+    """
+    return [
+        Album(
+            title=album["name"],
+            artists=[artist["name"] for artist in album["artists"]],
+            image_url=album["images"][0]["url"],
+            album_uri=album["id"],
+            tracks_url=album["tracks"]["href"],
+            songs=[
+                convert_track_item_to_song(track, album["id"])
+                for track in album["tracks"]["items"]
+            ],
+        )
+        for album in get_albums(tuple(response["albums"]), spotify_access_token)[
+            "albums"
+        ]
+    ]
+
+
 def convert_response_to_collection(
     spotify_access_token: str, response: dict
 ) -> Collection:
@@ -52,28 +96,7 @@ def convert_response_to_collection(
     """
     return Collection(
         user_id=response["username"],
-        albums=[
-            Album(
-                title=album["name"],
-                artists=[artist["name"] for artist in album["artists"]],
-                image_url=album["images"][0]["url"],
-                album_uri=album["id"],
-                tracks_url=album["tracks"]["href"],
-                songs=[
-                    Song(
-                        title=track["name"],
-                        artists=[artist["name"] for artist in track["artists"]],
-                        uri=track["uri"],
-                        album_uri=album["id"],
-                        duration_ms=track["duration_ms"],
-                    )
-                    for track in album["tracks"]["items"]
-                ],
-            )
-            for album in get_albums(tuple(response["albums"]), spotify_access_token)[
-                "albums"
-            ]
-        ],
+        albums=convert_album_response_to_albums(response, spotify_access_token),
     )
 
 
@@ -84,20 +107,23 @@ async def get_public_collections(
     spotify_access_token: str,
     settings: Annotated[Settings, Depends(get_settings)],
 ) -> list[Collection]:
-    """Get all public collections."""
+    """
+    Get all public collections.
+
+    :param offset:
+    :param limit:
+    :param spotify_access_token:
+    :param settings:
+    """
     endpoint = f"{settings.user_data_address}/social/get_public_collections"
     response = requests.get(
         endpoint, timeout=20, params={"offset": offset, "count": limit}
     )
     if response.status_code != 200:
         raise APIException(400, "Failed to get public collections")
-    result = response.json()
-    # This returns a dictionary with the username and the albums in the following form
-    # { "username": "user1", "albums": ["album1URI", "album2URI"] }
-    # The max we can do in one call is 20
-    # So need to make a call for each user to get the album data
     return [
-        convert_response_to_collection(spotify_access_token, user) for user in result
+        convert_response_to_collection(spotify_access_token, user)
+        for user in response.json()
     ]
 
 
@@ -125,16 +151,16 @@ async def get_shared_collections(
     )
     if response.status_code != 200:
         raise APIException(400, "Failed to get shared collections")
-    result = response.json()
     return [
-        convert_response_to_collection(spotify_access_token, user) for user in result
+        convert_response_to_collection(spotify_access_token, user)
+        for user in response.json()
     ]
 
 
 @social_router.post("/share_collection")
 async def share_collection(
     data: ShareCollectionIn, settings: Annotated[Settings, Depends(get_settings)]
-):
+) -> None:
     """
     Share a collection with another user.
 
@@ -148,13 +174,12 @@ async def share_collection(
         raise APIException(400, "Failed to share collection")
     if data.receiver in manager.active_connections:
         await manager.send_message(json.dumps(response.json()), data.receiver)
-    return JSONResponse({"message": "Collection shared"})
 
 
 @social_router.put("/toggle_collection_public/{username}")
 async def toggle_collection_public(
     username: str, settings: Annotated[Settings, Depends(get_settings)]
-):
+) -> None:
     """
     Toggle if a user's collection is public.
 
