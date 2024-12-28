@@ -39,7 +39,7 @@ class TestReverseImageSearch:
             },
         )
         assert response.status_code == 200
-        assert response.json() == "Arcade Fire We"
+        assert response.json()["best_guess"] == "Arcade Fire We"
 
     def test_bad_file_type(self, client):
         """
