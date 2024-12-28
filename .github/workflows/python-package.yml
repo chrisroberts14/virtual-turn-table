@@ -12,6 +12,7 @@ on:
 jobs:
   build_services:
     runs-on: ubuntu-latest
+    environment: common-coverage
     strategy:
         fail-fast: false
         matrix:
@@ -33,14 +34,3 @@ jobs:
           pytest ${{ matrix.directories }} --cov-fail-under=100 -n 4
         env:
           PYTHONPATH: ${{ github.workspace }}
-          SPOTIFY_CLIENT_ID: "spotify_client_id"
-          SPOTIFY_CLIENT_SECRET: "spotify_client_secret"
-          SPOTIFY_REDIRECT_URI: "spotify_redirect_uri"
-          IMAGE_TO_ALBUM_ADDRESS: "img_to_album_address"
-          GOOGLE_PROJECT_ID: "google_project_id"
-          GOOGLE_PRIVATE_KEY_ID: "google_private_key_id"
-          GOOGLE_PRIVATE_KEY: "google_private_key"
-          GOOGLE_CLIENT_EMAIL: "google_client_email"
-          GOOGLE_CLIENT_ID: "google_client_id"
-          GOOGLE_CLIENT_X509_CERT_URL: "google_client_x509_cert_url"
-          USER_DATA_ADDRESS: "user_data_address"
