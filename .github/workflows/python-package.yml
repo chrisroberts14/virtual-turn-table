@@ -12,7 +12,7 @@ on:
 jobs:
   build_services:
     runs-on: ubuntu-latest
-    environment: common-coverage
+    environment: common_environment
     strategy:
         fail-fast: false
         matrix:
