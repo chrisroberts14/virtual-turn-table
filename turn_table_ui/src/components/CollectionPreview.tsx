@@ -167,6 +167,7 @@ export const CollectionPreviewVertical = () => {
 						})
 					: null}
 			</div>
+			<Button onPress={() => setIsCollectionOpen(true)}>Open</Button>
 			<CollectionContext.Provider
 				value={{
 					isCollectionOpen,
