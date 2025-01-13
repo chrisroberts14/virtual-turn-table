@@ -6,7 +6,7 @@ Jinja2~=3.1.5
 psycopg2-binary~=2.9.10
 
 pydantic_settings~=2.7.1
-pydantic~=2.10.4
+pydantic~=2.10.5
 pylint~=3.3.3
 pytest-cov~=6.0.0
 pytest-mock~=3.14.0
