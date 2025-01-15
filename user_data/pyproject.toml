@@ -1,0 +1,36 @@
+[project]
+name = "Virtual_Turntable_User_Data_Service"
+version = "0.1.0"
+description = "A service for managing user data for the Virtual Turntable project."
+authors = [
+    {name = "Christopher Roberts"}
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+requires-python=">=3.10"
+
+[project.urls]
+github = "https://github.com/chrisroberts14/virtual-turn-table/tree/main/user_data"
+
+[tool.poetry]
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.115.6"
+psycopg2-binary = "^2.9.10"
+pydantic_settings = "^2.7.1"
+pydantic = "^2.10.4"
+requests = "^2.32.3"
+sqlalchemy = "^2.0.36"
+
+[tool.poetry.group.dev.dependencies]
+alembic = "^1.14.0"
+httpx = "^0.28.1"
+pytest = "^8.3.4"
+pytest-cov = "^6.0.0"
+pytest-mock = "^3.14.0"
+pytest-xdist = "^3.6.1"
+pylint = "^3.3.3"
