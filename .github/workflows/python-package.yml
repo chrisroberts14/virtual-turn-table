@@ -30,7 +30,7 @@ jobs:
           python -m poetry install --directory ${{ matrix.directories }} --no-root
       - name: Test with pytest
         run: |
-          python -m pytest ${{ matrix.directories }} --cov-fail-under=100 -n 4
+          poetry run pytest ${{ matrix.directories }} --cov-fail-under=100 -n 4
         env:
           PYTHONPATH: ${{ github.workspace }}
           SPOTIFY_CLIENT_ID: "spotify_client_id"
