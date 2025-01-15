@@ -20,9 +20,8 @@ TO BE ADDED
 #### Python
 1. Install python 3.11+
 2. Initialize a virtual environment
-3. Install Poetry with `pip install poetry`
-4. Install the requirements with `pip install -r requirements.txt`
-5. Run each of the microservices using `fastapi dev <service_name> --reload --port <port>`
+3. Install the requirements with `pip install -r requirements.txt`
+4. Run each of the microservices using `fastapi dev <service_name> --reload --port <port>`
 
 #### React
 1. Install node.js 18.0+
