@@ -70,7 +70,7 @@
 		"@types/enzyme": "^3.10.18",
 		"@types/jest": "^29.5.14",
 		"@types/react": "19.0.2",
-		"@types/react-dom": "19.0.2",
+		"@types/react-dom": "19.0.3",
 		"@vitejs/plugin-react": "^4.3.4",
 		"@vitest/coverage-v8": "^2.1.8",
 		"@xpd/tailwind-3dtransforms": "^1.0.3",
