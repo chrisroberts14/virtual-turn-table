@@ -1,5 +1,5 @@
 fastapi[standard]~=0.115.6
-filelock~=3.16.1
+filelock~=3.17.0
 
 google-cloud-vision~=3.9.0
 httpx~=0.28.1
