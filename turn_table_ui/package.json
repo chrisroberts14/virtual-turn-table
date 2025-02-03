@@ -42,7 +42,7 @@
 		"@nextui-org/use-infinite-scroll": "^2.2.1",
 		"@nextui-org/user": "^2.2.4",
 		"@react-aria/visually-hidden": "3.8.18",
-		"@types/node": "^22.10.2",
+		"@types/node": "^22.13.0",
 		"axios": "^1.7.9",
 		"clsx": "2.1.1",
 		"dotenv": "^16.4.7",
