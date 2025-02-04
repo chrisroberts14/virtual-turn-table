@@ -7,7 +7,7 @@ psycopg2-binary~=2.9.10
 
 pydantic_settings~=2.7.1
 pydantic~=2.10.6
-pylint~=3.3.3
+pylint~=3.3.4
 pytest-cov~=6.0.0
 pytest-mock~=3.14.0
 pytest-xdist~=3.6.1
