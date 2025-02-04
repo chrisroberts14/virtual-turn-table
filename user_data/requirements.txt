@@ -1,5 +1,5 @@
 alembic~=1.14.1
-fastapi[standard]~=0.115.6
+fastapi[standard]~=0.115.8
 filelock~=3.17.0
 httpx~=0.28.1
 Jinja2~=3.1.5
