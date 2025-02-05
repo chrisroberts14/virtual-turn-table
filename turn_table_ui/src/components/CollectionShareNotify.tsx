@@ -4,7 +4,7 @@ import CollectionShareModal from "@/components/CollectionShareModal";
 import { CollectionShareConfirmContext } from "@/contexts/CollectionShareConfirmContext";
 import { useUsername } from "@/contexts/UsernameContext";
 import type Notification from "@/interfaces/Notification";
-import { Tooltip } from "@nextui-org/tooltip";
+import { Tooltip } from "@heroui/tooltip";
 import { useEffect, useState } from "react";
 
 const CollectionShareNotify = () => {

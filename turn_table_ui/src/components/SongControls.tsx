@@ -2,7 +2,7 @@ import TrackScrubber from "@/components/TrackScrubber.tsx";
 import { useMusic } from "@/contexts/MusicContext.tsx";
 import { useSongControl } from "@/contexts/SongControlContext.tsx";
 import type Song from "@/interfaces/Song.tsx";
-import { Button } from "@nextui-org/button";
+import { Button } from "@heroui/button";
 import { FaPause, FaPlay } from "react-icons/fa";
 import { RxTrackNext, RxTrackPrevious } from "react-icons/rx";
 

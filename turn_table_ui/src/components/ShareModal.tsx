@@ -4,8 +4,8 @@ import { useError } from "@/contexts/ErrorContext";
 import { useShare } from "@/contexts/ShareContext";
 import { useSuccess } from "@/contexts/SuccessContext.tsx";
 import { useUsername } from "@/contexts/UsernameContext";
-import { Button } from "@nextui-org/button";
-import { Modal, ModalContent } from "@nextui-org/modal";
+import { Button } from "@heroui/button";
+import { Modal, ModalContent } from "@heroui/modal";
 
 const ShareModal = () => {
 	const { username } = useUsername();

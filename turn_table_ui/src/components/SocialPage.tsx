@@ -7,10 +7,10 @@ import { useSpotifyToken } from "@/contexts/SpotifyTokenContext";
 import { useUsername } from "@/contexts/UsernameContext";
 import useResizeHandler from "@/hooks/UseResizeHandler";
 import type { Collection } from "@/interfaces/Collection";
-import { Button } from "@nextui-org/button";
-import { Card, CardBody, CardHeader } from "@nextui-org/card";
-import { Skeleton } from "@nextui-org/skeleton";
-import { Spinner } from "@nextui-org/spinner";
+import { Button } from "@heroui/button";
+import { Card, CardBody, CardHeader } from "@heroui/card";
+import { Skeleton } from "@heroui/skeleton";
+import { Spinner } from "@heroui/spinner";
 import { useEffect } from "react";
 import { useState } from "react";
 

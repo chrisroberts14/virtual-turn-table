@@ -4,10 +4,10 @@ import Top10Select from "@/components/Top10Select.tsx";
 import { useMusic } from "@/contexts/MusicContext";
 import { useUpload } from "@/contexts/UploadContext";
 import { useUsername } from "@/contexts/UsernameContext";
-import { Button } from "@nextui-org/button";
-import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
-import { Skeleton } from "@nextui-org/skeleton";
-import { Spacer } from "@nextui-org/spacer";
+import { Button } from "@heroui/button";
+import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
+import { Skeleton } from "@heroui/skeleton";
+import { Spacer } from "@heroui/spacer";
 import { useEffect, useState } from "react";
 
 const AlbumConfirm = () => {

@@ -1,5 +1,5 @@
 import { useSongControl } from "@/contexts/SongControlContext.tsx";
-import { Card, CardBody } from "@nextui-org/card";
+import { Card, CardBody } from "@heroui/card";
 
 const SongDetails = () => {
 	const { currentSong } = useSongControl();

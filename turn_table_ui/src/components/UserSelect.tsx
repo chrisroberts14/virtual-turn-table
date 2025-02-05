@@ -1,8 +1,8 @@
 import GetUsersBySearch from "@/api_calls/GetUsersBySearch";
 import { useShare } from "@/contexts/ShareContext";
 import type User from "@/interfaces/User";
-import { Autocomplete, AutocompleteItem } from "@nextui-org/autocomplete";
-import { User as UserComp } from "@nextui-org/user";
+import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
+import { User as UserComp } from "@heroui/user";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 

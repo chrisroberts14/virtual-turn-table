@@ -9,15 +9,15 @@ import { useSuccess } from "@/contexts/SuccessContext.tsx";
 import useUserBox from "@/hooks/UseUserBox";
 import { clearStateData } from "@/interfaces/StateData.tsx";
 import eventEmitter from "@/utils/EventEmitter";
-import { Avatar } from "@nextui-org/avatar";
+import { Avatar } from "@heroui/avatar";
 import {
 	Dropdown,
 	DropdownItem,
 	DropdownMenu,
 	DropdownSection,
 	DropdownTrigger,
-} from "@nextui-org/dropdown";
-import { User } from "@nextui-org/user";
+} from "@heroui/dropdown";
+import { User } from "@heroui/user";
 import { useEffect, useState } from "react";
 import {
 	MdDelete,

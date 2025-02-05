@@ -1,5 +1,5 @@
 import { useSongControl } from "@/contexts/SongControlContext.tsx";
-import { Slider, type SliderValue } from "@nextui-org/slider";
+import { Slider, type SliderValue } from "@heroui/slider";
 import { useState } from "react";
 import { FaVolumeDown, FaVolumeUp } from "react-icons/fa";
 

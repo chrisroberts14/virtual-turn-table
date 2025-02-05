@@ -5,10 +5,10 @@ import {
 } from "@/contexts/CollectionContext.tsx";
 import { useMusic } from "@/contexts/MusicContext.tsx";
 import type Album from "@/interfaces/Album.tsx";
-import { Button } from "@nextui-org/button";
-import { Image } from "@nextui-org/image";
-import { Skeleton } from "@nextui-org/skeleton";
-import { Tooltip } from "@nextui-org/tooltip";
+import { Button } from "@heroui/button";
+import { Image } from "@heroui/image";
+import { Skeleton } from "@heroui/skeleton";
+import { Tooltip } from "@heroui/tooltip";
 import { useEffect, useRef, useState } from "react";
 
 export const CollectionPreviewHorizontal = () => {

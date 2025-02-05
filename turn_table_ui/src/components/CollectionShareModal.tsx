@@ -1,7 +1,7 @@
 import { useCollectionShareConfirm } from "@/contexts/CollectionShareConfirmContext.tsx";
 import type Notification from "@/interfaces/Notification.tsx";
-import { Button } from "@nextui-org/button";
-import { Modal, ModalContent } from "@nextui-org/modal";
+import { Button } from "@heroui/button";
+import { Modal, ModalContent } from "@heroui/modal";
 import {
 	Table,
 	TableBody,
@@ -9,7 +9,7 @@ import {
 	TableColumn,
 	TableHeader,
 	TableRow,
-} from "@nextui-org/table";
+} from "@heroui/table";
 
 const CollectionShareModal = () => {
 	const {

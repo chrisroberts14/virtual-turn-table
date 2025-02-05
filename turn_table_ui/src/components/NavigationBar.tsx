@@ -3,13 +3,8 @@ import Login from "@/components/Login.tsx";
 import { Logo } from "@/components/Logo.tsx";
 import UserBox from "@/components/UserBox.tsx";
 import { useNavigation } from "@/contexts/NavigationContext.tsx";
-import {
-	Navbar,
-	NavbarBrand,
-	NavbarContent,
-	NavbarItem,
-} from "@nextui-org/navbar";
-import { Tab, Tabs } from "@nextui-org/tabs";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem } from "@heroui/navbar";
+import { Tab, Tabs } from "@heroui/tabs";
 import type { Key } from "@react-types/shared";
 import { FaPlay } from "react-icons/fa";
 import { IoScan } from "react-icons/io5";

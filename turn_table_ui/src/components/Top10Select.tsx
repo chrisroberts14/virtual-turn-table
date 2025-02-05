@@ -3,7 +3,7 @@ import { useMusic } from "@/contexts/MusicContext.tsx";
 import { useUpload } from "@/contexts/UploadContext.tsx";
 import { useUsername } from "@/contexts/UsernameContext.tsx";
 import type Album from "@/interfaces/Album.tsx";
-import { Image } from "@nextui-org/image";
+import { Image } from "@heroui/image";
 
 const Top10Select = () => {
 	const {

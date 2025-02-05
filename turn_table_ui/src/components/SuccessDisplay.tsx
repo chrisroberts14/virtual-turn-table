@@ -1,6 +1,6 @@
 import { useSuccess } from "@/contexts/SuccessContext.tsx";
-import { Button } from "@nextui-org/button";
-import { Modal, ModalBody, ModalContent } from "@nextui-org/modal";
+import { Button } from "@heroui/button";
+import { Modal, ModalBody, ModalContent } from "@heroui/modal";
 import { useEffect, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 

@@ -1,6 +1,6 @@
 import type Album from "@/interfaces/Album.tsx";
-import { Image } from "@nextui-org/image";
-import { Skeleton } from "@nextui-org/skeleton";
+import { Image } from "@heroui/image";
+import { Skeleton } from "@heroui/skeleton";
 
 const AlbumDisplay = (props: { album: Album | null }) => {
 	return (

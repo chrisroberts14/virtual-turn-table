@@ -10,8 +10,8 @@ import { useUsername } from "@/contexts/UsernameContext";
 import type Album from "@/interfaces/Album";
 import type { Collection as CollectionType } from "@/interfaces/Collection";
 import eventEmitter from "@/utils/EventEmitter";
-import { Button } from "@nextui-org/button";
-import { Image } from "@nextui-org/image";
+import { Button } from "@heroui/button";
+import { Image } from "@heroui/image";
 import { useCallback, useEffect, useState } from "react";
 
 interface AlbumCollectionDisplayProps {
