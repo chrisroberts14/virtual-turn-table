@@ -14,5 +14,5 @@ export const toggleCollectionPublic = `http://${import.meta.env.VITE_BFF_ADDRESS
 export const getIsCollectionPublic = `http://${import.meta.env.VITE_BFF_ADDRESS}/user/is_collection_public`;
 export const deleteUser = `http://${import.meta.env.VITE_BFF_ADDRESS}/user/`;
 export const getUsersBySearch = `http://${import.meta.env.VITE_BFF_ADDRESS}/user/search`;
-export const BFFWebSocket = `ws://${import.meta.env.VITE_BFF_ADDRESS}/social/ws`;
+export const BFFWebSocket = `ws://${import.meta.env.VITE_BFF_ADDRESS}/ws`;
 export const getNotifications = `http://${import.meta.env.VITE_BFF_ADDRESS}/user/get_notifications`;
