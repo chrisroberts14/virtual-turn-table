@@ -9,7 +9,6 @@ import { useSuccess } from "@/contexts/SuccessContext.tsx";
 import useUserBox from "@/hooks/UseUserBox";
 import { clearStateData } from "@/interfaces/StateData.tsx";
 import eventEmitter from "@/utils/EventEmitter";
-import { Avatar } from "@heroui/avatar";
 import {
 	Dropdown,
 	DropdownItem,
@@ -81,13 +80,13 @@ const UserBox = () => {
 					<div>
 						<User
 							name={username}
+							as={"button"}
 							avatarProps={{
 								src: profileImage,
 							}}
 							isFocusable={true}
 							className="hidden sm:flex"
 						/>
-						<Avatar src={profileImage} className="block sm:hidden" />
 					</div>
 				</DropdownTrigger>
 				<DropdownMenu
