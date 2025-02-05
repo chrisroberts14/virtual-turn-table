@@ -1,6 +1,6 @@
 import { useMusic } from "@/contexts/MusicContext.tsx";
 import { useSongControl } from "@/contexts/SongControlContext.tsx";
-import { Image } from "@nextui-org/image";
+import { Image } from "@heroui/image";
 import { useEffect, useState } from "react";
 
 const SpinningVinyl = () => {

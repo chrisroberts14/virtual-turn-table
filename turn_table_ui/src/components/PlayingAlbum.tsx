@@ -1,9 +1,9 @@
 import { useMusic } from "@/contexts/MusicContext.tsx";
 import { useSongControl } from "@/contexts/SongControlContext.tsx";
-import { Card, CardBody } from "@nextui-org/card";
-import { Divider } from "@nextui-org/divider";
-import { Image } from "@nextui-org/image";
-import { Skeleton } from "@nextui-org/skeleton";
+import { Card, CardBody } from "@heroui/card";
+import { Divider } from "@heroui/divider";
+import { Image } from "@heroui/image";
+import { Skeleton } from "@heroui/skeleton";
 
 const PlayingAlbum = () => {
 	const { currentAlbum } = useMusic();

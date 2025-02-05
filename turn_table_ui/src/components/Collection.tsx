@@ -1,11 +1,11 @@
 import { useCollection } from "@/contexts/CollectionContext.tsx";
 import { useMusic } from "@/contexts/MusicContext.tsx";
 import type Album from "@/interfaces/Album.tsx";
-import { Button } from "@nextui-org/button";
-import { Card, CardFooter, CardHeader } from "@nextui-org/card";
-import { Image } from "@nextui-org/image";
-import { Modal, ModalBody, ModalContent } from "@nextui-org/modal";
-import { Skeleton } from "@nextui-org/skeleton";
+import { Button } from "@heroui/button";
+import { Card, CardFooter, CardHeader } from "@heroui/card";
+import { Image } from "@heroui/image";
+import { Modal, ModalBody, ModalContent } from "@heroui/modal";
+import { Skeleton } from "@heroui/skeleton";
 import { useState } from "react";
 import { FaArrowDown, FaArrowUp, FaPlay } from "react-icons/fa";
 

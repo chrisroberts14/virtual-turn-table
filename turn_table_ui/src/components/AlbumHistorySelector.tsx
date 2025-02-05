@@ -1,8 +1,8 @@
 import AlbumCollectionDisplay from "@/components/AlbumCollectionDisplay.tsx";
 import { AlbumSelectionContext } from "@/contexts/AlbumSelectionContext.tsx";
 import type Album from "@/interfaces/Album.tsx";
-import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
-import { Skeleton } from "@nextui-org/skeleton";
+import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
+import { Skeleton } from "@heroui/skeleton";
 import { useState } from "react";
 
 const AlbumHistorySelector = () => {

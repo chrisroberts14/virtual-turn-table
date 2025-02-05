@@ -9,7 +9,7 @@ import {
 	TableHeader,
 	TableRow,
 	getKeyValue,
-} from "@nextui-org/table";
+} from "@heroui/table";
 import type { Key } from "@react-types/shared";
 import { useEffect, useState } from "react";
 

@@ -1,5 +1,5 @@
 import { useSongControl } from "@/contexts/SongControlContext.tsx";
-import { Slider, type SliderValue } from "@nextui-org/slider";
+import { Slider, type SliderValue } from "@heroui/slider";
 
 const TrackScrubber = () => {
 	const { player, trackPosition, trackDuration } = useSongControl();
