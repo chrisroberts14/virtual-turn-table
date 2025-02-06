@@ -1,0 +1,6 @@
+FastAPI
+Pydantic
+SQLAlchemy
+WebSockets
+HeroUI
+stylings

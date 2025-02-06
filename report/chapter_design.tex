@@ -1,14 +1,14 @@
-\chapter{Design} \label{cha:design}
+\chapter{Design}~\label{cha:design}
 
-Before initiating detailed design work, it was decided this project would be a web application accessible via a browser. This approach offers several advantages, such as cross-platform compatibility, ease of access (requiring only a browser), scalability, and the ability to leverage existing web technologies \cite{6822300}. With this established, a plan was formulated, encompassing architectural decisions, technology stack selection, and the definition of testing criteria.
+Before initiating detailed design work, it was decided this project would be a web application accessible via a browser. This approach offers several advantages, such as cross-platform compatibility, ease of access (requiring only a browser), scalability, and the ability to leverage existing web technologies~\cite{6822300}. With this established, a plan was formulated, encompassing architectural decisions, technology stack selection, and the definition of testing criteria.
 
 \section{Architecture}
 The system architecture defines the overall structure of the project and the communication between its components. For this project, two architectural approaches were considered: a monolithic architecture and a microservices-based architecture.
 
 \subsection{Monolithic}
-For this project, the monolithic approach offers several benefits. With all code centralized within a single framework, development is simplified, and debugging becomes more straightforward. Additionally, initial deployment is less complex since only one program needs to be managed once development is complete \cite{9109514}.
+For this project, the monolithic approach offers several benefits. With all code centralized within a single framework, development is simplified, and debugging becomes more straightforward. Additionally, initial deployment is less complex since only one program needs to be managed once development is complete~\cite{9109514}.
 
-However, the monolithic design has its drawbacks. As the system grows, maintaining a large, integrated codebase can become increasingly challenging; test suites may grow more complex and time-consuming to execute. During deployment, a single fault could potentially bring down the entire system, resulting in a complete loss of service. Similarly, even minor updates would require redeploying the entire monolith, increasing the risk of downtime. Moreover, this approach does not scale as effectively for web applications; as user demand increases, the need to redeploy the monolith frequently to manage higher request volumes becomes a significant concern \cite{9109514}.
+However, the monolithic design has its drawbacks. As the system grows, maintaining a large, integrated codebase can become increasingly challenging; test suites may grow more complex and time-consuming to execute. During deployment, a single fault could potentially bring down the entire system, resulting in a complete loss of service. Similarly, even minor updates would require redeploying the entire monolith, increasing the risk of downtime. Moreover, this approach does not scale as effectively for web applications; as user demand increases, the need to redeploy the monolith frequently to manage higher request volumes becomes a significant concern~\cite{9109514}.
 
 Although the scope of this project is small and so the drawbacks of a monolithic approach would have minimal impact, it was determined that the project should be designed to be fully scalable. With the potential for future growth in features and user base, the limitations inherent in a monolithic architecture would eventually become a hindrance in this scenario. Consequently, the monolithic approach was ruled out in favour of a more scalable architectural model.
 
@@ -16,11 +16,11 @@ Although the scope of this project is small and so the drawbacks of a monolithic
     \centering
     \includegraphics[width=0.35\linewidth]{figures/monolithic_arch.png}
     \caption{A potential architecture for a monolithic approach}
-    \label{fig:monolith-arch}
+~\label{fig:monolith-arch}
 \end{figure}
 
 \subsection{Microservices}
-The alternative approach examined was the use of microservices. In this architecture, the application's functionality is divided into separate services that communicate with each other using standardized protocols such as HTTP.
+The alternative approach examined was the use of microservices. In this architecture, the application's functionality is divided into separate services that communicate with each other using standardized protocols such as HTTP.\@
 
 The primary benefits of this approach pertain to deployment and maintenance. Once deployed, the system can be scaled more efficiently—only those services experiencing high demand need to be replicated, which is significantly faster and more resource-efficient than scaling a monolithic system. Additionally, maintenance is simplified because each service operates independently; developers can focus on individual components without needing a comprehensive understanding of the entire system something that can become difficult even in small systems like this project.
 
@@ -34,7 +34,7 @@ However, the increased complexity of managing multiple services means that initi
 \end{figure}
 
 \subsection{Final design}
-The final design employs a microservices approach alongside a backend-for-frontend (BFF) design pattern. In this pattern, a dedicated backend service is created for each type of frontend application, such as desktop or mobile, ensuring that each backend caters specifically to a specific interface’s requirements. This pattern leverages the benefits of a microservices architecture and helps to maintain complexity by isolating functionality \cite{BFF}. Details about each microservice are described in Section~\ref{sec:backend-design}.
+The final design employs a microservices approach alongside a backend-for-frontend (BFF) design pattern. In this pattern, a dedicated backend service is created for each type of frontend application, such as desktop or mobile, ensuring that each backend caters specifically to a specific interface’s requirements. This pattern leverages the benefits of a microservices architecture and helps to maintain complexity by isolating functionality~\cite{BFF}. Details about each microservice are described in Section~\ref{sec:backend-design}.
 
 \begin{figure} [H]
     \centering
@@ -46,24 +46,23 @@ The final design employs a microservices approach alongside a backend-for-fronte
 
 \section{Technologies}
 \subsection{FastAPI}
-FastAPI is a Python web framework for building APIs, offering automatic input validation via Pydantic and seamless relational database integration with SQLAlchemy (TODO: CITE HERE). Compared to other popular frameworks like Django and Flask, FastAPI was particularly well-suited for this project due to its lightweight nature and built-in compatibility with these technologies. This combination provided an optimal balance between ease of setup and feature-rich functionality.
+FastAPI is a Python web framework for building APIs, offering automatic input validation via Pydantic and seamless relational database integration with SQLAlchemy (TO DO: CITE HERE). Compared to other popular frameworks like Django and Flask, FastAPI was particularly well-suited for this project due to its lightweight nature and built-in compatibility with these technologies. This combination provided an optimal balance between ease of setup and feature-rich functionality.
 
 FastAPI was extensively utilized to develop all backend services in this project. Its straightforward setup allowed for rapid initial development, enabling quick implementation of basic functionality.
 
 The backend primarily operated through individual API endpoints, which the frontend called to retrieve data as needed. Additionally, WebSockets facilitated asynchronous server-to-client communication, ensuring users were promptly notified of backend events, such as collections being shared with them.
 
 \subsection{React}
-React is a JavaScript library for creating interactive web interfaces. Its modular component based system
+React is a JavaScript library for building interactive web interfaces (TODO: REF HERE). Its modular, component-based architecture was particularly beneficial in this project, enabling component reuse across multiple pages and reducing code duplication. A key advantage of this approach is the availability of extensive component libraries that provide pre-built functionality and styling for low-level elements, such as buttons. This allowed development efforts to focus on the application's bespoke features.
 
+For this project, the HeroUI component library was utilized, offering a set of pre-designed components that were assembled into larger, more complex UI elements to create the final application.
 
-React is a library for creating interactive web interfaces. The interface is split into modular components that can be reused reducing code duplication. As it is widely used there are many different component libraries in this project I used HeroUI TODO: REF HERE. This sped up development immensely as time was not wasted on developing styling of low level components such as buttons and was instead spent implementing the features of the application.
-
-TODO: Add detail about React
-
-TODO: Add detail about advantages
+React also managed the application's state and handled backend requests as needed. This enabled backend services to remain stateless, reducing complexity and improving scalability.
 
 \subsection{Docker}
-Docker is a platform that allows the containerisation of applications. This means they can run in their own environments and then communication ports can then be exposed so they can take in and send out messages. The benefit here is that any device running Docker can run the application by building the Dockerfile which is invaluable when it comes to deployment as the code and Dockerfile can be provided to a cloud provider who can then build and run the application autonomously.
+Docker is a platform for the containerisation of applications. This approach means individual applications can run in isolated environments only communicating over selected exposed ports. This is a standard practice in modern web development, and as such is widely supported by cloud providers, simplifying deployment and ensuring consistent operation across different environments.
+
+The benefits for this project included easy and fast deployment as a cloud provider could build and run the application autonomously when provided with the code base and Dockerfile. And for development purposes it is easy to run the containerised system on any device running Docker without need to configure an environment.
 
 \subsection{Spotify API And Web Playback}
 The music playback service Spotify offers API endpoints for many music related services such as searching and playback on the web. These are used during the search for the album and the playback. The downside of using Spotify is that the user must have a Spotify premium subscription to make use of the web playback feature.
