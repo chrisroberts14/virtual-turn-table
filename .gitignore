@@ -164,3 +164,18 @@ cython_debug/
 *.env
 *.db
 turn_table_ui/coverage/*
+
+# Latex output
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.pdf
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+*.run.xml
+*.bcf
+*.lof

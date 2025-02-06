@@ -1,0 +1,90 @@
+\documentclass[12pt,BSc,wordcount,twoside]{muthesis}
+% The regulations say that 12pt should be used
+% Change the MSc option to MPhil, MRes or PhD if appropriate
+% Add 'anon' to the above options to replace your name with your student ID
+
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{url} % typeset URL's reasonably
+\usepackage{listings}
+\usepackage{caption} % Extra modifications for captions
+\usepackage{float}
+
+\usepackage{pslatex} % Use Postscript fonts
+
+\usepackage{hyperref} % Allow references to be links
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+} % Setup links so they look just like all other text
+
+\setlength{\parindent}{0pt}
+
+% Uncomment the next line if you want subsubsections to be numbered
+%\setcounter{secnumdepth}{3}
+% Uncomment the next line if you want subsubsections to be appear in
+% the table of contents
+%\setcounter{tocdepth}{3}
+
+% Uncomment the following lines if you want to include the date as a
+% header in draft versions
+%\usepackage{fancyhdr}
+%\pagestyle{fancy}
+%\lhead{}  % left head
+%\chead{Draft: \today} % centre head
+%\lfoot{}
+%\cfoot{\thepage}
+%\rfoot{}
+
+\begin{document}
+% Uncomment the following lines to leave out list of figures, tables
+% and copyright until final printing
+%\figurespagefalse
+\tablespagefalse
+%\copyrightfalse
+
+\title{A Virtual Turntable Web Application}
+\author{Christopher Roberts}
+\stuid{10822084}
+\principaladviser{Sean Bechhofer}
+
+\beforeabstract
+\prefacesection{Abstract}
+\input{abstract}
+
+\afterabstract
+
+\prefacesection{Acknowledgements}
+I would like to thank my family and friends for their unconditional support during my studies, my supervisor Sean for his insightful questions during the course of my project, and the software team at OC Robotics for giving me the experience I needed to complete this project.
+\afterpreface
+
+% These include the actual text
+\include{chapter_introduction}
+%\include{chapter_background}
+\include{chapter_design}
+\include{chapter_development}
+\include{chapter_deployment}
+\include{chapter_evaluation}
+\include{chapter_conclusion}
+
+\bibliography{refs}    % this causes the references to be listed
+
+\bibliographystyle{abbrv}
+%% the bibliography style determines the format  in which both citations and references are printed,
+%% other possible values are plain and abbrv
+%%
+%% If you want more control of the format of your citations you might want to take a look at
+%% natbib.sty, which should be part of any standard LaTeX installation
+%%
+%% University regulations simply require that your citation style be consistent, so see what style
+%% your supervisor recommends.
+
+% Appendices start here
+
+\appendix
+\include{appendix1}
+
+\end{document}
