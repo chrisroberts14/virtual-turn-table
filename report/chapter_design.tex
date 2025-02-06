@@ -60,9 +60,11 @@ For this project, the HeroUI component library was utilized, offering a set of p
 React also managed the application's state and handled backend requests as needed. This enabled backend services to remain stateless, reducing complexity and improving scalability.
 
 \subsection{Docker}
-Docker is a platform for the containerisation of applications. This approach means individual applications can run in isolated environments only communicating over selected exposed ports. This is a standard practice in modern web development, and as such is widely supported by cloud providers, simplifying deployment and ensuring consistent operation across different environments.
+Docker is a platform for containerising applications, allowing them to run in isolated environments while communicating through specified exposed ports. This approach is a standard practice in modern web development and is widely supported by cloud providers, simplifying deployment and providing a consistent environment across different platforms.
 
-The benefits for this project included easy and fast deployment as a cloud provider could build and run the application autonomously when provided with the code base and Dockerfile. And for development purposes it is easy to run the containerised system on any device running Docker without need to configure an environment.
+For this project, Docker enabled fast and efficient deployment. Cloud providers could autonomously build and run the application when supplied with the codebase and Dockerfile. Additionally, for development, the containerised system could be easily executed on any device running Docker, eliminating the need for manual environment configuration.
+
+All services, including the frontend, were containerised and deployed to a cloud provider, ensuring a scalable and reproducible deployment process.
 
 \subsection{Spotify API And Web Playback}
 The music playback service Spotify offers API endpoints for many music related services such as searching and playback on the web. These are used during the search for the album and the playback. The downside of using Spotify is that the user must have a Spotify premium subscription to make use of the web playback feature.
