@@ -73,7 +73,7 @@ Specifically, the search API was used to identify albums, while the playback API
 
 However, a key limitation of this approach is that the playback API requires a Spotify Premium subscription. Though, as the Spotify API mandates user authentication via a Spotify account, this requirement allows the Spotify account to serve as the user account for the application, thereby reducing security concerns related to the storage and management of user data.
 
-\subsection{Reverse Image Search}
+\subsection{Reverse Image Search}~\label{sec:reverse-image-search}
 Reverse image search is a form of content-based image retrieval that uses an image as the query to retrieve related results. This process involves extracting feature vectors, using algorithms such as SIFT, and comparing these against a collection of previously indexed images to return the closest matches~\cite{Gaillard2017LargeSR}.
 
 In this project, reverse image search functionality was implemented to identify albums from images uploaded by users. Recognizing that maintaining an up-to-date, in-house database of album covers would be impractical, it was decided early on to leverage an external API.\@ Two reverse image search APIs were evaluated: Google and Bing. Although Bing's API was simpler to integrate, it frequently failed to accurately identify albums—even from images that were already indexed by Bing's image search. In contrast, Google's API demonstrated a much higher reliability in album identification. Given the critical importance of accurate album retrieval for the project, the Google API was ultimately chosen.
@@ -81,23 +81,9 @@ In this project, reverse image search functionality was implemented to identify 
 Compared to other methods for recognizing albums from images, such as optical character recognition (OCR) or barcode scanning, reverse image search was selected for its robustness. OCR can be unreliable when album covers feature stylised text or lack text entirely and barcode scanning, though dependable, requires a barcode to be present. This requirement is problematic, particularly since vinyl records may predate the widespread use of barcodes.
 
 \subsection{Google Cloud}
-Google Cloud is a collection of cloud services offered by google that can be used on a pay as you use basis. For this project two of their services were used: their reverse image search api and Google Cloud Run which was used to host the applications running in Docker containers.
+Google Cloud is a suite of cloud services offered on a pay-as-you-use basis. In this project, two specific services were utilised: the reverse image search API and Google Cloud Run. The reverse image search API was employed to identify albums from images uploaded by users, as detailed in Section~\ref{sec:reverse-image-search}. Google Cloud Run was used to build and host the application, running in Docker containers.
 
-TODO: Add detail about google cloud hosting
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Although multiple cloud providers were available, Google Cloud was selected following the adoption of Google's reverse image search API.\@ For convenience, hosting the application on Google Cloud was simpler as it eliminated the need to manage services across different providers.
 
 \section{Frontend}
 This section details the design of the user interface.
