@@ -4,3 +4,4 @@ SQLAlchemy
 WebSockets
 HeroUI
 stylings
+mockups

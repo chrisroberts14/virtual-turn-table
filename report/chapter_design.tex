@@ -86,7 +86,9 @@ Google Cloud is a suite of cloud services offered on a pay-as-you-use basis. In 
 Although multiple cloud providers were available, Google Cloud was selected following the adoption of Google's reverse image search API.\@ For convenience, hosting the application on Google Cloud was simpler as it eliminated the need to manage services across different providers.
 
 \section{Frontend}
-This section details the design of the user interface.
+Given that this project is highly user-facing, a well-designed user interface was essential. To achieve this, detailed wireframe mockups were created for each page, ensuring that established interface design principles were rigorously applied throughout the development process.
+
+
 \subsection{Principles}
 The development of the user interface mainly involved sticking to a set of principles such as Shneiderman's eight golden rules of interface design \cite{Shneiderman}.
 
@@ -122,13 +124,11 @@ Figure~\ref{fig:social_screen_mockup} shows the social screen, a place to view o
     \label{fig:social_screen_mockup}
 \end{figure}
 
-
-
 TODO: Add mockups and talk about why mockup the user interface and potentially stuff like fidelity
 
-\section{Backend} \label{sec:backend-design}
+\section{Backend}~\label{sec:backend-design}
 \subsection{Microservices split} % Potentially change this
-The split settled on is shown in Figure TODO:REF HERE. Including the BFF this involved splitting the backend into three pieces. This was chosen as
+The split settled on is shown in Figure~\ref{fig:final-arch}. Including the BFF this involved splitting the backend into three pieces. This was chosen as
 
 \subsubsection{BFF}
 This service was the only service the frontend would ever talk to. It contained all endpoints that the frontend needed but did not implement much functionality other than calling other services.
@@ -139,18 +139,25 @@ This service would encompass all operations related to non-volatile user data. T
 
 TODO: Add details about choices about how the split into services was chosen. Reference literature talking about this stuff?
 
-\subsection{Database} \label{sec:database}
+\subsection{Database}~\label{sec:database}
 The database for this project would store non-volatile user data mostly concerning
 
 \subsubsection{SQL vs NoSQL}
 TODO: Add discussion on why I didn't use NoSQL but mention the benefits that approach would have. Reference papers about NoSQL? (Especially in web development)
-\subsubsection{UML Diagram}
+\subsubsection{Diagram}
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{figures/db_diagram.png}
+    \caption{The database diagram}
+    \label{fig:database-diagram}
+\end{figure}
+
 TODO: Create and add UML diagram of the database and discussion of it
 \subsubsection{DBMS Choice}
 
 
-\section{Testing} \label{sec:test-design}
-As part of the development life-cycle, validation tests must be made before development begins; this stops tests being made to fit the resulting product and so we can objectively see if it meets the initial criteria.
+\section{Testing}~\label{sec:test-design}
+As part of the development life-cycle, validation tests must be made before development begins; this stops tests being made to fit the resulting product, and so we can objectively see if it meets the initial criteria.
 
 
 %Cite some references \cite{dyke1994, latex2012}
