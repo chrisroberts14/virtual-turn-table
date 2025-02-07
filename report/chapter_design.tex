@@ -64,7 +64,7 @@ Docker is a platform for containerising applications, allowing them to run in is
 
 For this project, Docker enabled fast and efficient deployment. Cloud providers could autonomously build and run the application when supplied with the codebase and Dockerfile. Additionally, for development, the containerised system could be easily executed on any device running Docker, eliminating the need for manual environment configuration.
 
-All services, including the frontend, were containerised and deployed to a cloud provider, ensuring a scalable and reproducible deployment process.
+All backend services and frontend, were containerised using Dockerfiles and deployed to a cloud provider, ensuring a scalable and reproducible deployment process.
 
 \subsection{Spotify API And Web Playback}
 The music service Spotify offers a suite of APIs for music-related services, including search and playback functionalities that matched the core features of this project. Given the impracticality of maintaining an independent album database, offloading the responsibility of maintaining a library of albums and music to Spotify was a logical choice.
@@ -74,11 +74,11 @@ Specifically, the search API was used to identify albums, while the playback API
 However, a key limitation of this approach is that the playback API requires a Spotify Premium subscription. Though, as the Spotify API mandates user authentication via a Spotify account, this requirement allows the Spotify account to serve as the user account for the application, thereby reducing security concerns related to the storage and management of user data.
 
 \subsection{Reverse Image Search}
-Reverse image search is a method of taking an image as a search parameter in a web search and searching based on content in it.
+Reverse image search is a form of content-based image retrieval that uses an image as the query to retrieve related results. This process involves extracting feature vectors, using algorithms such as SIFT, and comparing these against a collection of previously indexed images to return the closest matches~\cite{Gaillard2017LargeSR}.
 
-TODO: Add detail about reverse image search and how it works. Reference papers?
+In this project, reverse image search functionality was implemented to identify albums from images uploaded by users. Recognizing that maintaining an up-to-date, in-house database of album covers would be impractical, it was decided early on to leverage an external API.\@ Two reverse image search APIs were evaluated: Google and Bing. Although Bing's API was simpler to integrate, it frequently failed to accurately identify albums—even from images that were already indexed by Bing's image search. In contrast, Google's API demonstrated a much higher reliability in album identification. Given the critical importance of accurate album retrieval for the project, the Google API was ultimately chosen.
 
-TODO: Add detail about alternatives and final selection of which I used (Google vs bing)
+Compared to other methods for recognizing albums from images, such as optical character recognition (OCR) or barcode scanning, reverse image search was selected for its robustness. OCR can be unreliable when album covers feature stylised text or lack text entirely and barcode scanning, though dependable, requires a barcode to be present. This requirement is problematic, particularly since vinyl records may predate the widespread use of barcodes.
 
 \subsection{Google Cloud}
 Google Cloud is a collection of cloud services offered by google that can be used on a pay as you use basis. For this project two of their services were used: their reverse image search api and Google Cloud Run which was used to host the applications running in Docker containers.
