@@ -46,14 +46,14 @@ The final design employs a microservices approach alongside a backend-for-fronte
 
 \section{Technologies}
 \subsection{FastAPI}
-FastAPI is a Python web framework for building APIs, offering automatic input validation via Pydantic and seamless relational database integration with SQLAlchemy (TO DO: CITE HERE). Compared to other popular frameworks like Django and Flask, FastAPI was particularly well-suited for this project due to its lightweight nature and built-in compatibility with these technologies. This combination provided an optimal balance between ease of setup and feature-rich functionality.
+FastAPI is a Python web framework for building APIs, offering automatic input validation via Pydantic and seamless relational database integration with SQLAlchemy~\cite{FastAPI}. Compared to other popular frameworks like Django and Flask, FastAPI was particularly well-suited for this project due to its lightweight nature and built-in compatibility with these technologies. This combination provided an optimal balance between ease of setup and feature-rich functionality.
 
 FastAPI was extensively utilized to develop all backend services in this project. Its straightforward setup allowed for rapid initial development, enabling quick implementation of basic functionality.
 
 The backend primarily operated through individual API endpoints, which the frontend called to retrieve data as needed. Additionally, WebSockets facilitated asynchronous server-to-client communication, ensuring users were promptly notified of backend events, such as collections being shared with them.
 
 \subsection{React}
-React is a JavaScript library for building interactive web interfaces (TODO: REF HERE). Its modular, component-based architecture was particularly beneficial in this project, enabling component reuse across multiple pages and reducing code duplication. A key advantage of this approach is the availability of extensive component libraries that provide pre-built functionality and styling for low-level elements, such as buttons. This allowed development efforts to focus on the application's bespoke features.
+React is a JavaScript library for building interactive web interfaces~\cite{React}. Its modular, component-based architecture was particularly beneficial in this project, enabling component reuse across multiple pages and reducing code duplication. A key advantage of this approach is the availability of extensive component libraries that provide pre-built functionality and styling for low-level elements, such as buttons. This allowed development efforts to focus on the application's bespoke features.
 
 For this project, the HeroUI component library was utilized, offering a set of pre-designed components that were assembled into larger, more complex UI elements to create the final application.
 
@@ -67,10 +67,14 @@ For this project, Docker enabled fast and efficient deployment. Cloud providers 
 All services, including the frontend, were containerised and deployed to a cloud provider, ensuring a scalable and reproducible deployment process.
 
 \subsection{Spotify API And Web Playback}
-The music playback service Spotify offers API endpoints for many music related services such as searching and playback on the web. These are used during the search for the album and the playback. The downside of using Spotify is that the user must have a Spotify premium subscription to make use of the web playback feature.
+The music service Spotify offers a suite of APIs for music-related services, including search and playback functionalities that matched the core features of this project. Given the impracticality of maintaining an independent album database, offloading the responsibility of maintaining a library of albums and music to Spotify was a logical choice.
+
+Specifically, the search API was used to identify albums, while the playback API enabled streaming of the selected content.
+
+However, a key limitation of this approach is that the playback API requires a Spotify Premium subscription. Though, as the Spotify API mandates user authentication via a Spotify account, this requirement allows the Spotify account to serve as the user account for the application, thereby reducing security concerns related to the storage and management of user data.
 
 \subsection{Reverse Image Search}
-Reverse image search is a method of taking an images as a search parameter in a web search and searching based on content in it.
+Reverse image search is a method of taking an image as a search parameter in a web search and searching based on content in it.
 
 TODO: Add detail about reverse image search and how it works. Reference papers?
 
