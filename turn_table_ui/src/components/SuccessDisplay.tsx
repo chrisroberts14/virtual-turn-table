@@ -1,8 +1,6 @@
 import { useSuccess } from "@/contexts/SuccessContext.tsx";
-import { Button } from "@heroui/button";
-import { Modal, ModalBody, ModalContent } from "@heroui/modal";
+import { Alert } from "@heroui/alert";
 import { useEffect, useState } from "react";
-import { IoMdClose } from "react-icons/io";
 
 const SuccessDisplay = () => {
 	const { success, clearSuccess } = useSuccess();
@@ -23,38 +21,31 @@ const SuccessDisplay = () => {
 	}
 
 	return (
-		<>
-			{show && (
-				<Modal
+		<div
+			// This container centers its children & transitions the opacity
+			className={`
+        fixed
+        top-[25%]
+        left-0
+        right-0
+        flex
+        justify-center
+        transition-opacity
+        duration-300
+        ${show ? "opacity-100" : "opacity-0"}
+      `}
+			style={{ pointerEvents: show ? "auto" : "none" }}
+		>
+			<div className="mx-auto w-1/2">
+				<Alert
+					title="Success"
+					variant="solid"
+					description={success}
+					color="success"
 					onClose={clearSuccess}
-					placement="center"
-					isOpen={show}
-					closeButton={
-						<Button
-							size="sm"
-							isIconOnly
-							color="danger"
-							variant="solid"
-							title="close"
-						>
-							<IoMdClose />
-						</Button>
-					}
-					classNames={{
-						body: "bg-green-300",
-					}}
-				>
-					<ModalContent>
-						<ModalBody>
-							<div className="text-center">
-								<h1 className="text-2xl font-bold text-white">Success</h1>
-								<p className="rounded-lg border-2">{success}</p>
-							</div>
-						</ModalBody>
-					</ModalContent>
-				</Modal>
-			)}
-		</>
+				/>
+			</div>
+		</div>
 	);
 };
 

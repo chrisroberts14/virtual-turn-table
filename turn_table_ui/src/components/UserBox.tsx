@@ -77,17 +77,17 @@ const UserBox = () => {
 		<div>
 			<Dropdown backdrop="blur">
 				<DropdownTrigger>
-					<div>
-						<User
-							name={username}
-							as={"button"}
-							avatarProps={{
-								src: profileImage,
-							}}
-							isFocusable={true}
-							className="hidden sm:flex"
-						/>
-					</div>
+					<User
+						name={username}
+						as="button"
+						avatarProps={{
+							src: profileImage,
+							alt: "Profile image",
+							showFallback: true,
+						}}
+						isFocusable={true}
+						className="hidden sm:flex"
+					/>
 				</DropdownTrigger>
 				<DropdownMenu
 					disabledKeys={disabledKeys}
@@ -112,7 +112,7 @@ const UserBox = () => {
 							deleteAccount()
 								.then((response) => {
 									showSuccess("Account deleted");
-									if (response.status === "success") {
+									if (response.success) {
 										// Redirect to the login page
 										window.location.href = "/";
 									} else {

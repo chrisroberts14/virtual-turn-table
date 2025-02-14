@@ -13,7 +13,7 @@
 	},
 	"dependencies": {
 		"@headlessui/react": "^2.2.0",
-		"@mui/icons-material": "^6.2.1",
+		"@heroui/alert": "^2.2.10",
 		"@heroui/autocomplete": "2.3.11",
 		"@heroui/avatar": "2.2.7",
 		"@heroui/button": "2.2.10",
@@ -41,6 +41,7 @@
 		"@heroui/tooltip": "2.2.8",
 		"@heroui/use-infinite-scroll": "2.2.3",
 		"@heroui/user": "2.2.7",
+		"@mui/icons-material": "^6.2.1",
 		"@react-aria/visually-hidden": "3.8.18",
 		"@types/node": "^22.10.2",
 		"axios": "^1.7.9",
