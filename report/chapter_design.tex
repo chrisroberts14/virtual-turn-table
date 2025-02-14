@@ -180,11 +180,8 @@ This service was the smallest of the three, encapsulating a very specific functi
 
 Separating these functions from the rest of the application’s services means users could still listen to their existing collections in the event that this service going down.
 
-
 \subsubsection{User Data}
-This service would encompass all operations related to non-volatile user data. This includes their own collections but also references to other collections that have been shared with them. To achieve this it had to be linked to a form of non-volatile store such as a database the design of which is detailed in Section~\ref{sec:database}.
-
-TODO: Add details about choices about how the split into services was chosen. Reference literature talking about this stuff?
+This service was to handle all tasks related to user data such as collections and sharing. It would do this by interacting with a database detailed in Section~\ref{sec:database}. Each endpoint would be responsible for editing the data in the database in some way such as creating a user or sharing a collection.
 
 \subsection{Database}~\label{sec:database}
 The database for this project would store non-volatile user data mostly concerning
