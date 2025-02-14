@@ -1,8 +1,6 @@
 import { useError } from "@/contexts/ErrorContext.tsx";
-import { Button } from "@heroui/button";
-import { Modal, ModalBody, ModalContent } from "@heroui/modal";
+import { Alert } from "@heroui/alert";
 import { useEffect, useState } from "react";
-import { IoMdClose } from "react-icons/io";
 
 const ErrorDisplay = () => {
 	const { error, clearError } = useError();
@@ -21,38 +19,31 @@ const ErrorDisplay = () => {
 	}
 
 	return (
-		<>
-			{showError && (
-				<Modal
+		<div
+			// This container centers its children & transitions the opacity
+			className={`
+        fixed
+        top-[25%]
+        left-0
+        right-0
+        flex
+        justify-center
+        transition-opacity
+        duration-300
+        ${showError ? "opacity-100" : "opacity-0"}
+      `}
+			style={{ pointerEvents: showError ? "auto" : "none" }}
+		>
+			<div className="mx-auto w-1/2">
+				<Alert
+					title="Error"
+					variant="solid"
+					description={error}
+					color="danger"
 					onClose={clearError}
-					placement="center"
-					isOpen={showError}
-					closeButton={
-						<Button
-							size="sm"
-							isIconOnly
-							color="danger"
-							variant="solid"
-							title="close"
-						>
-							<IoMdClose />
-						</Button>
-					}
-					classNames={{
-						body: "bg-red-300",
-					}}
-				>
-					<ModalContent>
-						<ModalBody>
-							<div className="text-center">
-								<h1 className="text-2xl font-bold text-white">Error</h1>
-								<p className="rounded-lg border-2">{error}</p>
-							</div>
-						</ModalBody>
-					</ModalContent>
-				</Modal>
-			)}
-		</>
+				/>
+			</div>
+		</div>
 	);
 };
 
