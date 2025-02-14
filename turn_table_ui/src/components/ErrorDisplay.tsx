@@ -41,6 +41,9 @@ const ErrorDisplay = () => {
 					description={error}
 					color="danger"
 					onClose={clearError}
+					closeButtonProps={{
+						title: "close",
+					}}
 				/>
 			</div>
 		</div>
