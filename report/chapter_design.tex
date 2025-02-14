@@ -184,10 +184,12 @@ Separating these functions from the rest of the application’s services means u
 This service was to handle all tasks related to user data such as collections and sharing. It would do this by interacting with a database detailed in Section~\ref{sec:database}. Each endpoint would be responsible for editing the data in the database in some way such as creating a user or sharing a collection.
 
 \subsection{Database}~\label{sec:database}
-The database for this project would store non-volatile user data mostly concerning
+This application could have been implemented as a stateless application which would  mean there was no capability to persist data across sessions. However, such an approach would limit functionality as there could be no form of personalisation for individual users. Since a Spotify account was already required for music playback, linking user data to that account became a logical next step, enabling data persistence across sessions.
 
 \subsubsection{SQL vs NoSQL}
-TODO: Add discussion on why I didn't use NoSQL but mention the benefits that approach would have. Reference papers about NoSQL? (Especially in web development)
+SQL databases are widely used in enterprise environments due to their reliability and consistency. However, they are not necessarily optimal for web applications requiring high scalability and availability [TODO: CITE HERE]. In contrast, NoSQL databases are designed with scalability and availability in mind, often making them more suitable for such applications.
+Although a NoSQL database like MongoDB would have been a good choice for this project, a SQL database was selected for its easy integration with FastAPI and SQLAlchemy. This meant quicker development and cleaner code, despite not being the most inherently scalable option.
+
 \subsubsection{Diagram}
 \begin{figure} [H]
     \centering
