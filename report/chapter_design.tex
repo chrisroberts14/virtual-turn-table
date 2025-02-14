@@ -146,7 +146,7 @@ Figure~\ref{fig:play_screen_mockup} depicts the mockup of the play screen, where
 \end{figure}
 
 \subsubsection{Scanning Screen}
-Figure~\ref{fig:scan_screen_mockup} shows the scanning screen, where users can upload images of album covers to identify the corresponding album. It also displays the logged-in user’s existing album collection, allowing quick selection of albums already scanned. The confirmation dialogue (shown on the left) enables users to confirm the identified album or reject it if incorrect. Although the original design provided only a single result, this approach was found to be limiting during development, prompting changes to display additional matches. TODO: add reference to place in the development section
+Figure~\ref{fig:scan_screen_mockup} shows the scanning screen, where users can upload images of album covers to identify the corresponding album. It also displays the logged-in user’s existing album collection, allowing quick selection of albums already scanned. The confirmation dialogue (shown on the left) enables users to confirm the identified album or reject it if incorrect. The original design shown here provided only a single result, this approach was found to be limiting during development, prompting changes to display additional matches. TODO: add reference to place in the development section
 
 \begin{figure} [H]
     \centering
@@ -157,7 +157,7 @@ Figure~\ref{fig:scan_screen_mockup} shows the scanning screen, where users can u
 
 
 \subsubsection{Social Screen}
-Figure~\ref{fig:social_screen_mockup} depicts the social screen, where users can view collections belonging to others whether shared directly with them or made public. This feature aimed to add a sense of social interaction among users and allow for the discovery of new music.
+Figure~\ref{fig:social_screen_mockup} shows the social screen, where users can view collections belonging to others shared directly with them or made public by other users. This feature aimed to add a sense of social interaction among users and allow for the discovery of new music.
 
 Initially, albums were displayed in columns, but this layout proved limiting for users with extensive collections as it required excessive scrolling. Moreover, this featured presented an opportunity to capture the feel of browsing through a physical record store, prompting a revision of the layout to accommodate larger collections more intuitively. TODO: ref later section about development
 
@@ -173,7 +173,8 @@ Initially, albums were displayed in columns, but this layout proved limiting for
 As a microservices approach was adopted, the backend operations were divided into multiple services. As described in Section~\ref{fig:final-arch}, it was decided to use a BFF (Backend for Frontend) pattern for one of these services. The remaining functionality was split into two services; one service handles the conversion of user-uploaded images into album data, while another manages all user-related data storage.
 
 \subsubsection{BFF}
-This service was the only service the frontend would ever talk to. It contained all endpoints that the frontend needed but did not implement much functionality other than calling other services.
+The BFF acts as a middleman between the frontend and various backend services, often mirroring the endpoints of those services. Its main responsibility is to manage the data returned to the frontend. As this project is focused solely on a desktop web application, so the patterns potential to tailor data for different platforms was not fully utilised. However, if the application were later expanded to include additional platforms, the BFF could selectively limit data returned to given devices if they did not require it.
+
 \subsubsection{Image to Album}
 This service would encompass all functionality regarding converting a representation of an album into a best guess of the album name. This could have been achieved in different ways: reverse image search, optical character recognition, or barcodes. Each of these could have been implemented as separate endpoints with the caller deciding which to use.
 \subsubsection{User Data}
