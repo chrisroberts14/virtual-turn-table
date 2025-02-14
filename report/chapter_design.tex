@@ -170,7 +170,7 @@ Initially, albums were displayed in columns, but this layout proved limiting for
 
 \section{Backend}~\label{sec:backend-design}
 \subsection{Microservices split}
-The split settled on is shown in Figure~\ref{fig:final-arch}. Including the BFF this involved splitting the backend into three pieces. This was chosen as
+As a microservices approach was adopted, the backend operations were divided into multiple services. As described in Section~\ref{fig:final-arch}, it was decided to use a BFF (Backend for Frontend) pattern for one of these services. The remaining functionality was split into two services; one service handles the conversion of user-uploaded images into album data, while another manages all user-related data storage.
 
 \subsubsection{BFF}
 This service was the only service the frontend would ever talk to. It contained all endpoints that the frontend needed but did not implement much functionality other than calling other services.
