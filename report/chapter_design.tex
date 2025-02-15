@@ -206,7 +206,24 @@ Since the choice was made to use a relational database, a specific relational da
 Originally, SQLite was chosen because, as since it's a file-based database, it could be easily stored within the Docker container running the user data service, which would simplify deployment by reducing the number of containers. However, as the project grew, the need for concurrent database access became apparent which SQLite does not support. Because of this the decision was made to switch to either MySQL or PostgreSQL, both of which support concurrent access. For the purposes of this project, the differences between these two systems were minor. PostgreSQL was selected since it is open-source [TODO: Cite here?], which reduces the risk of support being dropped in the future.
 
 \section{Testing}~\label{sec:test-design}
-As part of the development life-cycle, validation tests must be made before development begins; this stops tests being made to fit the resulting product, and so we can objectively see if it meets the initial criteria.
+Defining the tests and success criteria prior to development was important to ensure that the project was built to meet these objectives, rather than retrofitting tests to match the final product. For most of the criteria listed in Section~\ref{sec:objectives}, it was necessary to establish tangible measurements to determine whether they had been met. This requirement led to the definition of the following tests for the primary features:
+\begin{itemize}
+    \item The application should correctly identify albums with at least 95\% accuracy.
+    \item The application should play an album from start to finish without interruption.
+    \item The only user input required to play an album (beyond what is needed to navigate the application) should be a representation of the album (e.g., an image).
+\end{itemize}
 
+For the criteria relating to the user interface it becomes more difficult to define tests as they are more subjective. However, the intention was to collect user feedback after they use the application in the form of surveys to gather opinions on the interface.
 
-%Cite some references \cite{dyke1994, latex2012}
+The last set of criteria, relating to good software development practices, are generally more objective and as such are more easily verifiable. For this the following tests were defined:
+\begin{itemize}
+    \item The codebase should maintain at least 95\% test coverage.
+    \item All tests must pass successfully.
+    \item Code should be evaluated by linters and formatters to maintain consistency and quality.
+    \item A continuous deployment system should automatically redeploy the application following any code change.
+    \item An automated system should be in place to update dependencies.
+\end{itemize}
+
+Most of these criteria can be met using tools such as GitHub Actions, which can run tests on each commit, and trigger application deployments. Dependabot can be used to scan the repository’s dependencies and update them as new releases become available. Additionally, linters and formatters can be executed as pre-commit hooks, preventing code below a defined quality threshold from being committed to the repository.
+
+A side effect of having high test coverage is that there is a reduced risk associated with dependency updates, since tests help verify that no functionality has been broken by the update.
