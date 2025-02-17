@@ -1,5 +1,4 @@
 \chapter{Design}~\label{cha:design}
-
 Before initiating detailed design work, it was decided this project would be a web application accessible via a browser. This approach offers several advantages, such as cross-platform compatibility, ease of access (requiring only a browser), scalability, and the ability to leverage existing web technologies~\cite{6822300}. With this established, a plan was formulated, encompassing architectural decisions, technology stack selection, and the definition of testing criteria.
 
 \section{Architecture}
@@ -138,6 +137,8 @@ Across all mockups, a consistent navigation bar is present at the top of the scr
 
 \subsubsection{Play Screen}
 Figure~\ref{fig:play_screen_mockup} depicts the mockup of the play screen, where users control music playback. Essential functionality implemented here includes buttons to play, pause, skip forward or backward, adjust the track position, and manage volume. Fitting with a modern streaming service, individual tracks can be played from the album, even though this would not be commonly done with a physical turn table.
+
+The screen is also designed to incorporate elements of a physical turntable as part of the theme. Mainly the spinning vinyl seen in the centre.
 \begin{figure} [H]
     \centering
     \includegraphics[width=0.6\linewidth]{figures/play_screen_mockup.png}
@@ -187,7 +188,7 @@ This service was to handle all tasks related to user data such as collections an
 This application could have been implemented as a stateless application which would  mean there was no capability to persist data across sessions. However, such an approach would limit functionality as there could be no form of personalisation for individual users. Since a Spotify account was already required for music playback, linking user data to that account became a logical next step, enabling data persistence across sessions.
 
 \subsubsection{SQL vs NoSQL}
-SQL databases are widely used in enterprise environments due to their reliability and consistency. However, they are not necessarily optimal for web applications requiring high scalability and availability [TODO: CITE HERE]. In contrast, NoSQL databases are designed with scalability and availability in mind~\cite{NoSQL}, often making them more suitable for such applications.
+SQL databases are widely used in enterprise environments due to their reliability and consistency. However, they are not necessarily optimal for web applications requiring high scalability and availability~\cite{GANESHCHANDRA201513}. In contrast, NoSQL databases are designed with scalability and availability in mind~\cite{NoSQL}, often making them more suitable for such applications.
 Although a NoSQL database like MongoDB would have been a good choice for this project, a SQL database was selected for its easy integration with FastAPI and SQLAlchemy. This meant quicker development and cleaner code, despite not being the most inherently scalable option.
 
 \subsubsection{Diagram}
@@ -201,27 +202,47 @@ Although a NoSQL database like MongoDB would have been a good choice for this pr
 Figure~\ref{fig:database-diagram} shows the database design. User are stored with their Spotify usernames as primary keys as Spotify guarantees unique usernames. This allows data in other tables to be linked through each user’s username. Collections are represented with a link table that captures the many-to-many relationship between users and albums. A similar link table structure is used to manage the sharing of collections, tracking which users have shared access with each user. In addition, notifications regarding newly shared collections are stored in a separate table, so they can be displayed to users upon login.
 
 \subsubsection{DBMS Choice}
-Since the choice was made to use a relational database, a specific relational database management system had to be selected even though the use of SQLAlchemy abstracts many of the differences among various DBMSs allowing one system to be swapped out for another with no code changes [TODO: Cite here?]. The only notable exception is that SQLite does not enforce foreign key constraints by default, requiring manual enablement [TODO: Cite here?].
+Since the choice was made to use a relational database, a specific relational database management system had to be selected even though the use of SQLAlchemy abstracts many of the differences among various DBMSs allowing one system to be swapped out for another with no code changes. The only notable exception is that SQLite does not enforce foreign key constraints by default, requiring manual enablement.
 
-Originally, SQLite was chosen because, as since it's a file-based database, it could be easily stored within the Docker container running the user data service, which would simplify deployment by reducing the number of containers. However, as the project grew, the need for concurrent database access became apparent which SQLite does not support. Because of this the decision was made to switch to either MySQL or PostgreSQL, both of which support concurrent access. For the purposes of this project, the differences between these two systems were minor. PostgreSQL was selected since it is open-source [TODO: Cite here?], which reduces the risk of support being dropped in the future.
+Originally, SQLite was chosen because, as since it's a file-based database, it could be easily stored within the Docker container running the user data service, which would simplify deployment by reducing the number of containers. However, as the project grew, the need for concurrent database access became apparent which SQLite does not support. Because of this the decision was made to switch to either MySQL or PostgreSQL, both of which support concurrent access. For the purposes of this project, the differences between these two systems were minor. PostgreSQL was selected since it is open-source, which reduces the risk of support being dropped in the future.
 
 \section{Testing}~\label{sec:test-design}
 Defining the tests and success criteria prior to development was important to ensure that the project was built to meet these objectives, rather than retrofitting tests to match the final product. For most of the criteria listed in Section~\ref{sec:objectives}, it was necessary to establish tangible measurements to determine whether they had been met. This requirement led to the definition of the following tests for the primary features:
 \begin{itemize}
     \item The application should correctly identify albums with at least 95\% accuracy.
+    \begin{description}
+        \item[Verification:] Take a set of input images, modified to be of both poor and good quality, and calculate the accuracy of the system. It is important that as the application will likely rely on external APIs for this functionality the accuracies of any APIs are taken into account.
+    \end{description}
     \item The application should play an album from start to finish without interruption.
-    \item The only user input required to play an album (beyond what is needed to navigate the application) should be a representation of the album (e.g., an image).
+    \begin{description}
+        \item[Verification:] Play a set of albums on the application and verify that they play without interruption.
+    \end{description}
 \end{itemize}
 
-For the criteria relating to the user interface it becomes more difficult to define tests as they are more subjective. However, the intention was to collect user feedback after they use the application in the form of surveys to gather opinions on the interface.
+For the criteria relating to the user interface it becomes more difficult to define tests as they are more subjective. However, user feedback can be collected after users use the application in the form of surveys to gather opinions on the interface.
 
 The last set of criteria, relating to good software development practices, are generally more objective and as such are more easily verifiable. For this the following tests were defined:
 \begin{itemize}
     \item The codebase should maintain at least 95\% test coverage.
+    \begin{description}
+        \item[Verification:] Run all test suites and verify the line coverage and branch coverage exceed 95\%.
+    \end{description}
     \item All tests must pass successfully.
+    \begin{description}
+        \item[Verification:] Run all test suites and verify that all tests pass.
+    \end{description}
     \item Code should be evaluated by linters and formatters to maintain consistency and quality.
+    \begin{description}
+        \item[Verification:] For Python code, run ruff for formatting and Pylint for linting. For typescript run Biome for both formatting and linting. Both should pass without errors.
+    \end{description}
     \item A continuous deployment system should automatically redeploy the application following any code change.
+    \begin{description}
+        \item[Verification:] Push a change to the repository and verify that the application is redeployed with the change in place.
+    \end{description}
     \item An automated system should be in place to update dependencies.
+    \begin{description}
+        \item[Verification:] An automated tool for dependency management should be configured on the repository to run at a given interval.
+    \end{description}
 \end{itemize}
 
 Most of these criteria can be met using tools such as GitHub Actions, which can run tests on each commit, and trigger application deployments. Dependabot can be used to scan the repository’s dependencies and update them as new releases become available. Additionally, linters and formatters can be executed as pre-commit hooks, preventing code below a defined quality threshold from being committed to the repository.
