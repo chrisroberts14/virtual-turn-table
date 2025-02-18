@@ -3,14 +3,44 @@
 
 \section{Frontend}
 \subsection{Implementation}
+The frontend implementation used Vite as a build tool for a ReactJS frontend which provided a typescript template to edit for the implementation which also linked with tailwindcss, a CSS framework which allowed for easy styling of the application through class names rather than building bespoke style sheets, this saved time and facilitated a more consistent design.
+
+Early on it was decided to implement the application as a single page but with multiple tabs which would provide a more fluid user interface where users can easily switch between different views. This was particularly good as it allowed music playback to continue even as the user navigates the application.
+
+Beyond this the original design had to be broken into components to each be implemented separately, which greatly helped in testing as functionality could be isolated, before being combined into the final application. A list of components can be found in the appendix \ref{apd:frontend-components}.
+
+Once components were implemented API calls were added, so the frontend could interact with the backend. This was done using the Axios library which allowed for easy configuration of the API calls.
+
+For the user to use the app the user must authenticate with Spotify to gain access to main functions of the Spotify API. This was implemented using Spotify's OAuth2 API which allowed for the user to authenticate with Spotify and then be redirected back to the application with an access token which could be used to interact with the Spotify API.
+
+\subsection{Play Screen}
+The play screen was implemented mostly as designed with the ability to play, pause, skip, scrub through a song, and select individual tracks from the currently active album. The implementation was done using Spotify's web playback SDK which allowed for easy integration with Spotify's API. The implementation was done using the ReactJS framework which allowed for easy state management and updating of the UI when the song changes.
+\subsection{Scan Screen}
+\subsection{Social Screen}
+
+\subsubsection{Changes from initial design}
+The initial design was the original goal for this part of development but during the implementation some aspects were changed as it became clear they were either not feasible or not necessary. This included:
+\begin{itemize}
+    \item Remove the ability to scrub through a whole album
+    \begin{description}
+        \item[Reason] This was removed as Spotify's web playback SDK is not able to play whole albums only songs, so the implementation would have been more complex than initially thought and the benefit of having this was though to be too small.
+    \end{description}
+    \item Remove
+\end{itemize}
+
 TODO: Talk about technical details to do with the implementation
 \subsection{Automated Testing}
+\subsection{Containerisation}
+\subsection{Dependency Management}
 \subsection{Challenges}
 \subsubsection{Environment}
 TODO: Add details about the problems I have with configuring environments
 
 \section{Backend}
 \subsection{Implementation}
+\subsubsection{Changes from initial design}
 \subsection{Automated Testing}
+\subsection{Containerisation}
+\subsection{Dependency Management}
 
 \section{Code Quality} \label{sec:code-quality}
