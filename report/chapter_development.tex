@@ -10,11 +10,40 @@ Once the components were built to use the application the next step was to integ
 Once this was complete the rest of the API endpoints for the backend could be implemented. This was done using the Axios library.
 
 \subsection{Play Screen}
-The play screen was implemented mostly as designed with the ability to play, pause, skip, scrub through a song, and select individual tracks from the currently active album [TODO: Add figure]. The spinning vinyl was implemented using an animation that controlled its rotation angle and pausing when playback was paused.
+
+% How are the songs played?
+% How does the list of songs work?
+% How do the controls work?
+% How do the animations work?
+
+The play screen mostly follows the initial design, comprising three main sections: the track list, the controls, and a spinning vinyl animation. Music playback is handled by the Spotify Web Playback SDK, a client side JavaScript library that enables control of Spotify playback through the browser. For actions such as changing tracks, skipping forward or backward, and pausing, the application calls a method provided by the SDK.
+
+\paragraph{Track List} The track list is a list of all tracks the currently active album, which is set on the scan screen. It presents users with a selection menu of tracks which can be selected in order to play a specific track.
+
+\paragraph{Controls} The playback controls include buttons and sliders which effect the playing music in some way. Clicking a button or adjusting a slider invokes the relevant SDK methods, allowing users to play, pause, skip, or adjust volume. Album art and track information automatically update as the active song changes. There is one feature which was removed from the original design, the ability to scrub through the whole album rather than only the currently playing track was considered too complex to implement and added little to the user experience and so was removed.
+
+\paragraph{Spinning Vinyl} To replicate the feel of a physical record player, a simple animation was implemented to rotate a vinyl graphic which had the album cover in the centre. Just as if this were a real record player, the vinyl rotates when music is playing and stops when paused. This was controlled by editing the rotation styling of the graphic. Another animation was added to simulate the act of removing the vinyl from its sleeve when the album is changed. This was done by sliding the album art of the screen as if the vinyl was being removed from it.
+
+[TODO: Add Figure of the play screen]
+
+%\begin{figure}
+%    \centering
+%    \includegraphics[width=0.8\textwidth]{}
+%    \caption{The play screen of the application}
+%    \label{fig:play_screen}
+%\end{figure}
 
 \subsection{Scan Screen}
-The scan screen had some changes from the initial design. Originally the intention was to connect to the users camera and display the stream on the web browser. This was done but the case of when the user does not have a camera was overlooked. To fix this a file upload was added and is the default if no cameras can be accessed by the browser [TODO: Add Figure]. Along with this the confirmation sidebar changed to allow for cases where the original first guess was incorrect, and a scatter shot approach is instead used to find the correct album. This was done by allowing the user to select from a selection of possible albums [TODO: Add Figure].
-The album selection seen at the bottom is still the same as designed with the suers albums sliding across the bottom and the user being able to select an album to play by clicking on it [TODO: Add Figure].
+The scan screen, though following the initial design as closely as possible, had to be changed during development as some problems with the original design became clear. It was also split into three main parts like the play screen: the album confirmation sidebar, the scan section, and the album collection.
+
+\paragraph{Album Confirmation Sidebar}
+The album confirmation sidebar existed to allow the user to confirm the album that was guessed was the correct one. This presented a problem that was not considered in the original design, what if the album guessed was incorrect? To solve this a second stage of the confirmation with a separate scatter shot approach taken to find the correct album [TODO: Add figure]. The sidebar also acts as a way to show to the user the application is processing as whilst the application is determining the album the sidebar is animated to show a loading animation providing feedback to the user that the application has not broken. Once the user confirms the album selection the sidebar slides back to the side of the screen and the album is set as the active album.
+\paragraph{Scan Section}
+Similarly to the confirmation sidebar an issue was found with the scan section. The original design did not take into account users who may not have a camera connected to their device. To solve this a file upload was added to the scan section which is the default if no cameras can be accessed by the browser [TODO: Add Figure]. This could also be accessed if the user did not want to use their camera for any reason.
+\paragraph{Album Collection}
+This section of the screen was mostly unchanged from the original design. The user's albums slide across the bottom of the screen and the user can select an album to play by clicking on it [TODO: Add Figure]. Once the user hovers over an album art the sliding is paused and extra details of that album appear such as the title and artist. The option to look through the user's collection differently is also available by clicking the view all button which opens a modal with all the user's albums in a view reminiscent of flicking through vinyl records in a record store.
+
+[TODO: Add Figure of the scan screen]
 
 \subsection{Social Screen}
 The social screen had major changes from the initial design. The original design had columns of albums for each user. In practice this meant that very few user collections could be shown at once without overloading the screen. The approach taken here was to instead take an approach that resembled the act of flicking through vinyl records in a record store. This minimised the amount of space each user's collection needed so many more could be shown. There was also the addition of a load more button, in order to prevent the page from taking too long to load or becoming too cluttered the page only loads with a subset of the collections that could appear. The load more button allows the user to load more collections as they scroll down the page [TODO: Add Figure].
