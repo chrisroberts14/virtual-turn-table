@@ -11,3 +11,5 @@ Bechhofer
 DBMSs
 Pylint
 WebSocket
+Vite
+Axios

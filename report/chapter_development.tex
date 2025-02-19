@@ -1,34 +1,24 @@
-\chapter{Development}
-\label{cha:development}
-
+\chapter{Development}~\label{cha:development}
 \section{Frontend}
 \subsection{Implementation}
-The frontend implementation used Vite as a build tool for a ReactJS frontend which provided a typescript template to edit for the implementation which also linked with tailwindcss, a CSS framework which allowed for easy styling of the application through class names rather than building bespoke style sheets, this saved time and facilitated a more consistent design.
+The actual implementation of the frontend used Vite as a build tool for ReactJS. This gave a starting TypeScript template which was modified to create the application.
 
-Early on it was decided to implement the application as a single page but with multiple tabs which would provide a more fluid user interface where users can easily switch between different views. This was particularly good as it allowed music playback to continue even as the user navigates the application.
+Once the build system was in place the design was broken up into components so each to be built independently. The HeroUI component library used in this project provided basic components common to most web applications, such as buttons, modals, and input fields from these the more complex components could be built. One of the benefits of using this component library was its integration with Tailwind CSS, which allowed for stylings to be applied through class names rather than bespoke stylesheets. This greatly reduced the amount of time needed to style the application and ensured a consistent look across the application.
 
-Beyond this the original design had to be broken into components to each be implemented separately, which greatly helped in testing as functionality could be isolated, before being combined into the final application. A list of components can be found in the appendix \ref{apd:frontend-components}.
+Once the components were built to use the application the next step was to integrate with the backend services. For some of these to work the user must authenticate with Spotify to gain access to the main functions of the Spotify API. This had to be implemented on the frontend using Spotify's OAuth2 API which allowed for the user to authenticate with Spotify and then be redirected back to the application with an access token in the URL which could be used to interact with the Spotify API.
 
-Once components were implemented API calls were added, so the frontend could interact with the backend. This was done using the Axios library which allowed for easy configuration of the API calls.
-
-For the user to use the app the user must authenticate with Spotify to gain access to main functions of the Spotify API. This was implemented using Spotify's OAuth2 API which allowed for the user to authenticate with Spotify and then be redirected back to the application with an access token which could be used to interact with the Spotify API.
+Once this was complete the rest of the API endpoints for the backend could be implemented. This was done using the Axios library.
 
 \subsection{Play Screen}
-The play screen was implemented mostly as designed with the ability to play, pause, skip, scrub through a song, and select individual tracks from the currently active album. The implementation was done using Spotify's web playback SDK which allowed for easy integration with Spotify's API. The implementation was done using the ReactJS framework which allowed for easy state management and updating of the UI when the song changes.
+The play screen was implemented mostly as designed with the ability to play, pause, skip, scrub through a song, and select individual tracks from the currently active album [TODO: Add figure]. The spinning vinyl was implemented using an animation that controlled its rotation angle and pausing when playback was paused.
+
 \subsection{Scan Screen}
+The scan screen had some changes from the initial design. Originally the intention was to connect to the users camera and display the stream on the web browser. This was done but the case of when the user does not have a camera was overlooked. To fix this a file upload was added and is the default if no cameras can be accessed by the browser [TODO: Add Figure]. Along with this the confirmation sidebar changed to allow for cases where the original first guess was incorrect, and a scatter shot approach is instead used to find the correct album. This was done by allowing the user to select from a selection of possible albums [TODO: Add Figure].
+The album selection seen at the bottom is still the same as designed with the suers albums sliding across the bottom and the user being able to select an album to play by clicking on it [TODO: Add Figure].
+
 \subsection{Social Screen}
+The social screen had major changes from the initial design. The original design had columns of albums for each user. In practice this meant that very few user collections could be shown at once without overloading the screen. The approach taken here was to instead take an approach that resembled the act of flicking through vinyl records in a record store. This minimised the amount of space each user's collection needed so many more could be shown. There was also the addition of a load more button, in order to prevent the page from taking too long to load or becoming too cluttered the page only loads with a subset of the collections that could appear. The load more button allows the user to load more collections as they scroll down the page [TODO: Add Figure].
 
-\subsubsection{Changes from initial design}
-The initial design was the original goal for this part of development but during the implementation some aspects were changed as it became clear they were either not feasible or not necessary. This included:
-\begin{itemize}
-    \item Remove the ability to scrub through a whole album
-    \begin{description}
-        \item[Reason] This was removed as Spotify's web playback SDK is not able to play whole albums only songs, so the implementation would have been more complex than initially thought and the benefit of having this was though to be too small.
-    \end{description}
-    \item Remove
-\end{itemize}
-
-TODO: Talk about technical details to do with the implementation
 \subsection{Automated Testing}
 \subsection{Containerisation}
 \subsection{Dependency Management}
