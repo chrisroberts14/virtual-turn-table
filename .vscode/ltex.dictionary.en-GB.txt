@@ -13,3 +13,4 @@ Pylint
 WebSocket
 Vite
 Axios
+Vitest
