@@ -1,5 +1,5 @@
 \chapter{Development}~\label{cha:development}
-\section{Frontend}
+\section{Frontend}~\label{sec:frontend-development}
 \subsection{Implementation}
 The actual implementation of the frontend used Vite as a build tool for ReactJS. This gave a starting TypeScript template which was modified to create the application.
 
@@ -56,13 +56,15 @@ Automatic scanning of the dependencies file was done using Dependabot which woul
 
 \subsection{Challenges}
 \subsubsection{Environment}
-TODO: Add details about the problems I have with configuring environments
+The biggest challenge in the frontend was managing environment variables. For different deployments of it different environment variables were needed. For example, the backend URL would be different for the development environment compared to the docker compose environment which would be different compared to the production environment. This issue was partially solved through the use of dotenv files which allowed environment variables to be defined in a file and then loaded into the application. However, these files could not be committed to git as they often contained secret keys for APIs and so had to be managed manually but once setup there were no issues.
 
-\section{Backend}
+\section{Backend}~\label{sec:backend-development}
 \subsection{Implementation}
-\subsubsection{Changes from initial design}
+\subsection{BFF}
+\subsection{User Data Service}
+\subsection{Image To Album Service}
 \subsection{Automated Testing}
 \subsection{Containerisation}
 \subsection{Dependency Management}
 
-\section{Code Quality} \label{sec:code-quality}
+\section{Code Quality}~\label{sec:code-quality}
