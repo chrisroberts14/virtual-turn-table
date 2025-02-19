@@ -50,6 +50,9 @@ Containerisation for the frontend involved creating a Docker image which contain
 The building of the application was straightforward after dependencies are installed however these dependencies are not required to be in the Docker image once the build is complete and since cloud storage has a cost associated with it the size of the image should be minimised. To do this a two stage build is employed with the first stage being the build stage where the application is built and the second stage being the production stage where the built application is copied from the build stage and served.
 
 \subsection{Dependency Management}
+Dependencies for the front end were managed using Node Package Manager (NPM). As new dependencies were installed a file in the repository would be updated with the name of the package and the version. From this file anyone with NPM could install the dependencies by running a single command.
+
+Automatic scanning of the dependencies file was done using Dependabot which would check for updates to the dependencies at a set interval, such as weekly or monthly, and create a pull request with the updates. This meant all dependencies were kept up to date and security vulnerabilities were patched as soon as possible whilst the automated tests allowed easy verification of if new dependency versions broke any functionality.
 
 \subsection{Challenges}
 \subsubsection{Environment}
