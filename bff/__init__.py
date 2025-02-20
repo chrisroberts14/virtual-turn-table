@@ -9,6 +9,7 @@ from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 
+from bff.auth import auth_router
 from bff.config import Settings, get_settings
 from bff.music import music_router
 from bff.social import social_router
@@ -22,6 +23,7 @@ app.include_router(music_router, prefix="/music")
 app.include_router(user_router, prefix="/user")
 app.include_router(image_search_router, prefix="/image_search")
 app.include_router(social_router, prefix="/social")
+app.include_router(auth_router, prefix="/auth")
 
 
 origins = [

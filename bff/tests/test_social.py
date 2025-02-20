@@ -167,7 +167,7 @@ class TestGetSharedCollections:
             :return:
             """
             mock_response_data = NotImplemented
-            if url.endswith("/get_shared_collections/test_user"):
+            if url.endswith("/get_shared_collections/test_client"):
                 mock_response_data = [
                     {"username": "test_user", "albums": ["test_album"]}
                 ]
@@ -201,7 +201,7 @@ class TestGetSharedCollections:
         mocker.patch("requests.get", side_effect=mock_request)
         response = client.get(
             self.endpoint,
-            params={"spotify_access_token": "test_token", "offset": 0, "limit": 1},
+            params={"offset": 0, "limit": 1},
         )
         result = response.json()
         assert response.status_code == 200
@@ -301,7 +301,7 @@ class TestGetSharedCollections:
             :return:
             """
             mock_response = mocker.Mock()
-            if url.endswith("/get_shared_collections/test_user"):
+            if url.endswith("/get_shared_collections/test_client"):
                 mock_response_data = [
                     {"username": "test_user", "albums": ["test_album"]}
                 ]
@@ -343,9 +343,7 @@ class TestShareCollection:
             return mock_response
 
         mocker.patch("requests.post", side_effect=mock_request)
-        response = client.post(
-            self.endpoint, json={"sharer": "test_user2", "receiver": "test_user"}
-        )
+        response = client.post(self.endpoint, params={"receiver": "test_user"})
         assert response.status_code == 200
         assert websocket_client.receive_text() == '{"message": "Collection shared"}'
 
@@ -369,9 +367,7 @@ class TestShareCollection:
             return mock_response
 
         mocker.patch("requests.post", side_effect=mock_request)
-        response = client.post(
-            self.endpoint, json={"sharer": "test_user", "receiver": "test_user2"}
-        )
+        response = client.post(self.endpoint, params={"receiver": "test_user2"})
         assert response.status_code == 400
         assert response.json() == {
             "message": "Failed to share collection",

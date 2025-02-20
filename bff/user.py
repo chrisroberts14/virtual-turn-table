@@ -12,10 +12,10 @@ from bff.api_models import (
     User,
     APIException,
     UserIn,
-    AlbumUserLinkIn,
     GetUsersOut,
     Notification,
 )
+from bff.auth import verify_token
 from bff.config import get_settings, Settings
 from bff.websocket import manager
 
@@ -24,15 +24,17 @@ user_router = APIRouter()
 
 @user_router.get("/get_user_info")
 async def get_user_info(
-    spotify_access_token: str, settings: Annotated[Settings, Depends(get_settings)]
+    settings: Annotated[Settings, Depends(get_settings)],
+    auth_payload: dict = Depends(verify_token),
 ) -> User:
     """
     Get user data from spotify returning only the necessary data.
 
+    :param auth_payload:
     :param settings:
-    :param spotify_access_token:
     :return:
     """
+    spotify_access_token = auth_payload["spotify_access_token"]
     endpoint = "https://api.spotify.com/v1/me"
     headers = {"Authorization": f"Bearer {spotify_access_token}"}
 
@@ -82,42 +84,73 @@ async def create_user(
 
 @user_router.post("/add_album", status_code=HTTP_201_CREATED)
 async def add_album(
-    data_in: AlbumUserLinkIn, settings: Annotated[Settings, Depends(get_settings)]
+    album_uri: str,
+    settings: Annotated[Settings, Depends(get_settings)],
+    auth_payload: dict = Depends(verify_token),
 ):
     """
     Add an album to a user's collection.
 
     Creates the album if it doesn't already exist
 
+    :param auth_payload:
+    :param album_uri:
     :param settings:
-    :param data_in:
     :return:
     """
+    user_id = auth_payload["username"]
     # Create the album if it doesn't exist
-    endpoint = f"{settings.user_data_address}/user/create_album/{data_in.album_uri}"
+    endpoint = f"{settings.user_data_address}/user/create_album/{album_uri}"
     response = requests.post(endpoint, timeout=20)
     if response.status_code != 201:
         raise APIException(400, "Failed to create or find album.")
     # Create the link between the user and the album
     endpoint = f"{settings.user_data_address}/user/add_album_link"
-    response = requests.post(endpoint, json=data_in.model_dump(), timeout=20)
+    response = requests.post(
+        endpoint, json={"album_uri": album_uri, "user_id": user_id}, timeout=20
+    )
     if response.status_code != 201:
         raise APIException(400, "Failed to add album link.")
-    await manager.send_message(json.dumps({"message": "Album added"}), data_in.user_id)
+    await manager.send_message(json.dumps({"message": "Album added"}), user_id)
 
 
-@user_router.get("/get_user_albums/{user_name}")
+@user_router.get("/get_user_albums/{user_id}")
 async def get_users_albums(
-    user_name: str, settings: Annotated[Settings, Depends(get_settings)]
+    user_id: str,
+    settings: Annotated[Settings, Depends(get_settings)],
+    auth_payload: dict = Depends(verify_token),
 ) -> list[str]:
     """
     Get all albums for a user.
 
+    :param auth_payload:
     :param settings:
-    :param user_name:
+    :param user_id:
     :return:
     """
-    endpoint = f"{settings.user_data_address}/user/{user_name}/albums"
+    current_user = auth_payload["username"]
+    if current_user != user_id:
+        # Check the user has permission to view the collection
+        # Either public or shared
+        endpoint = f"{settings.user_data_address}/user/is_collection_public/{user_id}"
+        response_is_collection_public = requests.get(endpoint, timeout=20)
+        if response_is_collection_public.status_code != 200:
+            raise APIException(400, "Failed to access user data.")
+        # Check if it is shared with the user
+        endpoint = (
+            f"{settings.user_data_address}/social/get_shared_collections/{current_user}"
+        )
+        response = requests.get(endpoint, timeout=20)
+        if response.status_code != 200:
+            raise APIException(400, "Failed to get shared collections")
+        shared_collections = response.json()
+        if (
+            user_id not in shared_collections
+            and not response_is_collection_public.json()
+        ):
+            raise APIException(403, "User collection is private.")
+
+    endpoint = f"{settings.user_data_address}/user/{user_id}/albums"
     response = requests.get(endpoint, timeout=20)
     if response.status_code != 200:
         raise APIException(400, "Failed to access user data.")
@@ -146,15 +179,17 @@ async def get_users_by_search(
 
 @user_router.get("/get_notifications/{username}")
 async def get_notifications(
-    username: str, settings: Annotated[Settings, Depends(get_settings)]
+    settings: Annotated[Settings, Depends(get_settings)],
+    auth_payload: dict = Depends(verify_token),
 ) -> list[Notification]:
     """
     Get all notifications for a user.
 
+    :param auth_payload:
     :param settings:
-    :param username:
     :return:
     """
+    username = auth_payload["username"]
     endpoint = f"{settings.user_data_address}/user/notifications/{username}"
     response = requests.get(endpoint, timeout=20)
     if response.status_code != 200:
@@ -182,15 +217,17 @@ async def is_collection_public(
 
 @user_router.delete("/{username}")
 async def delete_user(
-    username: str, settings: Annotated[Settings, Depends(get_settings)]
+    settings: Annotated[Settings, Depends(get_settings)],
+    auth_payload: dict = Depends(verify_token),
 ):
     """
     Delete a user from the database.
 
     :param settings:
-    :param username:
+    :param auth_payload:
     :return:
     """
+    username = auth_payload["username"]
     endpoint = f"{settings.user_data_address}/user/{username}"
     response = requests.delete(endpoint, timeout=20)
     if response.status_code != 200:

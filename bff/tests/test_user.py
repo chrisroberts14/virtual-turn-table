@@ -253,7 +253,7 @@ class TestAddAlbum:
             return mock_response
 
         mocker.patch("requests.post", side_effect=mock_request)
-        response = client.post(self.endpoint, json=self.data_in.model_dump())
+        response = client.post(self.endpoint, params={"album_uri": "test_album"})
         assert response.status_code == 201
 
     def test_add_album_creation_failed(self, client, mocker):
@@ -277,7 +277,7 @@ class TestAddAlbum:
             return mock_response
 
         mocker.patch("requests.post", side_effect=mock_request)
-        response = client.post(self.endpoint, json=self.data_in.model_dump())
+        response = client.post(self.endpoint, params={"album_uri": "test_album"})
         assert response.status_code == 400
         assert response.json() == {
             "message": "Failed to create or find album.",
@@ -307,7 +307,7 @@ class TestAddAlbum:
             return mock_response
 
         mocker.patch("requests.post", side_effect=mock_request)
-        response = client.post(self.endpoint, json=self.data_in.model_dump())
+        response = client.post(self.endpoint, params={"album_uri": "test_album"})
         assert response.status_code == 400
         assert response.json() == {
             "message": "Failed to add album link.",
@@ -318,7 +318,7 @@ class TestAddAlbum:
 class TestGetUserAlbums:
     """Test the /user/get_user_albums/{username} endpoint."""
 
-    endpoint = "/user/get_user_albums/test_user"
+    endpoint = "/user/get_user_albums/{}"
 
     def test_get_user_albums(self, client, mocker):
         """
@@ -339,7 +339,7 @@ class TestGetUserAlbums:
             return mock_response
 
         mocker.patch("requests.get", side_effect=mock_request)
-        response = client.get(self.endpoint)
+        response = client.get(self.endpoint.format("test_client"))
         assert response.status_code == 200
         assert response.json() == ["test"]
 
@@ -363,8 +363,98 @@ class TestGetUserAlbums:
             return mock_response
 
         mocker.patch("requests.get", side_effect=mock_request)
-        response = client.get(self.endpoint)
+        response = client.get(self.endpoint.format("test_client"))
         assert response.status_code == 400
+
+    def test_get_user_albums_collection_not_public_not_shared(self, client, mocker):
+        """
+        Test call where the user collection is not public.
+
+        :param client:
+        :param mocker:
+        :return:
+        """
+
+        def mock_request(url: str, **__):
+            """
+            Mock the request.
+
+            :return:
+            """
+            mock_response = mocker.Mock()
+            if "is_collection_public" in url:
+                mock_response.status_code = 200
+                mock_response.json.return_value = False
+            else:
+                mock_response.status_code = 200
+                mock_response.json.return_value = ["test"]
+            return mock_response
+
+        mocker.patch("requests.get", side_effect=mock_request)
+        response = client.get(self.endpoint.format("test_user"))
+        assert response.status_code == 403
+        assert response.json() == {
+            "message": "User collection is private.",
+            "status": "error",
+        }
+
+    def test_get_user_albums_failed_public_collection_call(self, client, mocker):
+        """
+        Test call where the user collection is not public.
+
+        :param client:
+        :param mocker:
+        :return:
+        """
+
+        def mock_request(**__):
+            """
+            Mock the request.
+
+            :return:
+            """
+            mock_response = mocker.Mock()
+            mock_response.status_code = 400
+            return mock_response
+
+        mocker.patch("requests.get", side_effect=mock_request)
+        response = client.get(self.endpoint.format("test_user"))
+        assert response.status_code == 400
+        assert response.json() == {
+            "message": "Failed to access user data.",
+            "status": "error",
+        }
+
+    def test_get_user_albums_failed_get_shared_collections(self, client, mocker):
+        """
+        Test call where the user collection is not public.
+
+        :param client:
+        :param mocker:
+        :return:
+        """
+
+        def mock_request(url: str, **__):
+            """
+            Mock the request.
+
+            :return:
+            """
+            mock_response = mocker.Mock()
+            if "is_collection_public" in url:
+                mock_response.status_code = 200
+                mock_response.json.return_value = True
+            else:
+                mock_response.status_code = 400
+            return mock_response
+
+        mocker.patch("requests.get", side_effect=mock_request)
+        response = client.get(self.endpoint.format("test_user"))
+        assert response.status_code == 400
+        assert response.json() == {
+            "message": "Failed to get shared collections",
+            "status": "error",
+        }
 
 
 class TestGetUsersBySearch:
@@ -543,5 +633,61 @@ class TestDeleteUser:
         assert response.status_code == 400
         assert response.json() == {
             "message": "Failed to delete user.",
+            "status": "error",
+        }
+
+
+class TestIsCollectionPublic:
+    """Test the /user/is_collection_public/{username} endpoint."""
+
+    endpoint = "/user/is_collection_public/test_user"
+
+    def test_is_collection_public(self, client, mocker):
+        """
+        Test working call.
+
+        :return:
+        """
+
+        def mock_request(_, **__):
+            """
+            Mock the request.
+
+            :return:
+            """
+            mock_response = mocker.Mock()
+            mock_response.status_code = 200
+            mock_response.json.return_value = True
+            return mock_response
+
+        mocker.patch("requests.get", side_effect=mock_request)
+        response = client.get(self.endpoint)
+        assert response.status_code == 200
+        assert response.json()
+
+    def test_is_collection_public_bad_request(self, client, mocker):
+        """
+        Test call where the user data service fails.
+
+        :param client:
+        :param mocker:
+        :return:
+        """
+
+        def mock_request(_, **__):
+            """
+            Mock the request.
+
+            :return:
+            """
+            mock_response = mocker.Mock()
+            mock_response.status_code = 400
+            return mock_response
+
+        mocker.patch("requests.get", side_effect=mock_request)
+        response = client.get(self.endpoint)
+        assert response.status_code == 400
+        assert response.json() == {
+            "message": "Failed to access user data.",
             "status": "error",
         }
