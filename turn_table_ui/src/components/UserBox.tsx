@@ -78,19 +78,20 @@ const UserBox = () => {
 	return (
 		<div>
 			<Dropdown backdrop="blur">
-				<DropdownTrigger>
-					<User
-						name={username}
-						as="button"
-						avatarProps={{
-							src: profileImage,
-							alt: "Profile image",
-							showFallback: true,
-						}}
-						isFocusable={true}
-						className="hidden sm:flex"
-					/>
-				</DropdownTrigger>
+				{profileImage && (
+					<DropdownTrigger>
+						<User
+							name={username}
+							as="button"
+							avatarProps={{
+								src: profileImage,
+								alt: "Profile image",
+							}}
+							isFocusable={true}
+							className="hidden sm:flex"
+						/>
+					</DropdownTrigger>
+				)}
 				<DropdownMenu
 					disabledKeys={disabledKeys}
 					onAction={(key) => {
