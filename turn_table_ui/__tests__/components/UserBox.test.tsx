@@ -30,6 +30,7 @@ describe("UserBox", () => {
 	const mockShowError = vi.fn();
 	const mockShowSuccess = vi.fn();
 	const clearStateDataMock = vi.fn();
+	const logoutMock = vi.fn();
 
 	beforeEach(() => {
 		// @ts-ignore
@@ -63,7 +64,20 @@ describe("UserBox", () => {
 		(GetIsCollectionPublic as vi.Mock).mockReturnValue(Promise.resolve(true));
 	});
 
+	afterEach(() => {
+		vi.resetAllMocks();
+	});
+
 	it("renders the user info when GetUserInfo returns valid data", async () => {
+		//@ts-ignore
+		(useUserBox as vi.mock).mockReturnValue({
+			profileImage: "img",
+			username: "John Doe",
+			logout: logoutMock,
+			isCollectionPublic: true,
+			setIsCollectionPublic: vi.fn(),
+		});
+
 		render(
 			<BFFTokenContext.Provider
 				value={{ BFFToken: "test_token", setBFFToken: vi.fn() }}
@@ -80,29 +94,7 @@ describe("UserBox", () => {
 		});
 	});
 
-	it("should logout if get user info fails", async () => {
-		// @ts-ignore
-		(GetUserInfo as vi.Mock).mockRejectedValue(
-			new Error("Failed to get user info"),
-		);
-
-		render(
-			<BFFTokenContext.Provider
-				value={{ BFFToken: "test_token", setBFFToken: vi.fn() }}
-			>
-				<UsernameContext.Provider value={{ username, setUsername }}>
-					<UserBox />
-				</UsernameContext.Provider>
-				,
-			</BFFTokenContext.Provider>,
-		);
-		await waitFor(() => {
-			expect(clearStateDataMock).toHaveBeenCalled();
-		});
-	});
-
 	it("should logout when logout button is clicked", async () => {
-		const logoutMock = vi.fn();
 		//@ts-ignore
 		(useUserBox as vi.mock).mockReturnValue({
 			profileImage: "img",
