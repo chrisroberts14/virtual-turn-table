@@ -8,11 +8,13 @@ import { useUpload } from "../../src/contexts/UploadContext";
 import { useUsername } from "../../src/contexts/UsernameContext";
 import type Album from "../../src/interfaces/Album";
 import "@testing-library/jest-dom";
+import { useBFFToken } from "../../src/contexts/BFFTokenContext";
 
 vi.mock("../../src/contexts/UsernameContext");
 vi.mock("../../src/contexts/MusicContext");
 vi.mock("../../src/contexts/UploadContext");
 vi.mock("../../src/api_calls/AddAlbum");
+vi.mock("../../src/contexts/BFFTokenContext");
 
 describe("AlbumConfirm", () => {
 	const album: Album = {
@@ -47,6 +49,12 @@ describe("AlbumConfirm", () => {
 
 		// @ts-ignore
 		(AddAlbum as vi.mock).mockReturnValue(Promise.resolve());
+
+		//@ts-ignore
+		(useBFFToken as vi.mock).mockReturnValue({
+			BFFToken: "valid_token",
+			setBFFToken: vi.fn(),
+		});
 	});
 
 	it("should render", async () => {
@@ -72,7 +80,7 @@ describe("AlbumConfirm", () => {
 			expect(useUpload().setScannedAlbum).toHaveBeenCalledWith(null);
 			expect(useUpload().setFadeConfirm).toHaveBeenCalledWith(false);
 			expect(useUpload().setCurrentImage).toHaveBeenCalledWith(null);
-			expect(AddAlbum).toHaveBeenCalledWith("test_user", "album_uri");
+			expect(AddAlbum).toHaveBeenCalledWith("valid_token", "album_uri");
 		});
 	});
 
