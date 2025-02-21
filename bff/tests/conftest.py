@@ -13,7 +13,7 @@ from bff.auth import verify_token
 
 def override_verify_token():
     """Override the verify token function."""
-    return {"username": "test_client", "spotify_access_token": "test_token"}
+    return {"user": {"username": "test_client", "spotify_access_token": "test_token"}}
 
 
 @pytest.fixture(scope="session")

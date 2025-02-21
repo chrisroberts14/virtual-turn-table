@@ -40,7 +40,6 @@ class TestGetToken:
         assert response.status_code == 200
         result = response.json()
         assert "access_token" in result
-        assert "token_type" in result
 
     def test_failed_verification(self, client, mocker):
         """

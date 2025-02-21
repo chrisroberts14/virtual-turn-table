@@ -196,7 +196,7 @@ async def toggle_collection_public(
     :param settings:
     :return:
     """
-    username = auth_payload["auth"]["username"]
+    username = auth_payload["user"]["username"]
     endpoint = (
         f"{settings.user_data_address}/social/toggle_collection_public/{username}"
     )
