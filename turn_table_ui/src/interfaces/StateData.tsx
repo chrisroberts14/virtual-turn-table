@@ -5,7 +5,8 @@ import type Song from "@/interfaces/Song.tsx";
 // Provides helper methods for easy access to the state data in local storage
 
 export interface StateData {
-	spotify_access_token?: string;
+	bff_token?: string;
+	spotify_token?: string;
 	currentAlbum?: Album;
 	currentPage?: number;
 	currentSong?: Song;

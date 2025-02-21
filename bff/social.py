@@ -116,7 +116,7 @@ async def get_public_collections(
     :param settings:
     :param auth_payload:
     """
-    spotify_access_token = auth_payload["spotify_access_token"]
+    spotify_access_token = auth_payload["user"]["spotify_access_token"]
     endpoint = f"{settings.user_data_address}/social/get_public_collections"
     response = requests.get(
         endpoint, timeout=20, params={"offset": offset, "count": limit}
@@ -145,8 +145,8 @@ async def get_shared_collections(
     :param auth_payload:
     :return:
     """
-    spotify_access_token = auth_payload["spotify_access_token"]
-    username = auth_payload["username"]
+    spotify_access_token = auth_payload["user"]["spotify_access_token"]
+    username = auth_payload["user"]["username"]
     endpoint = f"{settings.user_data_address}/social/get_shared_collections/{username}"
     response = requests.get(
         endpoint, timeout=20, params={"offset": offset, "count": limit}
@@ -173,7 +173,7 @@ async def share_collection(
     :param auth_payload:
     :return:
     """
-    sender = auth_payload["username"]
+    sender = auth_payload["user"]["username"]
     endpoint = f"{settings.user_data_address}/social/share_collection"
     response = requests.post(
         endpoint, json={"sharer": sender, "receiver": receiver}, timeout=20
@@ -196,7 +196,7 @@ async def toggle_collection_public(
     :param settings:
     :return:
     """
-    username = auth_payload["username"]
+    username = auth_payload["auth"]["username"]
     endpoint = (
         f"{settings.user_data_address}/social/toggle_collection_public/{username}"
     )

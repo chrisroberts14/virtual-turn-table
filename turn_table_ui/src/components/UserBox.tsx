@@ -3,6 +3,7 @@ import GetIsCollectionPublic from "@/api_calls/GetIsCollectionPublic";
 import GetUserAlbums from "@/api_calls/GetUserAlbums";
 import ToggleCollectionPublic from "@/api_calls/ToggleCollectionPublic";
 import ShareModal from "@/components/ShareModal";
+import { useBFFToken } from "@/contexts/BFFTokenContext.ts";
 import { useError } from "@/contexts/ErrorContext";
 import { ShareContext } from "@/contexts/ShareContext";
 import { useSuccess } from "@/contexts/SuccessContext.tsx";
@@ -42,6 +43,7 @@ const UserBox = () => {
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 	const { showError } = useError();
 	const { showSuccess } = useSuccess();
+	const { BFFToken } = useBFFToken();
 
 	const deleteAccount = async () => {
 		if (!username) {
@@ -53,8 +55,8 @@ const UserBox = () => {
 	};
 
 	useEffect(() => {
-		if (username) {
-			GetUserAlbums(username).then((albums) => {
+		if (username && BFFToken) {
+			GetUserAlbums(username, BFFToken).then((albums) => {
 				if (albums.length === 0) {
 					setDisabledKeys(["share", "togglePublic"]);
 				} else {
@@ -65,7 +67,7 @@ const UserBox = () => {
 				setIsCollectionPublic(isPublic);
 			});
 		}
-	}, [username, setIsCollectionPublic]);
+	}, [username, setIsCollectionPublic, BFFToken]);
 
 	useEffect(() => {
 		eventEmitter.on("albumAdded", () => {

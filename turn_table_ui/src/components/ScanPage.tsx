@@ -3,8 +3,8 @@ import GetUserAlbums from "@/api_calls/GetUserAlbums.ts";
 import AlbumConfirm from "@/components/AlbumConfirm.tsx";
 import { CollectionPreviewHorizontal } from "@/components/CollectionPreview.tsx";
 import ImageCapture from "@/components/ImageCapture.tsx";
+import { useBFFToken } from "@/contexts/BFFTokenContext.ts";
 import { CollectionContext } from "@/contexts/CollectionContext.tsx";
-import { useSpotifyToken } from "@/contexts/SpotifyTokenContext.tsx";
 import { UploadContext } from "@/contexts/UploadContext.tsx";
 import { useUsername } from "@/contexts/UsernameContext.tsx";
 import { useWebSocket } from "@/contexts/WebSocketContext.ts";
@@ -22,14 +22,14 @@ const ScanPage = () => {
 	const contentHeight = useResizeHandler(240);
 	const [albums, setAlbums] = useState<Album[] | undefined>(undefined);
 	const { username } = useUsername();
-	const { token } = useSpotifyToken();
+	const { BFFToken } = useBFFToken();
 	const { ws } = useWebSocket();
 
 	useEffect(() => {
-		if (username && token) {
+		if (username && BFFToken) {
 			updateAlbums();
 		}
-	}, [username, token]);
+	}, [username, BFFToken]);
 
 	useEffect(() => {
 		if (ws) {
@@ -43,11 +43,11 @@ const ScanPage = () => {
 	}, [ws]);
 
 	const updateAlbums = () => {
-		if (username && token) {
-			GetUserAlbums(username).then((albums) => {
+		if (username && BFFToken) {
+			GetUserAlbums(username, BFFToken).then((albums) => {
 				// Get all album details and create a list of them
 				const albumPromises = albums.map((album_uri: string) => {
-					return GetAlbumDetails(album_uri, token);
+					return GetAlbumDetails(album_uri, BFFToken);
 				});
 
 				const fetchAllAlbumDetails = async () => {

@@ -1,3 +1,4 @@
+import getToken from "@/api_calls/Auth.ts";
 import CreateUser from "@/api_calls/CreateUser";
 import GetUserInfo from "@/api_calls/GetUserInfo";
 import type Album from "@/interfaces/Album";
@@ -16,7 +17,8 @@ enum tabs {
 const useApp = () => {
 	const [isSignedIn, setIsSignedIn] = useState(false);
 	const [currentAlbum, setCurrentAlbum] = useState<Album | null>(null);
-	const [token, setToken] = useState<string | null>(null);
+	const [BFFToken, setBFFToken] = useState<string | null>(null);
+	const [spotifyToken, setSpotifyToken] = useState<string | null>(null);
 	// Three pages are defined in the state: "play", "scan" and "social"
 	const [currentPage, setCurrentPage] = useState(tabs.scan);
 
@@ -33,32 +35,38 @@ const useApp = () => {
 		// Try to access URL parameters
 		const hash = window.location.hash.substring(1);
 		const params = new URLSearchParams(hash);
-		const token = params.get("access_token");
+		const spotify_token = params.get("access_token");
 
 		// If there is a token in the URL parameters, the user is signing in
-		if (token) {
+		if (spotify_token) {
 			// Is signing in
-			storeStateData({
-				spotify_access_token: token,
-			});
-			setIsSignedIn(true);
-			setToken(token);
-
-			// Create a user if they are logging in
-			// This does nothing if the user already exists
-			GetUserInfo(token).then((user) => {
-				CreateUser(user.display_name, user.image_url).catch((error) => {
-					console.error(error);
+			// Get the auth token for the BFF
+			getToken(spotify_token).then((bffToken) => {
+				storeStateData({
+					bff_token: bffToken,
+					spotify_token: spotify_token,
+				});
+				setIsSignedIn(true);
+				setBFFToken(bffToken);
+				setSpotifyToken(spotify_token);
+				// Create a user if they are logging in
+				// This does nothing if the user already exists
+				GetUserInfo(bffToken).then((user) => {
+					CreateUser(user.display_name, user.image_url).catch((error) => {
+						console.error(error);
+					});
 				});
 			});
-		} else if (currentState?.spotify_access_token) {
+		} else if (currentState?.bff_token && currentState?.spotify_token) {
 			// Is already signed in
 			setIsSignedIn(true);
-			setToken(currentState.spotify_access_token);
+			setBFFToken(currentState.bff_token);
+			setSpotifyToken(currentState.spotify_token);
 		} else {
 			// Is not signed in
 			setIsSignedIn(false);
-			setToken(null);
+			setBFFToken(null);
+			setSpotifyToken(null);
 		}
 	}, []);
 
@@ -79,8 +87,10 @@ const useApp = () => {
 		setIsSignedIn,
 		currentAlbum,
 		setCurrentAlbum,
-		token,
-		setToken,
+		BFFToken,
+		setBFFToken,
+		spotifyToken,
+		setSpotifyToken,
 		currentPage,
 		setCurrentPage,
 	};

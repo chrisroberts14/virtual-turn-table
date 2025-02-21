@@ -34,7 +34,7 @@ async def get_user_info(
     :param settings:
     :return:
     """
-    spotify_access_token = auth_payload["spotify_access_token"]
+    spotify_access_token = auth_payload["user"]["spotify_access_token"]
     endpoint = "https://api.spotify.com/v1/me"
     headers = {"Authorization": f"Bearer {spotify_access_token}"}
 
@@ -98,7 +98,7 @@ async def add_album(
     :param settings:
     :return:
     """
-    user_id = auth_payload["username"]
+    user_id = auth_payload["user"]["username"]
     # Create the album if it doesn't exist
     endpoint = f"{settings.user_data_address}/user/create_album/{album_uri}"
     response = requests.post(endpoint, timeout=20)
@@ -128,7 +128,7 @@ async def get_users_albums(
     :param user_id:
     :return:
     """
-    current_user = auth_payload["username"]
+    current_user = auth_payload["user"]["username"]
     if current_user != user_id:
         # Check the user has permission to view the collection
         # Either public or shared
@@ -177,7 +177,7 @@ async def get_users_by_search(
     return response.json()
 
 
-@user_router.get("/get_notifications/{username}")
+@user_router.get("/get_notifications")
 async def get_notifications(
     settings: Annotated[Settings, Depends(get_settings)],
     auth_payload: dict = Depends(verify_token),
@@ -189,7 +189,7 @@ async def get_notifications(
     :param settings:
     :return:
     """
-    username = auth_payload["username"]
+    username = auth_payload["user"]["username"]
     endpoint = f"{settings.user_data_address}/user/notifications/{username}"
     response = requests.get(endpoint, timeout=20)
     if response.status_code != 200:
@@ -215,7 +215,7 @@ async def is_collection_public(
     return response.json()
 
 
-@user_router.delete("/{username}")
+@user_router.delete("/")
 async def delete_user(
     settings: Annotated[Settings, Depends(get_settings)],
     auth_payload: dict = Depends(verify_token),
@@ -227,7 +227,7 @@ async def delete_user(
     :param auth_payload:
     :return:
     """
-    username = auth_payload["username"]
+    username = auth_payload["user"]["username"]
     endpoint = f"{settings.user_data_address}/user/{username}"
     response = requests.delete(endpoint, timeout=20)
     if response.status_code != 200:

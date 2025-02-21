@@ -2,10 +2,10 @@ import GetAlbumDetails from "@/api_calls/GetAlbumDetails";
 import GetUserAlbums from "@/api_calls/GetUserAlbums";
 import Collection from "@/components/Collection";
 import { useAlbumSelection } from "@/contexts/AlbumSelectionContext";
+import { useBFFToken } from "@/contexts/BFFTokenContext.ts";
 import { CollectionContext } from "@/contexts/CollectionContext";
 import { useError } from "@/contexts/ErrorContext";
 import { useMusic } from "@/contexts/MusicContext";
-import { useSpotifyToken } from "@/contexts/SpotifyTokenContext";
 import { useUsername } from "@/contexts/UsernameContext";
 import type Album from "@/interfaces/Album";
 import type { Collection as CollectionType } from "@/interfaces/Collection";
@@ -25,7 +25,7 @@ const AlbumCollectionDisplay = ({
 }: AlbumCollectionDisplayProps) => {
 	const { username } = useUsername();
 	const { showError } = useError();
-	const { token } = useSpotifyToken();
+	const { BFFToken } = useBFFToken();
 	const { setCurrentAlbum } = useMusic();
 	const { albums, setAlbums, setHoveredAlbum } = useAlbumSelection();
 
@@ -36,14 +36,14 @@ const AlbumCollectionDisplay = ({
 				setAlbums(albumCollection.albums);
 				return;
 			}
-			if (user && token) {
+			if (user && BFFToken) {
 				// Show the currently logged-in users albums
-				GetUserAlbums(user)
+				GetUserAlbums(user, BFFToken)
 					.then((albums) => {
 						if (albums.length > 0) {
 							// Get all album details and create a list of them
 							const albumPromises = albums.map((album_uri: string) => {
-								return GetAlbumDetails(album_uri, token);
+								return GetAlbumDetails(album_uri, BFFToken);
 							});
 
 							const fetchAllAlbumDetails = async () => {
@@ -60,7 +60,7 @@ const AlbumCollectionDisplay = ({
 					});
 			}
 		},
-		[token, setAlbums, albumCollection],
+		[BFFToken, setAlbums, albumCollection],
 	);
 
 	useEffect(() => {

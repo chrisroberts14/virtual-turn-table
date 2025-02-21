@@ -65,7 +65,7 @@ def get_token(spotify_access_token: str) -> dict:
 
     username = response.json()["display_name"]
     token = create_access_token(
-        {"username": username, "spotify_token": spotify_access_token}
+        {"username": username, "spotify_access_token": spotify_access_token}
     )
 
-    return {"access_token": token, "token_type": "bearer"}
+    return {"access_token": token}
