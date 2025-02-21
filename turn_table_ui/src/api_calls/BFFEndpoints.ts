@@ -3,7 +3,7 @@
 const bff = import.meta.env.VITE_BFF_ADDRESS;
 
 // Order is alphabetical
-export const addAlbum = `http://${bff}/user/add_album/`;
+export const addAlbum = `http://${bff}/user/add_album`;
 export const albumDetails = `http://${bff}/music/album_details`;
 export const auth = `http://${bff}/auth/token`;
 export const BFFWebSocket = `ws://${bff}/ws`;
