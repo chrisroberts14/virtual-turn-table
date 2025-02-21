@@ -7,6 +7,7 @@ import { getStateData } from "../../src/interfaces/StateData";
 import { act } from "react";
 import PlayTrack from "../../src/api_calls/PlayTrack";
 import PlayerSetup from "../../src/api_calls/PlayerSetup";
+import { BFFTokenContext } from "../../src/contexts/BFFTokenContext";
 import { ErrorProvider } from "../../src/contexts/ErrorContext";
 import { MusicContext } from "../../src/contexts/MusicContext";
 import { NavigationContext } from "../../src/contexts/NavigationContext";
@@ -38,8 +39,10 @@ const album: Album = {
 
 const username = "username";
 const setUsername = vi.fn();
-const token = "token";
-const setToken = vi.fn();
+const BFFToken = "token";
+const spotifyToken = "token";
+const setSpotifyToken = vi.fn();
+const setBFFToken = vi.fn();
 let currentAlbum = album;
 const setCurrentAlbum = vi.fn();
 const isSignedIn = true;
@@ -51,19 +54,21 @@ describe("UseMusicPlayer", () => {
 	const wrapper = ({ children }) => (
 		<ErrorProvider>
 			<UsernameContext.Provider value={{ username, setUsername }}>
-				<SpotifyTokenContext.Provider value={{ token, setToken }}>
-					<NavigationContext.Provider
-						value={{ isSignedIn, setIsSignedIn, currentPage, setCurrentPage }}
-					>
-						<MusicContext.Provider
-							value={{
-								currentAlbum,
-								setCurrentAlbum,
-							}}
+				<SpotifyTokenContext.Provider value={{ spotifyToken, setSpotifyToken }}>
+					<BFFTokenContext.Provider value={{ BFFToken, setBFFToken }}>
+						<NavigationContext.Provider
+							value={{ isSignedIn, setIsSignedIn, currentPage, setCurrentPage }}
 						>
-							{children}
-						</MusicContext.Provider>
-					</NavigationContext.Provider>
+							<MusicContext.Provider
+								value={{
+									currentAlbum,
+									setCurrentAlbum,
+								}}
+							>
+								{children}
+							</MusicContext.Provider>
+						</NavigationContext.Provider>
+					</BFFTokenContext.Provider>
 				</SpotifyTokenContext.Provider>
 			</UsernameContext.Provider>
 		</ErrorProvider>

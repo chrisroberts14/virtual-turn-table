@@ -10,6 +10,7 @@ import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import GetIsCollectionPublic from "../../src/api_calls/GetIsCollectionPublic";
 import GetUserAlbums from "../../src/api_calls/GetUserAlbums";
+import { BFFTokenContext } from "../../src/contexts/BFFTokenContext";
 import { useSuccess } from "../../src/contexts/SuccessContext";
 
 vi.mock("../../src/api_calls/GetUserInfo");
@@ -43,6 +44,7 @@ describe("UserBox", () => {
 		// @ts-ignore
 		(getStateData as vi.Mock).mockReturnValue({
 			spotify_access_token: "valid_token",
+			bff_token: "valid_token",
 		});
 
 		// @ts-ignore
@@ -60,9 +62,14 @@ describe("UserBox", () => {
 
 	it("renders the user info when GetUserInfo returns valid data", async () => {
 		render(
-			<UsernameContext.Provider value={{ username, setUsername }}>
-				<UserBox />
-			</UsernameContext.Provider>,
+			<BFFTokenContext.Provider
+				value={{ BFFToken: "test_token", setBFFToken: vi.fn() }}
+			>
+				<UsernameContext.Provider value={{ username, setUsername }}>
+					<UserBox />
+				</UsernameContext.Provider>
+				,
+			</BFFTokenContext.Provider>,
 		);
 
 		await waitFor(() => {
@@ -77,9 +84,14 @@ describe("UserBox", () => {
 		);
 
 		render(
-			<UsernameContext.Provider value={{ username, setUsername }}>
-				<UserBox />
-			</UsernameContext.Provider>,
+			<BFFTokenContext.Provider
+				value={{ BFFToken: "test_token", setBFFToken: vi.fn() }}
+			>
+				<UsernameContext.Provider value={{ username, setUsername }}>
+					<UserBox />
+				</UsernameContext.Provider>
+				,
+			</BFFTokenContext.Provider>,
 		);
 		await waitFor(() => {
 			expect(clearStateDataMock).toHaveBeenCalled();
@@ -88,9 +100,14 @@ describe("UserBox", () => {
 
 	it("should logout when logout button is clicked", async () => {
 		render(
-			<UsernameContext.Provider value={{ username, setUsername }}>
-				<UserBox />
-			</UsernameContext.Provider>,
+			<BFFTokenContext.Provider
+				value={{ BFFToken: "test_token", setBFFToken: vi.fn() }}
+			>
+				<UsernameContext.Provider value={{ username, setUsername }}>
+					<UserBox />
+				</UsernameContext.Provider>
+				,
+			</BFFTokenContext.Provider>,
 		);
 
 		await userEvent.click(screen.getByText("John Doe")); // Opens the dropdown
