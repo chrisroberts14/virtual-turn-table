@@ -4,7 +4,7 @@ import { clearStateData, getStateData } from "@/interfaces/StateData";
 import { useEffect, useState } from "react";
 
 const useUserBox = () => {
-	const [profileImage, setProfileImage] = useState("");
+	const [profileImage, setProfileImage] = useState(undefined);
 	const { username, setUsername } = useUsername();
 	const [isCollectionPublic, setIsCollectionPublic] = useState(false);
 
