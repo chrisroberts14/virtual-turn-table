@@ -206,6 +206,13 @@ Since the choice was made to use a relational database, a specific relational da
 
 Originally, SQLite was chosen because, as since it's a file-based database, it could be easily stored within the Docker container running the user data service, which would simplify deployment by reducing the number of containers. However, as the project grew, the need for concurrent database access became apparent which SQLite does not support. Because of this the decision was made to switch to either MySQL or PostgreSQL, both of which support concurrent access. For the purposes of this project, the differences between these two systems were minor. PostgreSQL was selected since it is open-source, which reduces the risk of support being dropped in the future.
 
+\subsection{Security}
+Security is an important consideration for any web application, since functionality and access to user data is exposed to the internet. Although the stored user data in this project is not particularly sensitive, it should still be safeguarded. To ensure this measures had to be implemented for each backend service.
+
+\paragraph{BFF} The BFF represents the largest potential security risk, as it is the only service that directly interacted with the frontend and therefore exposed to the public internet. To mitigate this risk, the BFF uses authentication to verify requests to all endpoints related to user data. This was handled via the API token provided by Spotify during user login, this meant access to user-specific data remained only accessible by that specific user.
+
+\paragraph{Image-to-Album \& User Data Services} These services operate behind the BFF and only need to accept requests from that single, predictable source. Because of this, these services are designed to reject any requests originating from any external sources ensuring that only valid requests are processed.
+
 \section{Testing}~\label{sec:test-design}
 Defining the tests and success criteria prior to development was important to ensure that the project was built to meet these objectives, rather than retrofitting tests to match the final product. For most of the criteria listed in Section~\ref{sec:objectives}, it was necessary to establish tangible measurements to determine whether they had been met. This requirement led to the definition of the following tests for the primary features:
 \begin{itemize}
