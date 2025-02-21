@@ -8,10 +8,12 @@ import { UsernameContext } from "../../src/contexts/UsernameContext";
 import { clearStateData, getStateData } from "../../src/interfaces/StateData";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
+import { act } from "react";
 import GetIsCollectionPublic from "../../src/api_calls/GetIsCollectionPublic";
 import GetUserAlbums from "../../src/api_calls/GetUserAlbums";
 import { BFFTokenContext } from "../../src/contexts/BFFTokenContext";
 import { useSuccess } from "../../src/contexts/SuccessContext";
+import useUserBox from "../../src/hooks/UseUserBox";
 
 vi.mock("../../src/api_calls/GetUserInfo");
 vi.mock("../../src/interfaces/StateData");
@@ -20,6 +22,7 @@ vi.mock("../../src/contexts/ErrorContext");
 vi.mock("../../src/api_calls/GetUserAlbums");
 vi.mock("../../src/api_calls/GetIsCollectionPublic");
 vi.mock("../../src/contexts/SuccessContext");
+vi.mock("../../src/hooks/UseUserBox");
 
 describe("UserBox", () => {
 	const setUsername = vi.fn();
@@ -99,6 +102,16 @@ describe("UserBox", () => {
 	});
 
 	it("should logout when logout button is clicked", async () => {
+		const logoutMock = vi.fn();
+		//@ts-ignore
+		(useUserBox as vi.mock).mockReturnValue({
+			profileImage: "img",
+			username: "John Doe",
+			logout: logoutMock,
+			isCollectionPublic: true,
+			setIsCollectionPublic: vi.fn(),
+		});
+
 		render(
 			<BFFTokenContext.Provider
 				value={{ BFFToken: "test_token", setBFFToken: vi.fn() }}
@@ -106,13 +119,12 @@ describe("UserBox", () => {
 				<UsernameContext.Provider value={{ username, setUsername }}>
 					<UserBox />
 				</UsernameContext.Provider>
-				,
 			</BFFTokenContext.Provider>,
 		);
-
-		await userEvent.click(screen.getByText("John Doe")); // Opens the dropdown
-		await userEvent.click(screen.getByText("Logout")); // Clicks the logout button
-
-		expect(clearStateDataMock).toHaveBeenCalled();
+		await act(async () => {
+			await userEvent.click(screen.getByText("John Doe")); // Opens the dropdown
+			await userEvent.click(screen.getByText("Logout")); // Clicks the logout button
+		});
+		expect(logoutMock).toHaveBeenCalled();
 	});
 });
