@@ -5,14 +5,16 @@ const GetSharedCollections = async (
 	offset: number,
 	limit: number,
 	username: string | null,
-	token: string | null,
+	authToken: string,
 ) => {
 	try {
 		const response = await axios.get(`${getSharedCollections}/${username}`, {
 			params: {
-				spotify_access_token: token,
 				offset: offset,
 				limit: limit,
+			},
+			headers: {
+				Authorization: `Bearer ${authToken}`,
 			},
 		});
 		return response.data;

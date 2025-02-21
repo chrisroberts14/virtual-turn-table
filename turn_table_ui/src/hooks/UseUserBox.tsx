@@ -10,8 +10,8 @@ const useUserBox = () => {
 
 	useEffect(() => {
 		const state = getStateData();
-		if (state && "spotify_access_token" in state) {
-			GetUserInfo(state.spotify_access_token)
+		if (state && "bff_token" in state) {
+			GetUserInfo(state.bff_token)
 				.then((response) => {
 					if (response) {
 						setUsername(response.display_name);

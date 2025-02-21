@@ -19,7 +19,7 @@ async def get_album_details(album_id: str, auth_payload=Depends(verify_token)) -
     :param album_id:
     :return:
     """
-    spotify_access_token = auth_payload["spotify_access_token"]
+    spotify_access_token = auth_payload["user"]["spotify_access_token"]
     endpoint = f"https://api.spotify.com/v1/albums/{album_id}"
     headers = {"Authorization": f"Bearer {spotify_access_token}"}
     response = requests.get(endpoint, headers=headers, timeout=20)
@@ -55,7 +55,7 @@ async def play_track(song_data: PlaySong, auth_payload=Depends(verify_token)) ->
     :param auth_payload:
     :return:
     """
-    spotify_access_token = auth_payload["spotify_access_token"]
+    spotify_access_token = auth_payload["user"]["spotify_access_token"]
     if song_data.device_id is None or song_data.device_id == "":
         raise APIException(400, "No device id provided.")
     endpoint = (

@@ -1,9 +1,9 @@
 import GetPublicCollections from "@/api_calls/GetPublicCollections";
 import GetSharedCollections from "@/api_calls/GetSharedCollections";
 import { CollectionPreviewVertical } from "@/components/CollectionPreview.tsx";
+import { useBFFToken } from "@/contexts/BFFTokenContext.ts";
 import { CollectionContext } from "@/contexts/CollectionContext.tsx";
 import { useError } from "@/contexts/ErrorContext";
-import { useSpotifyToken } from "@/contexts/SpotifyTokenContext";
 import { useUsername } from "@/contexts/UsernameContext";
 import useResizeHandler from "@/hooks/UseResizeHandler";
 import type { Collection } from "@/interfaces/Collection";
@@ -21,7 +21,7 @@ const SocialPage = () => {
 	const [sharedCollections, setSharedCollections] = useState<
 		Collection[] | null
 	>(null);
-	const { token } = useSpotifyToken();
+	const { BFFToken } = useBFFToken();
 	const { username } = useUsername();
 	const contentHeight = useResizeHandler(64);
 	const { showError } = useError();
@@ -34,7 +34,7 @@ const SocialPage = () => {
 	const [limit, setLimit] = useState(10);
 
 	useEffect(() => {
-		if (!token || !username) {
+		if (!BFFToken || !username) {
 			return;
 		}
 		// The limit is set based on the width of the screen
@@ -49,12 +49,12 @@ const SocialPage = () => {
 		fetchSharedCollections().catch(() => {
 			showError("Failed to fetch shared collections");
 		});
-	}, [token, username, showError]);
+	}, [BFFToken, username, showError]);
 
 	const fetchPublicCollections = async () => {
 		setIsPublicLoading(true);
 		const publicCollectionsResult: Collection[] | undefined | null =
-			await GetPublicCollections(publicOffset, limit, token)
+			await GetPublicCollections(publicOffset, limit, BFFToken)
 				.then((result: Collection[] | null | undefined) => {
 					setPublicOffset(publicOffset + limit);
 					if (result === null || result === undefined) {
@@ -92,11 +92,15 @@ const SocialPage = () => {
 
 	const fetchSharedCollections = async () => {
 		setIsSharedLoading(true);
+		if (BFFToken === null) {
+			showError("Failed to fetch shared collections");
+			return;
+		}
 		const sharedCollectionsResult: Collection[] = await GetSharedCollections(
 			sharedOffset,
 			limit,
 			username,
-			token,
+			BFFToken,
 		)
 			.then((result) => {
 				setSharedOffset(sharedOffset + limit);

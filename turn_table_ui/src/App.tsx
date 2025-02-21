@@ -6,6 +6,7 @@ import NavigationBar from "@/components/NavigationBar";
 import ScanPage from "@/components/ScanPage";
 import SocialPage from "@/components/SocialPage";
 import SuccessDisplay from "@/components/SuccessDisplay.tsx";
+import { BFFTokenContext } from "@/contexts/BFFTokenContext.ts";
 import { ErrorProvider } from "@/contexts/ErrorContext";
 import { MusicContext } from "@/contexts/MusicContext";
 import { NavigationContext } from "@/contexts/NavigationContext";
@@ -24,8 +25,10 @@ function App() {
 		setIsSignedIn,
 		currentAlbum,
 		setCurrentAlbum,
-		token,
-		setToken,
+		BFFToken,
+		setBFFToken,
+		spotifyToken,
+		setSpotifyToken,
 		currentPage,
 		setCurrentPage,
 	} = useApp();
@@ -46,48 +49,52 @@ function App() {
 					value={{ ws: webSocket, setWs: setWebSocket }}
 				>
 					<UsernameContext.Provider value={{ username, setUsername }}>
-						<SpotifyTokenContext.Provider value={{ token, setToken }}>
-							<div className="flex flex-col h-screen">
-								<NavigationContext.Provider
-									value={{
-										isSignedIn,
-										setIsSignedIn,
-										currentPage,
-										setCurrentPage,
-									}}
-								>
-									<NavigationBar />
+						<SpotifyTokenContext.Provider
+							value={{ spotifyToken, setSpotifyToken }}
+						>
+							<BFFTokenContext.Provider value={{ BFFToken, setBFFToken }}>
+								<div className="flex flex-col h-screen">
+									<NavigationContext.Provider
+										value={{
+											isSignedIn,
+											setIsSignedIn,
+											currentPage,
+											setCurrentPage,
+										}}
+									>
+										<NavigationBar />
 
-									{isSignedIn ? (
-										<>
-											<MusicContext.Provider
-												value={{ currentAlbum, setCurrentAlbum }}
-											>
-												<div
-													className="flex flex-row h-full transition-transform duration-500 ease-in-out"
-													style={{
-														transform: `translateX(-${Number(currentPage) * 100}%)`,
-													}}
+										{isSignedIn ? (
+											<>
+												<MusicContext.Provider
+													value={{ currentAlbum, setCurrentAlbum }}
 												>
-													<div className="flex h-full w-screen">
-														<MusicPlayer />
+													<div
+														className="flex flex-row h-full transition-transform duration-500 ease-in-out"
+														style={{
+															transform: `translateX(-${Number(currentPage) * 100}%)`,
+														}}
+													>
+														<div className="flex h-full w-screen">
+															<MusicPlayer />
+														</div>
+														<div className="flex h-full w-screen">
+															<ScanPage />
+														</div>
+														<div className="flex h-full w-screen">
+															<SocialPage />
+														</div>
 													</div>
-													<div className="flex h-full w-screen">
-														<ScanPage />
-													</div>
-													<div className="flex h-full w-screen">
-														<SocialPage />
-													</div>
-												</div>
-											</MusicContext.Provider>
-										</>
-									) : (
-										<LoggedOutPage />
-									)}
-								</NavigationContext.Provider>
-							</div>
-							<ErrorDisplay />
-							<SuccessDisplay />
+												</MusicContext.Provider>
+											</>
+										) : (
+											<LoggedOutPage />
+										)}
+									</NavigationContext.Provider>
+								</div>
+								<ErrorDisplay />
+								<SuccessDisplay />
+							</BFFTokenContext.Provider>
 						</SpotifyTokenContext.Provider>
 					</UsernameContext.Provider>
 				</WebSocketContext.Provider>

@@ -1,5 +1,6 @@
 import PlayTrack from "@/api_calls/PlayTrack";
 import PlayerSetup from "@/api_calls/PlayerSetup";
+import { useBFFToken } from "@/contexts/BFFTokenContext.ts";
 import { useMusic } from "@/contexts/MusicContext";
 import { useNavigation } from "@/contexts/NavigationContext";
 import { useSpotifyToken } from "@/contexts/SpotifyTokenContext";
@@ -22,7 +23,8 @@ const useMusicPlayer = () => {
 	const [isPaused, setIsPaused] = useState(true);
 	const [trackPosition, setTrackPosition] = useState(0); // In ms
 	const [trackDuration, setTrackDuration] = useState(0);
-	const { token } = useSpotifyToken();
+	const { spotifyToken } = useSpotifyToken();
+	const { BFFToken } = useBFFToken();
 	const { currentAlbum, setCurrentAlbum } = useMusic();
 	const { currentPage } = useNavigation();
 
@@ -46,7 +48,7 @@ const useMusicPlayer = () => {
 
 	useEffect(() => {
 		// Only create the player once the token is available
-		if (token && !player) {
+		if (spotifyToken && !player) {
 			// Add the spotify player script to the page
 			const script = document.createElement("script");
 			script.src = "https://sdk.scdn.co/spotify-player.js";
@@ -57,7 +59,7 @@ const useMusicPlayer = () => {
 				const player = new window.Spotify.Player({
 					name: "Vinyl Scanner",
 					getOAuthToken: (cb: (token: string) => void) => {
-						cb(token as string);
+						cb(spotifyToken as string);
 					},
 					volume: 0.5,
 				});
@@ -97,7 +99,7 @@ const useMusicPlayer = () => {
 					});
 			};
 		}
-	}, [token, player, currentAlbum, isPaused]);
+	}, [spotifyToken, player, currentAlbum, isPaused]);
 
 	useEffect(() => {
 		// If the current album changes, set the current song to the first song on the album
@@ -137,8 +139,8 @@ const useMusicPlayer = () => {
 
 	useEffect(() => {
 		// Play the current track when the current song changes
-		if (token && currentSong) {
-			PlayTrack(token, currentSong.uri, deviceId)
+		if (BFFToken && currentSong) {
+			PlayTrack(BFFToken, currentSong.uri, deviceId)
 				.then(() => {
 					setTrackDuration(currentSong.duration_ms);
 				})
@@ -146,7 +148,7 @@ const useMusicPlayer = () => {
 					console.error(error);
 				});
 		}
-	}, [currentSong, token, deviceId]);
+	}, [currentSong, BFFToken, deviceId]);
 
 	useEffect(() => {
 		if (currentPage !== 0 && player) {

@@ -1,14 +1,14 @@
 import ShareCollection from "@/api_calls/ShareCollection";
 import UserSelect from "@/components/UserSelect";
+import { useBFFToken } from "@/contexts/BFFTokenContext.ts";
 import { useError } from "@/contexts/ErrorContext";
 import { useShare } from "@/contexts/ShareContext";
 import { useSuccess } from "@/contexts/SuccessContext.tsx";
-import { useUsername } from "@/contexts/UsernameContext";
 import { Button } from "@heroui/button";
 import { Modal, ModalContent } from "@heroui/modal";
 
 const ShareModal = () => {
-	const { username } = useUsername();
+	const { BFFToken } = useBFFToken();
 	const { showError } = useError();
 	const { showSuccess } = useSuccess();
 	const {
@@ -21,7 +21,11 @@ const ShareModal = () => {
 	const handleShare = () => {
 		setIsShareModalOpen(false);
 		// Share the users collection
-		ShareCollection(username, shareInputValue)
+		if (BFFToken === null) {
+			showError("Failed to share collection");
+			return;
+		}
+		ShareCollection(BFFToken, shareInputValue)
 			.then(() => {
 				showSuccess("Collection shared");
 			})

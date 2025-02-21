@@ -9,8 +9,8 @@ import {
 // Allows different components to use the token in API calls
 
 interface SpotfyTokenContextType {
-	token: string | null;
-	setToken: Dispatch<SetStateAction<string | null>>;
+	spotifyToken: string | null;
+	setSpotifyToken: Dispatch<SetStateAction<string | null>>;
 }
 
 export const SpotifyTokenContext = createContext<

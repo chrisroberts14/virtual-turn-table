@@ -1,9 +1,13 @@
 import { deleteUser } from "@/api_calls/BFFEndpoints";
 import axios from "axios";
 
-const DeleteUser = async (username: string) => {
+const DeleteUser = async (authToken: string) => {
 	try {
-		const response = await axios.delete(`${deleteUser}${username}`);
+		const response = await axios.delete(`${deleteUser}`, {
+			headers: {
+				Authorization: `Bearer ${authToken}`,
+			},
+		});
 		return response.data;
 	} catch (error: unknown) {
 		// Check if the error is an AxiosError (has a response)
