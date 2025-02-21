@@ -6,6 +6,8 @@ import GetAlbumDetails from "../../src/api_calls/GetAlbumDetails";
 import GetPublicCollections from "../../src/api_calls/GetPublicCollections";
 import GetSharedCollections from "../../src/api_calls/GetSharedCollections";
 import GetUserAlbums from "../../src/api_calls/GetUserAlbums";
+import ShareModal from "../../src/components/ShareModal";
+import { BFFTokenContext } from "../../src/contexts/BFFTokenContext";
 import { useError } from "../../src/contexts/ErrorContext";
 import { useMusic } from "../../src/contexts/MusicContext";
 import { useSpotifyToken } from "../../src/contexts/SpotifyTokenContext";
@@ -81,7 +83,13 @@ describe("SocialPage", () => {
 	});
 
 	it("should render", async () => {
-		render(<SocialPage />);
+		render(
+			<BFFTokenContext.Provider
+				value={{ BFFToken: "test_token", setBFFToken: vi.fn() }}
+			>
+				<SocialPage />
+			</BFFTokenContext.Provider>,
+		);
 		await waitFor(() => {
 			expect(screen.getByText("Public Collections")).toBeInTheDocument();
 			expect(screen.getByText("Shared With You")).toBeInTheDocument();
@@ -98,7 +106,13 @@ describe("SocialPage", () => {
 			Promise.resolve([]),
 		);
 
-		render(<SocialPage />);
+		render(
+			<BFFTokenContext.Provider
+				value={{ BFFToken: "test_token", setBFFToken: vi.fn() }}
+			>
+				<SocialPage />
+			</BFFTokenContext.Provider>,
+		);
 		await waitFor(() => {
 			expect(
 				screen.getByText("There are no public collections"),
@@ -119,7 +133,13 @@ describe("SocialPage", () => {
 			Promise.resolve([{ user_id: "username", albums: [album] } as Collection]),
 		);
 
-		render(<SocialPage />);
+		render(
+			<BFFTokenContext.Provider
+				value={{ BFFToken: "test_token", setBFFToken: vi.fn() }}
+			>
+				<SocialPage />
+			</BFFTokenContext.Provider>,
+		);
 		await waitFor(() => {
 			expect(
 				screen.getByText("There are no public collections"),
@@ -138,7 +158,13 @@ describe("SocialPage", () => {
 			username: "",
 		});
 
-		render(<SocialPage />);
+		render(
+			<BFFTokenContext.Provider
+				value={{ BFFToken: "test_token", setBFFToken: vi.fn() }}
+			>
+				<SocialPage />
+			</BFFTokenContext.Provider>,
+		);
 		await waitFor(() => {
 			expect(GetPublicCollections).not.toHaveBeenCalled();
 			expect(GetSharedCollections).not.toHaveBeenCalled();
@@ -155,7 +181,13 @@ describe("SocialPage", () => {
 			Promise.reject(null),
 		);
 
-		render(<SocialPage />);
+		render(
+			<BFFTokenContext.Provider
+				value={{ BFFToken: "test_token", setBFFToken: vi.fn() }}
+			>
+				<SocialPage />
+			</BFFTokenContext.Provider>,
+		);
 		await waitFor(() => {
 			expect(useError().showError).toHaveBeenCalled();
 		});
@@ -169,7 +201,13 @@ describe("SocialPage", () => {
 				{ user_id: "username2", albums: [album] } as Collection,
 			]),
 		);
-		render(<SocialPage />);
+		render(
+			<BFFTokenContext.Provider
+				value={{ BFFToken: "test_token", setBFFToken: vi.fn() }}
+			>
+				<SocialPage />
+			</BFFTokenContext.Provider>,
+		);
 
 		await waitFor(() => {
 			expect(screen.getByText("username2")).toBeInTheDocument();

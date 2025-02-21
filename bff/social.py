@@ -8,8 +8,8 @@ import requests
 from fastapi import APIRouter, Depends
 
 from bff.api_models import Collection, Album, Song, APIException
+from bff.auth import verify_token
 from bff.config import Settings, get_settings
-from bff.api_models import ShareCollectionIn
 from bff.websocket import manager
 
 social_router = APIRouter()
@@ -44,6 +44,7 @@ def convert_track_item_to_song(track_item: dict, album_uri: str) -> Song:
     """
     Convert a track item to a Song object.
 
+    :param album_uri:
     :param track_item:
     :return:
     """
@@ -104,17 +105,18 @@ def convert_response_to_collection(
 async def get_public_collections(
     offset: int,
     limit: int,
-    spotify_access_token: str,
     settings: Annotated[Settings, Depends(get_settings)],
+    auth_payload=Depends(verify_token),
 ) -> list[Collection]:
     """
     Get all public collections.
 
     :param offset:
     :param limit:
-    :param spotify_access_token:
     :param settings:
+    :param auth_payload:
     """
+    spotify_access_token = auth_payload["user"]["spotify_access_token"]
     endpoint = f"{settings.user_data_address}/social/get_public_collections"
     response = requests.get(
         endpoint, timeout=20, params={"offset": offset, "count": limit}
@@ -131,20 +133,20 @@ async def get_public_collections(
 async def get_shared_collections(
     offset: int,
     limit: int,
-    username: str,
-    spotify_access_token: str,
     settings: Annotated[Settings, Depends(get_settings)],
+    auth_payload=Depends(verify_token),
 ) -> list[Collection]:
     """
     Get all collections shared with a user.
 
     :param offset:
     :param limit:
-    :param username:
-    :param spotify_access_token:
     :param settings:
+    :param auth_payload:
     :return:
     """
+    spotify_access_token = auth_payload["user"]["spotify_access_token"]
+    username = auth_payload["user"]["username"]
     endpoint = f"{settings.user_data_address}/social/get_shared_collections/{username}"
     response = requests.get(
         endpoint, timeout=20, params={"offset": offset, "count": limit}
@@ -159,34 +161,42 @@ async def get_shared_collections(
 
 @social_router.post("/share_collection")
 async def share_collection(
-    data: ShareCollectionIn, settings: Annotated[Settings, Depends(get_settings)]
+    receiver: str,
+    settings: Annotated[Settings, Depends(get_settings)],
+    auth_payload=Depends(verify_token),
 ) -> None:
     """
     Share a collection with another user.
 
-    :param data:
+    :param receiver:
     :param settings:
+    :param auth_payload:
     :return:
     """
+    sender = auth_payload["user"]["username"]
     endpoint = f"{settings.user_data_address}/social/share_collection"
-    response = requests.post(endpoint, json=data.model_dump(), timeout=20)
+    response = requests.post(
+        endpoint, json={"sharer": sender, "receiver": receiver}, timeout=20
+    )
     if response.status_code != 201:
         raise APIException(400, "Failed to share collection")
-    if data.receiver in manager.active_connections:
-        await manager.send_message(json.dumps(response.json()), data.receiver)
+    if receiver in manager.active_connections:
+        await manager.send_message(json.dumps(response.json()), receiver)
 
 
 @social_router.put("/toggle_collection_public/{username}")
 async def toggle_collection_public(
-    username: str, settings: Annotated[Settings, Depends(get_settings)]
+    settings: Annotated[Settings, Depends(get_settings)],
+    auth_payload=Depends(verify_token),
 ) -> None:
     """
     Toggle if a user's collection is public.
 
-    :param username:
+    :param auth_payload:
     :param settings:
     :return:
     """
+    username = auth_payload["user"]["username"]
     endpoint = (
         f"{settings.user_data_address}/social/toggle_collection_public/{username}"
     )

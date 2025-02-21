@@ -44,3 +44,4 @@ jobs:
           GOOGLE_CLIENT_ID: "google_client_id"
           GOOGLE_CLIENT_X509_CERT_URL: "google_client_x509_cert_url"
           USER_DATA_ADDRESS: "user_data_address"
+          SECRET_KEY: "secret_key"

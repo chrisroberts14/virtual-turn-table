@@ -1,6 +1,7 @@
 import { BFFWebSocket } from "@/api_calls/BFFEndpoints";
 import GetNotifications from "@/api_calls/GetNotifications";
 import CollectionShareModal from "@/components/CollectionShareModal";
+import { useBFFToken } from "@/contexts/BFFTokenContext.ts";
 import { CollectionShareConfirmContext } from "@/contexts/CollectionShareConfirmContext";
 import { useUsername } from "@/contexts/UsernameContext";
 import type Notification from "@/interfaces/Notification";
@@ -13,20 +14,21 @@ const CollectionShareNotify = () => {
 	const { username } = useUsername();
 	const [socket, setSocket] = useState<WebSocket | null>(null);
 	const [notifications, setNotifications] = useState<Notification[]>([]);
+	const { BFFToken } = useBFFToken();
 
 	useEffect(() => {
 		if (username && !socket) {
 			setSocket(new WebSocket(`${BFFWebSocket}/${username}`));
 		}
-		if (username) {
-			GetNotifications(username).then((data: Notification[]) => {
+		if (BFFToken) {
+			GetNotifications(BFFToken).then((data: Notification[]) => {
 				setNotifications(data);
 			});
 		}
 		return () => {
 			socket?.close();
 		};
-	}, [username, socket]);
+	}, [username, socket, BFFToken]);
 
 	useEffect(() => {
 		if (socket !== null) {

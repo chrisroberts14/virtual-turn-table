@@ -8,9 +8,12 @@ import { UsernameContext } from "../../src/contexts/UsernameContext";
 import { clearStateData, getStateData } from "../../src/interfaces/StateData";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
+import { act } from "react";
 import GetIsCollectionPublic from "../../src/api_calls/GetIsCollectionPublic";
 import GetUserAlbums from "../../src/api_calls/GetUserAlbums";
+import { BFFTokenContext } from "../../src/contexts/BFFTokenContext";
 import { useSuccess } from "../../src/contexts/SuccessContext";
+import useUserBox from "../../src/hooks/UseUserBox";
 
 vi.mock("../../src/api_calls/GetUserInfo");
 vi.mock("../../src/interfaces/StateData");
@@ -19,6 +22,7 @@ vi.mock("../../src/contexts/ErrorContext");
 vi.mock("../../src/api_calls/GetUserAlbums");
 vi.mock("../../src/api_calls/GetIsCollectionPublic");
 vi.mock("../../src/contexts/SuccessContext");
+vi.mock("../../src/hooks/UseUserBox");
 
 describe("UserBox", () => {
 	const setUsername = vi.fn();
@@ -26,6 +30,7 @@ describe("UserBox", () => {
 	const mockShowError = vi.fn();
 	const mockShowSuccess = vi.fn();
 	const clearStateDataMock = vi.fn();
+	const logoutMock = vi.fn();
 
 	beforeEach(() => {
 		// @ts-ignore
@@ -43,6 +48,7 @@ describe("UserBox", () => {
 		// @ts-ignore
 		(getStateData as vi.Mock).mockReturnValue({
 			spotify_access_token: "valid_token",
+			bff_token: "valid_token",
 		});
 
 		// @ts-ignore
@@ -58,11 +64,29 @@ describe("UserBox", () => {
 		(GetIsCollectionPublic as vi.Mock).mockReturnValue(Promise.resolve(true));
 	});
 
+	afterEach(() => {
+		vi.resetAllMocks();
+	});
+
 	it("renders the user info when GetUserInfo returns valid data", async () => {
+		//@ts-ignore
+		(useUserBox as vi.mock).mockReturnValue({
+			profileImage: "img",
+			username: "John Doe",
+			logout: logoutMock,
+			isCollectionPublic: true,
+			setIsCollectionPublic: vi.fn(),
+		});
+
 		render(
-			<UsernameContext.Provider value={{ username, setUsername }}>
-				<UserBox />
-			</UsernameContext.Provider>,
+			<BFFTokenContext.Provider
+				value={{ BFFToken: "test_token", setBFFToken: vi.fn() }}
+			>
+				<UsernameContext.Provider value={{ username, setUsername }}>
+					<UserBox />
+				</UsernameContext.Provider>
+				,
+			</BFFTokenContext.Provider>,
 		);
 
 		await waitFor(() => {
@@ -70,32 +94,29 @@ describe("UserBox", () => {
 		});
 	});
 
-	it("should logout if get user info fails", async () => {
-		// @ts-ignore
-		(GetUserInfo as vi.Mock).mockRejectedValue(
-			new Error("Failed to get user info"),
-		);
-
-		render(
-			<UsernameContext.Provider value={{ username, setUsername }}>
-				<UserBox />
-			</UsernameContext.Provider>,
-		);
-		await waitFor(() => {
-			expect(clearStateDataMock).toHaveBeenCalled();
-		});
-	});
-
 	it("should logout when logout button is clicked", async () => {
+		//@ts-ignore
+		(useUserBox as vi.mock).mockReturnValue({
+			profileImage: "img",
+			username: "John Doe",
+			logout: logoutMock,
+			isCollectionPublic: true,
+			setIsCollectionPublic: vi.fn(),
+		});
+
 		render(
-			<UsernameContext.Provider value={{ username, setUsername }}>
-				<UserBox />
-			</UsernameContext.Provider>,
+			<BFFTokenContext.Provider
+				value={{ BFFToken: "test_token", setBFFToken: vi.fn() }}
+			>
+				<UsernameContext.Provider value={{ username, setUsername }}>
+					<UserBox />
+				</UsernameContext.Provider>
+			</BFFTokenContext.Provider>,
 		);
-
-		await userEvent.click(screen.getByText("John Doe")); // Opens the dropdown
-		await userEvent.click(screen.getByText("Logout")); // Clicks the logout button
-
-		expect(clearStateDataMock).toHaveBeenCalled();
+		await act(async () => {
+			await userEvent.click(screen.getByText("John Doe")); // Opens the dropdown
+			await userEvent.click(screen.getByText("Logout")); // Clicks the logout button
+		});
+		expect(logoutMock).toHaveBeenCalled();
 	});
 });

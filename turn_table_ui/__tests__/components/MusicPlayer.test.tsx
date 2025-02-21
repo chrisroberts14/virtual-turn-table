@@ -10,6 +10,8 @@ import PlayerSetup from "../../src/api_calls/PlayerSetup";
 import type Album from "../../src/interfaces/Album";
 import { getStateData } from "../../src/interfaces/StateData";
 import {useNavigation} from "../../src/contexts/NavigationContext";
+import {BFFTokenContext, useBFFToken} from "../../src/contexts/BFFTokenContext";
+import SocialPage from "../../src/components/SocialPage";
 
 vi.mock("../../src/contexts/MusicContext");
 vi.mock("../../src/contexts/ErrorContext");
@@ -17,6 +19,7 @@ vi.mock("../../src/contexts/SpotifyTokenContext");
 vi.mock("../../src/api_calls/PlayerSetup");
 vi.mock("../../src/interfaces/StateData");
 vi.mock("../../src/contexts/NavigationContext");
+vi.mock("../../src/contexts/BFFTokenContext");
 
 describe("MusicPlayer", () => {
 	const album: Album = {
@@ -42,7 +45,7 @@ describe("MusicPlayer", () => {
 
 		// @ts-ignore
 		(useSpotifyToken as vi.mock).mockReturnValue({
-			token: "token",
+			spotifyToken: "token",
 		});
 
 		// @ts-ignore
@@ -59,7 +62,13 @@ describe("MusicPlayer", () => {
 			currentPage: 0,
 			setCurrentPage: vi.fn(),
 			isSignedIn: true,
-		})
+		});
+
+		//@ts-ignore
+		(useBFFToken as vi.mock).mockReturnValue({
+			BFFToken: "test_token",
+			setBFFToken: vi.fn()
+		});
 
 		// @ts-ignore
 		window.Spotify = {
@@ -76,7 +85,7 @@ describe("MusicPlayer", () => {
 	});
 
 	it("should render", () => {
-		render(<MusicPlayer />);
+		render(<MusicPlayer/>);
 	});
 
 	it("should render with current album", () => {
@@ -86,7 +95,7 @@ describe("MusicPlayer", () => {
 			setCurrentAlbum: vi.fn(),
 		});
 
-		render(<MusicPlayer />);
+		render(<MusicPlayer/>);
 	});
 
 	it("should render with current album and player", async () => {
@@ -107,7 +116,7 @@ describe("MusicPlayer", () => {
 		container.id = "test-container"; // Give it an ID for easier debugging or querying
 		document.body.appendChild(container); // Append it to the document body
 		vi.spyOn(document.body, "appendChild").mockImplementation(() => undefined);
-		render(<MusicPlayer />, { container });
+		render(<MusicPlayer />, {container});
 		await act(async () => {
 			// @ts-ignore
 			await window.onSpotifyWebPlaybackSDKReady();
@@ -123,6 +132,7 @@ describe("MusicPlayer", () => {
 		(PlayerSetup as vi.mock).mockReturnValue(
 			Promise.reject(new Error("test_error")),
 		);
+
 		console.error = vi.fn();
 
 		// Create a specific container for rendering
@@ -130,7 +140,7 @@ describe("MusicPlayer", () => {
 		container.id = "test-container"; // Give it an ID for easier debugging or querying
 		document.body.appendChild(container); // Append it to the document body
 		vi.spyOn(document.body, "appendChild").mockImplementation(() => undefined);
-		render(<MusicPlayer />, { container });
+		render(<MusicPlayer/>, {container})
 		await act(async () => {
 			// @ts-ignore
 			await window.onSpotifyWebPlaybackSDKReady();

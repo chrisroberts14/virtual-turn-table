@@ -1,6 +1,7 @@
 import AddAlbum from "@/api_calls/AddAlbum";
 import AlbumDisplay from "@/components/AlbumDisplay";
 import Top10Select from "@/components/Top10Select.tsx";
+import { useBFFToken } from "@/contexts/BFFTokenContext.ts";
 import { useMusic } from "@/contexts/MusicContext";
 import { useUpload } from "@/contexts/UploadContext";
 import { useUsername } from "@/contexts/UsernameContext";
@@ -12,7 +13,7 @@ import { useEffect, useState } from "react";
 
 const AlbumConfirm = () => {
 	const [buttonsDisabled, setButtonsDisabled] = useState(true);
-	const { username } = useUsername();
+	useUsername();
 	const {
 		scannedAlbum,
 		setScannedAlbum,
@@ -23,6 +24,7 @@ const AlbumConfirm = () => {
 	} = useUpload();
 	const { setCurrentAlbum } = useMusic();
 	const [isOnTop10Select, setIsOnTop10Select] = useState(false);
+	const { BFFToken } = useBFFToken();
 
 	const triggerConfirmSlide = () => {
 		setFadeConfirm(!fadeConfirm);
@@ -45,8 +47,8 @@ const AlbumConfirm = () => {
 	const confirmAlbum = () => {
 		triggerConfirmSlide();
 		setCurrentAlbum(scannedAlbum);
-		if (username && scannedAlbum) {
-			AddAlbum(username, scannedAlbum.album_uri).catch((error) => {
+		if (BFFToken && scannedAlbum) {
+			AddAlbum(BFFToken, scannedAlbum.album_uri).catch((error) => {
 				console.error(error);
 			});
 		}

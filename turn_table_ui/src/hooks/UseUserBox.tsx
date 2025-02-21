@@ -4,14 +4,14 @@ import { clearStateData, getStateData } from "@/interfaces/StateData";
 import { useEffect, useState } from "react";
 
 const useUserBox = () => {
-	const [profileImage, setProfileImage] = useState("");
+	const [profileImage, setProfileImage] = useState(undefined);
 	const { username, setUsername } = useUsername();
 	const [isCollectionPublic, setIsCollectionPublic] = useState(false);
 
 	useEffect(() => {
 		const state = getStateData();
-		if (state && "spotify_access_token" in state) {
-			GetUserInfo(state.spotify_access_token)
+		if (state && "bff_token" in state) {
+			GetUserInfo(state.bff_token)
 				.then((response) => {
 					if (response) {
 						setUsername(response.display_name);

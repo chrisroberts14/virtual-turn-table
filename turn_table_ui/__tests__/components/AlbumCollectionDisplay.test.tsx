@@ -5,6 +5,7 @@ import GetAlbumDetails from "../../src/api_calls/GetAlbumDetails";
 import GetUserAlbums from "../../src/api_calls/GetUserAlbums";
 import AlbumCollectionDisplay from "../../src/components/AlbumCollectionDisplay";
 import { useAlbumSelection } from "../../src/contexts/AlbumSelectionContext";
+import { BFFTokenContext } from "../../src/contexts/BFFTokenContext";
 import { useError } from "../../src/contexts/ErrorContext";
 import { useMusic } from "../../src/contexts/MusicContext";
 import { useSpotifyToken } from "../../src/contexts/SpotifyTokenContext";
@@ -68,16 +69,28 @@ describe("AlbumCollectionDisplay", () => {
 	});
 
 	it("should render and set correct values", async () => {
-		render(<AlbumCollectionDisplay />);
+		render(
+			<BFFTokenContext.Provider
+				value={{ BFFToken: "test_token", setBFFToken: vi.fn() }}
+			>
+				<AlbumCollectionDisplay />
+			</BFFTokenContext.Provider>,
+		);
 		await waitFor(() => {
-			expect(GetUserAlbums).toHaveBeenCalledWith("test_user");
+			expect(GetUserAlbums).toHaveBeenCalledWith("test_user", "test_token");
 			expect(GetAlbumDetails).toHaveBeenCalledWith("album_uri", "test_token");
 			expect(useAlbumSelection().setAlbums).toHaveBeenCalledWith([album]);
 		});
 	});
 
 	it("should call setCurrentAlbum when an album is clicked", async () => {
-		render(<AlbumCollectionDisplay />);
+		render(
+			<BFFTokenContext.Provider
+				value={{ BFFToken: "test_token", setBFFToken: vi.fn() }}
+			>
+				<AlbumCollectionDisplay />
+			</BFFTokenContext.Provider>,
+		);
 		await waitFor(async () => {
 			await userEvent.click(screen.getByAltText("title"));
 			expect(useMusic().setCurrentAlbum).toHaveBeenCalledWith(album);
@@ -85,7 +98,13 @@ describe("AlbumCollectionDisplay", () => {
 	});
 
 	it("should set hovered album when an album is hovered", async () => {
-		render(<AlbumCollectionDisplay />);
+		render(
+			<BFFTokenContext.Provider
+				value={{ BFFToken: "test_token", setBFFToken: vi.fn() }}
+			>
+				<AlbumCollectionDisplay />
+			</BFFTokenContext.Provider>,
+		);
 		await waitFor(async () => {
 			await userEvent.hover(screen.getByAltText("title"));
 			expect(useAlbumSelection().setHoveredAlbum).toHaveBeenCalledWith(album);
@@ -98,21 +117,39 @@ describe("AlbumCollectionDisplay", () => {
 			Promise.reject(new Error("test_error")),
 		);
 
-		render(<AlbumCollectionDisplay />);
+		render(
+			<BFFTokenContext.Provider
+				value={{ BFFToken: "test_token", setBFFToken: vi.fn() }}
+			>
+				<AlbumCollectionDisplay />
+			</BFFTokenContext.Provider>,
+		);
 		await waitFor(() => {
 			expect(useError().showError).toHaveBeenCalledWith("test_error");
 		});
 	});
 
 	it("should render if a collection was passed in", async () => {
-		render(<AlbumCollectionDisplay albumCollection={{ albums: [album] }} />);
+		render(
+			<BFFTokenContext.Provider
+				value={{ BFFToken: "test_token", setBFFToken: vi.fn() }}
+			>
+				<AlbumCollectionDisplay albumCollection={{ albums: [album] }} />
+			</BFFTokenContext.Provider>,
+		);
 		await waitFor(() => {
 			expect(useAlbumSelection().setAlbums).toHaveBeenCalledWith([album]);
 		});
 	});
 
 	it("should run the userAlbumUpdate method if albumAdded event is called", async () => {
-		render(<AlbumCollectionDisplay />);
+		render(
+			<BFFTokenContext.Provider
+				value={{ BFFToken: "test_token", setBFFToken: vi.fn() }}
+			>
+				<AlbumCollectionDisplay />
+			</BFFTokenContext.Provider>,
+		);
 		vi.clearAllMocks();
 		eventEmitter.emit("albumAdded");
 		await waitFor(() => {

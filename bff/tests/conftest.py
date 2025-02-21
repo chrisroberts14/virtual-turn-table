@@ -8,15 +8,22 @@ from fastapi.testclient import TestClient
 
 from bff import app
 from bff.social import get_albums
+from bff.auth import verify_token
+
+
+def override_verify_token():
+    """Override the verify token function."""
+    return {"user": {"username": "test_client", "spotify_access_token": "test_token"}}
 
 
 @pytest.fixture(scope="session")
 def client() -> Generator[TestClient, None, None]:  # pylint: disable=redefined-outer-name
     """
-    Fixture for the test client.
+    Fixture for the test client with authentication.
 
     :return:
     """
+    app.dependency_overrides[verify_token] = override_verify_token
     with TestClient(app) as test_client:
         yield test_client
 

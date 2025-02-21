@@ -12,11 +12,18 @@ describe("PlayTrack", () => {
 			Promise.resolve({ data: "test" }),
 		);
 		await PlayTrack("test_token", "test_uri", "test_device_id");
-		expect(axios.post).toHaveBeenCalledWith(playTrack, {
-			spotify_access_token: "test_token",
-			track_uri: "test_uri",
-			device_id: "test_device_id",
-		});
+		expect(axios.post).toHaveBeenCalledWith(
+			playTrack,
+			{
+				track_uri: "test_uri",
+				device_id: "test_device_id",
+			},
+			{
+				headers: {
+					Authorization: "Bearer test_token",
+				},
+			},
+		);
 	});
 
 	it("should throw an error if fails", async () => {

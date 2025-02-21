@@ -3,11 +3,16 @@ import { describe, expect, it, vi } from "vitest";
 import NavigationBar from "../../src/components/NavigationBar";
 import { useError } from "../../src/contexts/ErrorContext";
 import { useNavigation } from "../../src/contexts/NavigationContext";
-import { useUsername } from "../../src/contexts/UsernameContext";
+import {
+	UsernameContext,
+	useUsername,
+} from "../../src/contexts/UsernameContext";
 import "@testing-library/jest-dom";
 import GetIsCollectionPublic from "../../src/api_calls/GetIsCollectionPublic";
 import GetNotifications from "../../src/api_calls/GetNotifications";
 import GetUserAlbums from "../../src/api_calls/GetUserAlbums";
+import UserBox from "../../src/components/UserBox";
+import { BFFTokenContext } from "../../src/contexts/BFFTokenContext";
 import { useSuccess } from "../../src/contexts/SuccessContext";
 import WebSocketMock from "../utils/WebSocketMock";
 
@@ -35,6 +40,9 @@ describe("Navigation Bar", () => {
 
 		// @ts-ignore
 		(GetIsCollectionPublic as vi.Mock).mockReturnValue(Promise.resolve(false));
+
+		// @ts-ignore
+		(GetNotifications as vi.Mock).mockReturnValue(Promise.resolve([]));
 	});
 
 	it("renders the navigation bar with the logo and title", () => {
@@ -44,8 +52,13 @@ describe("Navigation Bar", () => {
 			setCurrentPage: vi.fn(),
 			isSignedIn: true,
 		});
-
-		render(<NavigationBar />);
+		render(
+			<BFFTokenContext.Provider
+				value={{ BFFToken: "test_token", setBFFToken: vi.fn() }}
+			>
+				<NavigationBar />
+			</BFFTokenContext.Provider>,
+		);
 
 		// Assert that the logo and title are rendered
 		expect(screen.getByText("Virtual Turn Table")).toBeInTheDocument();
@@ -59,7 +72,13 @@ describe("Navigation Bar", () => {
 			isSignedIn: true,
 		});
 
-		render(<NavigationBar />);
+		render(
+			<BFFTokenContext.Provider
+				value={{ BFFToken: "test_token", setBFFToken: vi.fn() }}
+			>
+				<NavigationBar />
+			</BFFTokenContext.Provider>,
+		);
 
 		// Assert that all tabs are rendered
 		expect(screen.getByRole("tab", { name: /Play/i })).toBeInTheDocument();
@@ -76,7 +95,13 @@ describe("Navigation Bar", () => {
 			isSignedIn: true,
 		});
 
-		render(<NavigationBar />);
+		render(
+			<BFFTokenContext.Provider
+				value={{ BFFToken: "test_token", setBFFToken: vi.fn() }}
+			>
+				<NavigationBar />
+			</BFFTokenContext.Provider>,
+		);
 
 		// Simulate a click on the Scan tab
 		fireEvent.click(screen.getByRole("tab", { name: /Scan/i }));
@@ -111,7 +136,13 @@ describe("Navigation Bar", () => {
 		// @ts-ignore
 		(GetNotifications as vi.Mock).mockReturnValue(Promise.resolve([]));
 
-		const { rerender } = render(<NavigationBar />);
+		render(
+			<BFFTokenContext.Provider
+				value={{ BFFToken: "test_token", setBFFToken: vi.fn() }}
+			>
+				<NavigationBar />
+			</BFFTokenContext.Provider>,
+		);
 		expect(screen.getByText(/User/i)).toBeInTheDocument();
 
 		// Case when user is not signed in
@@ -122,7 +153,13 @@ describe("Navigation Bar", () => {
 			isSignedIn: false,
 		});
 
-		rerender(<NavigationBar />);
+		render(
+			<BFFTokenContext.Provider
+				value={{ BFFToken: "test_token", setBFFToken: vi.fn() }}
+			>
+				<NavigationBar />
+			</BFFTokenContext.Provider>,
+		);
 		expect(screen.getByText(/Login/i)).toBeInTheDocument();
 	});
 });

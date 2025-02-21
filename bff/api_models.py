@@ -53,7 +53,6 @@ class PlaySong(BaseModel):
 
     track_uri: str
     device_id: str
-    spotify_access_token: str
 
 
 class ImagePayload(BaseModel):

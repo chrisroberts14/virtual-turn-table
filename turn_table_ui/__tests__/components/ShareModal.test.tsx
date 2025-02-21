@@ -4,6 +4,8 @@ import ShareModal from "../../src/components/ShareModal";
 import "@testing-library/jest-dom";
 import GetUsersBySearch from "../../src/api_calls/GetUsersBySearch";
 import ShareCollection from "../../src/api_calls/ShareCollection";
+import MusicPlayer from "../../src/components/MusicPlayer";
+import { BFFTokenContext } from "../../src/contexts/BFFTokenContext";
 import { useError } from "../../src/contexts/ErrorContext";
 import { useShare } from "../../src/contexts/ShareContext";
 import { useSpotifyToken } from "../../src/contexts/SpotifyTokenContext";
@@ -53,12 +55,24 @@ describe("ShareModal", () => {
 	});
 
 	it("should render ShareModal", () => {
-		render(<ShareModal />);
+		render(
+			<BFFTokenContext.Provider
+				value={{ BFFToken: "test_token", setBFFToken: vi.fn() }}
+			>
+				<ShareModal />
+			</BFFTokenContext.Provider>,
+		);
 		expect(screen.getByTitle("Share button")).toBeInTheDocument();
 	});
 
 	it("on close should set isOpen to false and clear input value", async () => {
-		render(<ShareModal />);
+		render(
+			<BFFTokenContext.Provider
+				value={{ BFFToken: "test_token", setBFFToken: vi.fn() }}
+			>
+				<ShareModal />
+			</BFFTokenContext.Provider>,
+		);
 		fireEvent.click(screen.getByRole("button", { name: /close/i }));
 		await waitFor(() => {
 			expect(useShare().setIsShareModalOpen).toHaveBeenCalledWith(false);
@@ -77,7 +91,13 @@ describe("ShareModal", () => {
 			setIsShareModalOpen: vi.fn(),
 		});
 
-		render(<ShareModal />);
+		render(
+			<BFFTokenContext.Provider
+				value={{ BFFToken: "test_token", setBFFToken: vi.fn() }}
+			>
+				<ShareModal />
+			</BFFTokenContext.Provider>,
+		);
 		await waitFor(() => {
 			expect(screen.getByTitle("Share button")).toBeInTheDocument();
 			fireEvent.click(screen.getByTitle("Share button"));

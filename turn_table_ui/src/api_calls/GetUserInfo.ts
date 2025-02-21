@@ -2,11 +2,10 @@ import { userInfo } from "@/api_calls/BFFEndpoints";
 import axios from "axios";
 
 const GetUserInfo = async (token: string | undefined) => {
-	// Call to get user's information from Spotify
 	try {
 		const response = await axios.get(userInfo, {
-			params: {
-				spotify_access_token: token,
+			headers: {
+				Authorization: `Bearer ${token}`,
 			},
 		});
 		return response.data;

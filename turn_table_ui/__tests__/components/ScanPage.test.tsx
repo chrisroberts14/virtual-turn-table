@@ -3,6 +3,7 @@ import { act } from "react";
 import { vi } from "vitest";
 import GetUserAlbums from "../../src/api_calls/GetUserAlbums";
 import ScanPage from "../../src/components/ScanPage";
+import { BFFTokenContext } from "../../src/contexts/BFFTokenContext";
 import { useError } from "../../src/contexts/ErrorContext";
 import { useMusic } from "../../src/contexts/MusicContext";
 import { NavigationContext } from "../../src/contexts/NavigationContext";
@@ -73,7 +74,11 @@ describe("ScanPage", () => {
 							setCurrentPage: vi.fn(),
 						}}
 					>
-						<ScanPage />
+						<BFFTokenContext.Provider
+							value={{ BFFToken: "test_token", setBFFToken: vi.fn() }}
+						>
+							<ScanPage />
+						</BFFTokenContext.Provider>
 					</NavigationContext.Provider>
 				</WebSocketContext.Provider>,
 			);

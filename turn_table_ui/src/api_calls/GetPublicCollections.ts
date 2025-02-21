@@ -4,14 +4,16 @@ import axios from "axios";
 const GetPublicCollections = async (
 	offset: number,
 	limit: number,
-	token: string | null,
+	authToken: string | null,
 ) => {
 	try {
 		const response = await axios.get(getPublicCollections, {
 			params: {
-				spotify_access_token: token,
 				offset: offset,
 				limit: limit,
+			},
+			headers: {
+				Authorization: `Bearer ${authToken}`,
 			},
 		});
 		return response.data;
