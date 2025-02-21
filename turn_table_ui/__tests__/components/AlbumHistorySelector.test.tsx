@@ -10,6 +10,7 @@ import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import GetAlbumDetails from "../../src/api_calls/GetAlbumDetails";
 import GetUserAlbums from "../../src/api_calls/GetUserAlbums";
+import { BFFTokenContext } from "../../src/contexts/BFFTokenContext";
 
 vi.mock("../../src/contexts/ErrorContext");
 vi.mock("../../src/api_calls/GetUserAlbums");
@@ -40,13 +41,17 @@ describe("AlbumHistorySelector", () => {
 		render(
 			<UsernameContext.Provider value={{ username, setUsername }}>
 				<SpotifyTokenContext.Provider
-					value={{ token: "valid_token", setToken: vi.fn() }}
+					value={{ spotifyToken: "valid_token", setSpotifyToken: vi.fn() }}
 				>
-					<MusicContext.Provider
-						value={{ currentAlbum: null, setCurrentAlbum: vi.fn() }}
+					<BFFTokenContext.Provider
+						value={{ BFFToken: "valid_token", setBFFToken: vi.fn() }}
 					>
-						<AlbumHistorySelector />
-					</MusicContext.Provider>
+						<MusicContext.Provider
+							value={{ currentAlbum: null, setCurrentAlbum: vi.fn() }}
+						>
+							<AlbumHistorySelector />
+						</MusicContext.Provider>
+					</BFFTokenContext.Provider>
 				</SpotifyTokenContext.Provider>
 			</UsernameContext.Provider>,
 		);
@@ -64,13 +69,17 @@ describe("AlbumHistorySelector", () => {
 		render(
 			<UsernameContext.Provider value={{ username, setUsername }}>
 				<SpotifyTokenContext.Provider
-					value={{ token: "valid_token", setToken: vi.fn() }}
+					value={{ spotifyToken: "valid_token", setSpotifyToken: vi.fn() }}
 				>
-					<MusicContext.Provider
-						value={{ currentAlbum: null, setCurrentAlbum: vi.fn() }}
+					<BFFTokenContext.Provider
+						value={{ BFFToken: "valid_token", setBFFToken: vi.fn() }}
 					>
-						<AlbumHistorySelector />
-					</MusicContext.Provider>
+						<MusicContext.Provider
+							value={{ currentAlbum: null, setCurrentAlbum: vi.fn() }}
+						>
+							<AlbumHistorySelector />
+						</MusicContext.Provider>
+					</BFFTokenContext.Provider>
 				</SpotifyTokenContext.Provider>
 			</UsernameContext.Provider>,
 		);
