@@ -407,7 +407,7 @@ class TestGetUserAlbums:
         :return:
         """
 
-        def mock_request(**__):
+        def mock_request(_, **__):
             """
             Mock the request.
 
@@ -524,9 +524,9 @@ class TestGetUsersBySearch:
 
 
 class TestGetNotifications:
-    """Test the /user/notifications/{username} endpoint."""
+    """Test the /user/notifications endpoint."""
 
-    endpoint = "/user/get_notifications/test_user"
+    endpoint = "/user/get_notifications"
 
     def test_get_notifications(self, client, mocker):
         """
@@ -584,9 +584,9 @@ class TestGetNotifications:
 
 
 class TestDeleteUser:
-    """Test the /user/{username} endpoint."""
+    """Test the /user/ endpoint."""
 
-    endpoint = "/user/test_user"
+    endpoint = "/user/"
 
     def test_delete_user(self, client, mocker):
         """
