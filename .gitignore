@@ -179,3 +179,6 @@ turn_table_ui/coverage/*
 *.run.xml
 *.bcf
 *.lof
+
+# Don't include images used for evaluation
+utils/images/*
