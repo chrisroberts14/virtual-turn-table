@@ -15,3 +15,7 @@ Vite
 Axios
 Vitest
 dotenv
+Pipenv
+Pytest
+websocket
+subrouters

@@ -1,4 +1,6 @@
 \chapter{Development}~\label{cha:development}
+Development for the application was split into two main parts, the frontend and the backend. The whole project was kept in a single mono-repository with the frontend and each backend service in their own directories. This would perhaps not be the best way to structure a larger project but sub-repository management would have been a lot of overhead for a project of this size and so this was the best solution.
+
 \section{Frontend}~\label{sec:frontend-development}
 \subsection{Implementation}
 The actual implementation of the frontend used Vite as a build tool for ReactJS. This gave a starting TypeScript template which was modified to create the application.
@@ -9,7 +11,7 @@ Once the components were built to use the application the next step was to integ
 
 Once this was complete the rest of the API endpoints for the backend could be implemented. This was done using the Axios library.
 
-\subsection{Play Screen}
+\subsubsection{Play Screen}
 The play screen mostly follows the initial design, comprising three main sections: the track list, the controls, and a spinning vinyl animation. Music playback is handled by the Spotify Web Playback SDK, a client side JavaScript library that enables control of Spotify playback through the browser. For actions such as changing tracks, skipping forward or backward, and pausing, the application calls a method provided by the SDK.
 
 \paragraph{Track List} The track list is a list of all tracks the currently active album, which is set on the scan screen. It presents users with a selection menu of tracks which can be selected in order to play a specific track.
@@ -20,7 +22,7 @@ The play screen mostly follows the initial design, comprising three main section
 
 [TODO: Add Figure of the play screen]
 
-\subsection{Scan Screen}
+\subsubsection{Scan Screen}
 The scan screen, though following the initial design as closely as possible, had to be changed during development as some problems with the original design became clear. It was also split into three main parts like the play screen: the album confirmation sidebar, the scan section, and the album collection.
 
 \paragraph{Album Confirmation Sidebar}
@@ -34,7 +36,7 @@ This section of the screen was mostly unchanged from the original design. The us
 
 [TODO: Add Figure of the scan screen]
 
-\subsection{Social Screen}
+\subsubsection{Social Screen}
 The social screen had the most changes from the design. It was originally implemented as shown in Figure~\ref{fig:social_screen_mockup}, but this proved to be too cluttered with larger collections being increasingly difficult to look through. The final design was inspired by the act of flicking through vinyl records in a record store. Each user's collection appears as a section of a grid where the albums in that collection pop up and down at random intervals. This allows for many more collections to be shown on the screen at once without overloading the user with information. The user can also load more collections by clicking the load more button at the bottom of the screen and view collections in more detail by clicking on them.
 
 [TODO: Add Figure of the social screen]
@@ -60,11 +62,41 @@ The biggest challenge in the frontend was managing environment variables. For di
 
 \section{Backend}~\label{sec:backend-development}
 \subsection{Implementation}
-\subsection{BFF}
-\subsection{User Data Service}
-\subsection{Image To Album Service}
+Each service was similar in its implementation, all consisting of a FastAPI application which would serve the API endpoints, and if needed WebSocket connections or database connections. They also all had two base endpoints which would be used for health checks and redirection to the documentation page, though this is removed from the deployed version of the application.
+
+Each was split into routers which would categorise the endpoints into different sections, such as authentication or user endpoints. A list of all endpoints can be found in Appendix [TODO: Add appendix].
+
+TODO: Add some more detail here
+
+\subsubsection{BFF}
+The BFF service was split into five routers; the music router, which contained all the endpoints related to playback and data about albums and songs; the user router, which contained all the endpoints related to user data; the image search router, which contained all the endpoints related to the image to album service; the authentication router, which contained all the endpoints related to authentication; and the social router, which contained all the endpoints related to the social functionality.
+
+\subsubsection{User Data Service}
+The user data service was the most complicated of the three services as it had to interact with a database. SQLAlchemy was used to interact with the database which meant each of the tables in the database had to be defined as a model in the code. The service was split into two routers; the user router, which contained all the endpoints related to specific users; and the social router, which contained all the endpoints related to social functionality.
+
+A database migration tool was used to manage changes to the database schema to maintain data consistency. This tool would generate a migration file which could be run to update the database schema to match the new schema while keeping the data intact. Though during development this was not a problem as no real data was present in the database, it would be needed in a production environment as data must persist between updates even if the database schema changes.
+
+\subsubsection{Image To Album Service}
+The simplest of the three, the image to album service only consisted of two routers each with only one endpoint. The first router was for converting an image to some guess of an album and the second was for retrieving the Spotify album ID from the guess. This service was the most stateless of the three as it did not need to store any data between requests.
+
+\subsubsection{Security}
+For the user data and image to album services security was solved by adding middleware that would reject all requests not coming from the BFF service.
+
+The BFF was more complicated as it had to receive calls from any user. To solve this a JSON Web Token (JWT) was used to authenticate the user. Once the user logs in with Spotify the frontend sends this to the backend where if it is valid a JWT is returned which can be sent in the header of requests to the BFF. The token can then be checked so that user can only access their own data and users without a token cannot access any data.
+
 \subsection{Automated Testing}
+Automated testing for the backend was done using the Pytest library which allowed the use of test fixtures to set up and tear down the environment for each test, such as database state. FastAPI provides a test client which can be used to call endpoints as if they were being called by a client.
+
+Heavy use was made of mocking to simulated external API calls particularly in the BFF service which has to call the other two services. Without this it would be impossible to test each service in isolation.
+
 \subsection{Containerisation}
+Each of the three backend services were containerised in the same way using an Alpine Linux image with Python installed. Alpine was chosen as it is one of the smallest Linux distributions available, its lack of features would not be a problem as the services do not require any Linux features.
+
+Unlike the frontend dependencies, the backend dependencies need to be present at runtime for the services to work, because of this a two stage build is not used. Instead, the dependencies are installed in the same stage as the application is copied into the image.
+
 \subsection{Dependency Management}
+Dependency management for Python is not standardised in the same way as it is for Node applications, there are different tools to manage dependencies such as Pipenv or Poetry. For simplicity the solution chosen was to use solely a requirements.txt file which lists all the dependencies for the project. The user can then install these dependencies with just pip, which is the most common package manager for Python.
+
+Dependency updates were managed similarly to the frontend with Dependabot scanning the requirements.txt files and creating pull requests with updates to the dependencies. This was done at the same interval as the frontend, to ensure that the dependencies were kept up to date and security vulnerabilities were patched as soon as possible.
 
 \section{Code Quality}~\label{sec:code-quality}
