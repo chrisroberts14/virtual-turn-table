@@ -3,6 +3,7 @@ import { useMusic } from "@/contexts/MusicContext.tsx";
 import { useUpload } from "@/contexts/UploadContext.tsx";
 import { useUsername } from "@/contexts/UsernameContext.tsx";
 import type Album from "@/interfaces/Album.tsx";
+import { Button } from "@heroui/button";
 import { Image } from "@heroui/image";
 
 const Top10Select = () => {
@@ -42,10 +43,16 @@ const Top10Select = () => {
 		setFadeConfirm(!fadeConfirm);
 	};
 
+	const rejectAll = () => {
+		triggerConfirmSlide();
+		setScannedAlbum(null);
+		setCurrentImage(null);
+	};
+
 	return (
 		<div className="h-full">
 			<h1 className="w-full font-bold text-center pb-4">Best Matches</h1>
-			<div className="flex flex-wrap gap-2 justify-center overflow-x-auto h-[80%]">
+			<div className="flex flex-wrap gap-2 justify-center overflow-x-auto h-[70%]">
 				{uniqueItems.map((album: Album) => (
 					<div
 						key={album.album_uri}
@@ -75,6 +82,15 @@ const Top10Select = () => {
 				<span className="w-full font-bold text-center">
 					If none of these match your album please take a new image...
 				</span>
+			</div>
+			<div className="w-full flex items-center justify-center flex-col pt-3">
+				<Button
+					style={{ background: "#8c0606" }}
+					className="w-[25%]"
+					onPress={rejectAll}
+				>
+					Reject all
+				</Button>
 			</div>
 		</div>
 	);

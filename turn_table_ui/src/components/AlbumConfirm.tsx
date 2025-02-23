@@ -61,7 +61,7 @@ const AlbumConfirm = () => {
 		setIsOnTop10Select(true);
 		setCurrentAlbum(null);
 		setScannedAlbum(null);
-		setCurrentImage(null);
+		//setCurrentImage(null);
 	};
 
 	return (
