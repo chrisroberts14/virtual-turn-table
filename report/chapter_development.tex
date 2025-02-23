@@ -142,51 +142,84 @@ To maintain up-to-date and secure dependencies, Dependabot, a service provided b
 
 The automated testing provided a mechanism to verify whether updated dependencies introduced breaking changes without manual intervention.
 
-% Continue after this point with rewording
 \subsection{Challenges}
 \paragraph{Environment}
-The biggest challenge in the frontend was managing environment variables. For different deployments of it different environment variables were needed. For example, the backend URL would be different for the development environment compared to the docker compose environment which would be different compared to the production environment. This issue was partially solved through the use of dotenv files which allowed environment variables to be defined in a file and then loaded into the application. However, these files could not be committed to git as they often contained secret keys for APIs and so had to be managed manually but once setup there were no issues.
+The biggest challenge in frontend development was managing environment variables across different deployment environments. For instance, the BFF URL varied between the development environment, the Docker Compose environment, and the production environment.
+
+This issue was partially solved through the use of dotenv files, which allowed environment variables to be defined in a file and automatically loaded into the application. However, since these files often contained sensitive information, such as API secret keys, they could not be committed to version control and instead had to be managed manually. Despite this limitation, once the dotenv files were properly set up, the approach functioned reliably across deployments.
 
 \section{Backend}~\label{sec:backend-development}
 \subsection{Implementation}
-Each service was similar in its implementation, all consisting of a FastAPI application which would serve the API endpoints, and if needed WebSocket connections or database connections. They also all had two base endpoints which would be used for health checks and redirection to the documentation page, though this is removed from the deployed version of the application.
+Each backend service followed a similar implementation structure, consisting of a FastAPI application responsible for serving API endpoints. Depending on the service's functionality, it could also establish WebSocket connections or interact with a database.
 
-Each was split into routers which would categorise the endpoints into different sections, such as authentication or user endpoints. This makes the API easier to understand and user as connected endpoints are grouped together.
- %A list of all endpoints can be found in Appendix [TODO: Add appendix].
+All three services included two basic endpoints:
+\begin{description}
+    \item[Health Check:] A health check endpoint to monitor service availability.
+    \item[Docs Redirect:] A redirection endpoint leading to the automatically generated API documentation (removed in the deployed version).
+\end{description}
 
+In order to better organise the API, each service was structured using routers to categorise endpoints into logical sections, such as authentication or user data retrieval. This modular approach improved API organisation, making it easier to understand and use.
 
 \subsubsection{BFF}
-The BFF service was split into five routers; the music router, which contained all the endpoints related to playback and data about albums and songs; the user router, which contained all the endpoints related to user data; the image search router, which contained all the endpoints related to the image to album service; the authentication router, which contained all the endpoints related to authentication; and the social router, which contained all the endpoints related to the social functionality.
+The Backend for Frontend (BFF) service was structured into five distinct routers, each responsible for a specific aspect of the application:
+
+\begin{description}
+    \item[Music Router:] Handles all endpoints related to music playback and retrieving album or song data.
+    \item[User Router:] Manages user-related endpoints, including user data retrieval and updates.
+    \item[Image Search Router:] Facilitates communication with the image-to-album service, handling album identification from uploaded images.
+    \item[Authentication Router:] Manages user authentication, including login and token validation.
+    \item[Social Router:] Handles endpoints related to the social functionality, such as collection sharing and retrieving shared collections.
+\end{description}
+
+Additionally, the BFF manages the WebSocket functionality for the notification system. When a user logs in, a WebSocket connection is established between the frontend and the BFF. If a collection is shared with the user, the BFF asynchronously sends a notification via the WebSocket connection, prompting the frontend to display the new notification to the user.
 
 \subsubsection{User Data Service}
-The user data service was the most complicated of the three services as it had to interact with a database. SQLAlchemy was used to interact with the database which meant each of the tables in the database had to be defined as a model in the code. The service was split into two routers; the user router, which contained all the endpoints related to specific users; and the social router, which contained all the endpoints related to social functionality.
+The User Data Service was the most complex of the three backend services, as it required direct interaction with a database. SQLAlchemy was used as the Object-Relational Mapping tool to manage database interactions, with each database table defined as a model in the code.
 
-A database migration tool was used to manage changes to the database schema to maintain data consistency. This tool would generate a migration file which could be run to update the database schema to match the new schema while keeping the data intact. Though during development this was not a problem as no real data was present in the database, it would be needed in a production environment as data must persist between updates even if the database schema changes.
+The service was structured into two primary routers:
+
+\begin{description}
+    \item[User Router:] Handles all endpoints related to individual users.
+    \item[Social Router:] Manages endpoints related to social functionality, including collection sharing and retrieval.
+\end{description}
+
+To ensure data is not lost during database schema changes Alembic, a database migration tool was used. This automatically generated migration files, which could be executed to update the database schema while preserving existing data. Although this was not a critical concern during development, since no real user data was stored, such a system would be important in a production environment, where data persistence must be maintained across schema updates.
 
 \subsubsection{Image To Album Service}
-The simplest of the three, the image to album service only consisted of two routers each with only one endpoint. The first router was for converting an image to some guess of an album and the second was for retrieving the Spotify album ID from the guess. This service was the most stateless of the three as it did not need to store any data between requests.
+The Image-to-Album Service was the simplest of the three backend services, consisting of only two routers, each containing a single endpoint:
+
+\begin{description}
+    \item[Image Processing Router:] Handles the conversion of an uploaded image into a predicted album match.
+    \item[Album Retrieval Router:] Retrieves the corresponding Spotify album ID based on the predicted album match.
+\end{description}
+
+This service was completely stateless, and as such it did not require persistent data storage between requests.
 
 \subsubsection{Security}
-For the user data and image to album services security was solved by adding middleware that would reject all requests not coming from the BFF service.
+Security measures were implemented differently across the three backend services to ensure proper control over data access.
 
-The BFF was more complicated as it had to receive calls from any user. To solve this a JSON Web Token (JWT) was used to authenticate the user. Once the user logs in with Spotify the frontend sends this to the backend where if it is valid a JWT is returned which can be sent in the header of requests to the BFF. The token can then be checked so that user can only access their own data and users without a token cannot access any data.
+For the User Data Service and Image-to-Album Service, security was enforced by middleware that rejected all requests not originating from the BFF service. This ensured that only authenticated and validated requests from the BFF could interact with these services.
+
+The BFF required a more complex security approach, as it had to handle requests from external users. To authenticate users, JSON Web Tokens (JWTs) were used. When a user logs in via Spotify, the frontend sends that token to the backend. If the token is valid, the backend issues a JWT formed from the given token and the user's username, this is then included in the headers of subsequent requests to the BFF.
+
+This token-based authentication ensures that that users can only access their own data, and that requests without a valid JWT are rejected, preventing unauthorized access.
 
 \subsection{Automated Testing}
-Automated testing for the backend was done using the Pytest library which allowed the use of test fixtures to set up and tear down the environment for each test, such as database state. FastAPI provides a test client which can be used to call endpoints as if they were being called by a client.
+Automated testing for the backend was carried out using the Pytest library, which allows for the creation of custom test fixtures to set up and tear down the environment for each test, including managing the database state. FastAPI provides a test client which was utilised to simulate calls to endpoints to be tested as if they were being accessed by an actual client.
 
-Heavy use was made of mocking to simulated external API calls particularly in the BFF service which has to call the other two services. Without this it would be impossible to test each service in isolation.
+Extensive use of mocking was necessary for simulating external API calls. This was especially important in the BFF service, which made numerous calls to the other two backend services. Mocking ensured that each service could be tested in isolation without requiring live responses from the other services and  external APIs, making the testing process more reliable and efficient.
 
 \subsection{Containerisation}
-Each of the three backend services were containerised in the same way using an Alpine Linux image with Python installed. Alpine was chosen as it is one of the smallest Linux distributions available, its lack of features would not be a problem as the services do not require any Linux features.
+Each of the three backend services was containerised using an Alpine Linux image with Python pre-installed. Alpine Linux was chosen due to its minimal footprint, making it one of the smallest available Linux distributions. There are also security benefits to this approach, as the reduced number of features in Alpine Linux means there are fewer potential vulnerabilities to exploit.
 
-Unlike the frontend dependencies, the backend dependencies need to be present at runtime for the services to work, because of this a two stage build is not used. Instead, the dependencies are installed in the same stage as the application is copied into the image.
+Unlike the frontend, where dependencies are only needed during the build process, the backend dependencies must be present at runtime for the services to function correctly. As a result, a multi-stage build was not used. Instead, dependencies were installed in the same stage as the application files were copied into the container image, ensuring that all required packages were available when the service was deployed. This disadvantage of this approach is that the image size is larger, but this is unavoidable due to the nature of the backend services.
 
 \subsection{Dependency Management}
-Dependency management for Python is not standardised in the same way as it is for Node applications, there are different tools to manage dependencies such as Pipenv or Poetry. For simplicity the solution chosen was to use solely a requirements.txt file which lists all the dependencies for the project. The user can then install these dependencies with just pip, which is the most common package manager for Python.
+Unlike Node applications, Python does not have a standardised dependency management system, there are multiple tools such as Pipenv and Poetry which can be used. For simplicity, the solution chosen for this project was a requirements.txt file, which lists all dependencies using semantic versioning. This approach allows dependencies to be installed using pip, the most widely used Python package manager, with a single command.
 
-Dependency updates were managed similarly to the frontend with Dependabot scanning the requirements.txt files and creating pull requests with updates to the dependencies. This was done at the same interval as the frontend, to ensure that the dependencies were kept up to date and security vulnerabilities were patched as soon as possible.
+Dependency updates were managed similarly to the frontend. Dependabot was configured to scan the requirements.txt file at regular intervals, generating pull requests for available updates. These updates followed the same schedule as frontend dependencies, ensuring that the dependencies were kept up to date and security vulnerabilities were patched as soon as possible.
 
 \section{Code Quality}~\label{sec:code-quality}
-Code quality standards were maintained during development through the use of pre-commit hooks and GitHub actions. Pre-commit hooks were used to run linters and formatters on the code before it was committed to the repository. The benefit of doing this is that potentially bade code can be caught before it can even make it into the repository. This is extremely useful especially since during the development of this project there was only a single developer and so there was no code review process.
+Code quality standards were maintained during development through the use of pre-commit hooks and GitHub Actions. Pre-commit hooks were configured to run linters and formatters before code was committed to the repository. This ensured that potential issues were identified early, preventing poor quality code from making it into the repository. This approach was particularly valuable since the project was developed by a single developer, and so there was no code review process to catch mistakes.
 
-Automated tests and security scans were run every time a pull request was made to the repository as well as any commits pushed onto the main branch. This could have been integrated into the pre-commit hooks, but this was not done as the tests could take a long time to run and waiting for pre-commit hooks to complete would become a tedious process. Instead, the tests were run on the GitHub servers which could run the tests in parallel and so the time taken to run the tests was reduced.
+In addition to the pre-commit hooks, automated tests and security scans were executed every time a pull request was created or a commit was pushed to the main branch of the repository. While these checks could have been integrated into the pre-commit hooks, this was avoided due to the execution time of the tests, which would have led to a tedious development process. Instead, the tests were run on GitHub servers, leveraging parallel execution to reduce the overall testing time.
