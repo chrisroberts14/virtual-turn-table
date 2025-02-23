@@ -1,26 +1,44 @@
 \chapter{Development}~\label{cha:development}
-Development for the application was split into two main parts, the frontend and the backend. The whole project was kept in a single mono-repository with the frontend and each backend service in their own directories. This would perhaps not be the best way to structure a larger project but sub-repository management would have been a lot of overhead for a project of this size and so this was the best solution.
+Development of the application was divided into two main parts: the frontend and the backend, with the backend further broken up into its constituent services. The entire project was maintained in a single mono-repository, with each backend service and the frontend housed in separate directories. While this is not necessarily the optimal structure for a larger project this approach reduced overhead for a project of smaller scope, making it the most practical solution.
 
 \section{Frontend}~\label{sec:frontend-development}
 \subsection{Implementation}
-The actual implementation of the frontend used Vite as a build tool for ReactJS. This gave a starting TypeScript template which was modified to create the application.
+The actual implementation of the frontend used Vite as a development server and build tool for the React frontend. This gave a starting TypeScript template which was modified to create the application.
 
-Once the build system was in place the design was broken up into components so each to be built independently. The HeroUI component library used in this project provided basic components common to most web applications, such as buttons, modals, and input fields from these the more complex components could be built. One of the benefits of using this component library was its integration with Tailwind CSS, which allowed for stylings to be applied through class names rather than bespoke stylesheets. This greatly reduced the amount of time needed to style the application and ensured a consistent look across the application.
+Once the build system was in place the design was broken up so that each component could be built independently. The HeroUI component library used in this project provided basic components common to most web applications, such as buttons, modals, and input fields from these the more complex components could be built. One of the benefits of using this component library was its integration with Tailwind CSS, which allowed for stylings to be applied through class names rather than bespoke stylesheets. This greatly reduced the amount of time needed to style the application and ensured a consistent look across the application.
 
-Once the components were built to use the application the next step was to integrate with the backend services. For some of these to work the user must authenticate with Spotify to gain access to the main functions of the Spotify API. This had to be implemented on the frontend using Spotify's OAuth2 API which allowed for the user to authenticate with Spotify and then be redirected back to the application with an access token in the URL which could be used to interact with the Spotify API.
+After completing the frontend components, the next step was to integrate them with the backend services. Some functionalities required user authentication through Spotify to access key Spotify API features. This had to be implemented on the frontend using Spotify’s OAuth2 flow, which redirects the user to Spotify for login and then returns them to the application with an access token in the URL which is read by the application and saved to local storage, so sessions persist between refreshes.
 
-Once this was complete the rest of the API endpoints for the backend could be implemented. This was done using the Axios library.
+Once the authentication was implemented, the remaining backend API endpoints were integrated using the Axios library, allowing the frontend to communicate efficiently with the various services.
+
+Once the authentication was implemented, all remaining endpoint calls were implemented as functions that can be imported and run by any component. This was done using the Axios library, which though not a native JavaScript library, is widely used and well documented which made it easy to implement.
+
+\subsubsection{Navigation Bar}
+The navigation bar is a component included on all screens which allows the user to navigate between the different screens of the application. It consists of a static logo, screen selection tabs, and user details. The user details also serves as a dropdown trigger which displays a menu with account options such as setting their collection to public, sharing their collection with a certain user, deleting their account, and logging out.
+
+[TODO: Add Figure of the navigation bar and menu]
 
 \subsubsection{Play Screen}
-The play screen mostly follows the initial design, comprising three main sections: the track list, the controls, and a spinning vinyl animation. Music playback is handled by the Spotify Web Playback SDK, a client side JavaScript library that enables control of Spotify playback through the browser. For actions such as changing tracks, skipping forward or backward, and pausing, the application calls a method provided by the SDK.
+The play screen largely follows the initial design, consisting of three main sections: the track list, the controls, and a spinning vinyl animation. Music playback is handled by the Spotify Web Playback SDK, a client side JavaScript library that enables real-time control of Spotify playback within the browser. Actions such as changing tracks, skipping forward or backward, and pausing are executed by invoking the corresponding methods provided by the SDK.
 
-\paragraph{Track List} The track list is a list of all tracks the currently active album, which is set on the scan screen. It presents users with a selection menu of tracks which can be selected in order to play a specific track.
+\paragraph{Track List}
+The track list displays all tracks from the currently active album, which is set on the scan screen. It serves as a selection menu of tracks, allowing users to choose a specific song for playback similarly to a music streaming service. The component is styled to fill up all vertical space between the navigation bar and scrolls vertically if the number of tracks exceeds the available space.
 
-\paragraph{Controls} The playback controls include buttons and sliders which effect the playing music in some way. Clicking a button or adjusting a slider invokes the relevant SDK methods, allowing users to play, pause, skip, or adjust volume. Album art and track information automatically update as the active song changes. There is one feature which was removed from the original design, the ability to scrub through the whole album rather than only the currently playing track was considered too complex to implement and added little to the user experience and so was removed.
+\paragraph{Controls}
+The playback controls consist of buttons and sliders which users can interact with to effect audio playback. Clicking a button or adjusting a slider calls the relevant SDK methods, allowing users to play, pause, skip, or adjust volume. Album art and track information are displayed, so the currently playing track can be easily identified, these automatically update as the active song changes.
+One feature from the original design was removed, the ability to scrub through the whole album rather than only the currently playing track. This was considered too complex to implement and added little to the user experience and so was excluded from the final implementation.
 
-\paragraph{Spinning Vinyl} To replicate the feel of a physical record player, a simple animation was implemented to rotate a vinyl graphic which had the album cover in the centre. Just as if this were a real record player, the vinyl rotates when music is playing and stops when paused. This was controlled by editing the rotation styling of the graphic. Another animation was added to simulate the act of removing the vinyl from its sleeve when the album is changed. This was done by sliding the album art of the screen as if the vinyl was being removed from it.
+\paragraph{Spinning Vinyl}
+To emulate the feel of a physical record player, an animated spinning vinyl graphic was implemented, featuring the album cover in the centre. Just as if this were a real record player, the vinyl rotates when music is playing and stops when paused. This was controlled by editing the rotation styling of the graphic.
 
-[TODO: Add Figure of the play screen]
+A second animation was added to simulate the act of removing the vinyl from its sleeve when changing albums. This is meant to replicate the experience of removing a vinyl record from its sleeve and placing it on the turntable. This was done by animating the vinyl graphic to move to the side of the screen and then back to the centre with a new album cover.
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/play_screen.png}
+    \caption{The play screen of the application}
+    \label{fig:play_screen}
+\end{figure}
 
 \subsubsection{Scan Screen}
 The scan screen, though following the initial design as closely as possible, had to be changed during development as some problems with the original design became clear. It was also split into three main parts like the play screen: the album confirmation sidebar, the scan section, and the album collection.
@@ -57,7 +75,7 @@ Dependencies for the front end were managed using Node Package Manager (NPM). As
 Automatic scanning of the dependencies file was done using Dependabot which would check for updates to the dependencies at a set interval, such as weekly or monthly, and create a pull request with the updates. This meant all dependencies were kept up to date and security vulnerabilities were patched as soon as possible whilst the automated tests allowed easy verification of if new dependency versions broke any functionality.
 
 \subsection{Challenges}
-\subsubsection{Environment}
+\paragraph{Environment}
 The biggest challenge in the frontend was managing environment variables. For different deployments of it different environment variables were needed. For example, the backend URL would be different for the development environment compared to the docker compose environment which would be different compared to the production environment. This issue was partially solved through the use of dotenv files which allowed environment variables to be defined in a file and then loaded into the application. However, these files could not be committed to git as they often contained secret keys for APIs and so had to be managed manually but once setup there were no issues.
 
 \section{Backend}~\label{sec:backend-development}
