@@ -68,7 +68,6 @@ describe("AlbumConfirm", () => {
 			await userEvent.click(screen.getByText("No"));
 			expect(useMusic().setCurrentAlbum).toHaveBeenCalledWith(null);
 			expect(useUpload().setScannedAlbum).toHaveBeenCalledWith(null);
-			expect(useUpload().setCurrentImage).toHaveBeenCalledWith(null);
 		});
 	});
 

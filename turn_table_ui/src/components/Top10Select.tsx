@@ -66,6 +66,7 @@ const Top10Select = () => {
 						}}
 					>
 						<Image
+							title={album.title}
 							src={album.image_url}
 							width={125}
 							className="aspect-square object-cover transition duration-3000 hover:blur-sm"

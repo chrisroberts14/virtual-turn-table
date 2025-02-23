@@ -3,15 +3,11 @@ import { describe, expect, it, vi } from "vitest";
 import NavigationBar from "../../src/components/NavigationBar";
 import { useError } from "../../src/contexts/ErrorContext";
 import { useNavigation } from "../../src/contexts/NavigationContext";
-import {
-	UsernameContext,
-	useUsername,
-} from "../../src/contexts/UsernameContext";
+import { useUsername } from "../../src/contexts/UsernameContext";
 import "@testing-library/jest-dom";
 import GetIsCollectionPublic from "../../src/api_calls/GetIsCollectionPublic";
 import GetNotifications from "../../src/api_calls/GetNotifications";
 import GetUserAlbums from "../../src/api_calls/GetUserAlbums";
-import UserBox from "../../src/components/UserBox";
 import { BFFTokenContext } from "../../src/contexts/BFFTokenContext";
 import { useSuccess } from "../../src/contexts/SuccessContext";
 import WebSocketMock from "../utils/WebSocketMock";
