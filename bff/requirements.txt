@@ -1,5 +1,5 @@
 fastapi[standard]
-pydantic_settings~=2.7.1
+pydantic_settings~=2.8.0
 PyJWT~=2.10.1
 pytest-cov~=6.0.0
 pytest-mock~=3.14.0
