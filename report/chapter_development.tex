@@ -148,6 +148,9 @@ The biggest challenge in frontend development was managing environment variables
 
 This issue was partially solved through the use of dotenv files, which allowed environment variables to be defined in a file and automatically loaded into the application. However, since these files often contained sensitive information, such as API secret keys, they could not be committed to version control and instead had to be managed manually. Despite this limitation, once the dotenv files were properly set up, the approach functioned reliably across deployments.
 
+\paragraph{Spotify API Changes}
+
+
 \section{Backend}~\label{sec:backend-development}
 \subsection{Implementation}
 Each backend service followed a similar implementation structure, consisting of a FastAPI application responsible for serving API endpoints. Depending on the service's functionality, it could also establish WebSocket connections or interact with a database.

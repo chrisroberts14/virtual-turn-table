@@ -3,11 +3,26 @@
 import os
 from typing import Generator
 
+import sqlalchemy.engine
 from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import declarative_base, Session
 
-engine = create_engine(f"postgresql://{os.getenv('VTT_POSTGRESQL_URL')}", echo=True)
+
+if os.getenv("PROD_ENV"):
+    unix_socket_path = os.getenv("INSTANCE_UNIX_SOCKET")
+    # e.g. /cloudsql/project:region:instance
+    engine = create_engine(
+        sqlalchemy.engine.URL.create(
+            drivername="postgresql+psycopg2",
+            username=os.getenv("VTT_POSTGRESQL_USER"),
+            password=os.getenv("VTT_POSTGRESQL_PASSWORD"),
+            database=os.getenv("VTT_POSTGRESQL_DB"),
+            query={"unix_socket": unix_socket_path},
+        )
+    )
+else:
+    engine = create_engine(f"postgresql://{os.getenv('VTT_POSTGRESQL_URL')}", echo=True)
 
 Base = declarative_base()
 

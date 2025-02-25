@@ -69,7 +69,7 @@ services:
     ports:
       - "5433:5432"
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "myuser", "-d", "vtt"]
+      test: ["CMD", "pg_isready", "-d", "vtt"]
       interval: 10s
       timeout: 5s
       retries: 3
