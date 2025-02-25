@@ -15,7 +15,7 @@ app.include_router(user_router, prefix="/user")
 
 origins = [
     "http://localhost:8000",
-    "https://virtual-turn-table-bff-791764533505.us-central1.run.app",
+    "https://vtt-bff-791764533505.us-central1.run.app",
 ]
 
 app.add_middleware(

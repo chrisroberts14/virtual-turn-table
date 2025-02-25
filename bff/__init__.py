@@ -26,10 +26,7 @@ app.include_router(social_router, prefix="/social")
 app.include_router(auth_router, prefix="/auth")
 
 
-origins = [
-    "http://localhost:5173",
-    "https://virtual-turn-table-ui-791764533505.us-central1.run.app",
-]
+origins = ["http://localhost:5173", "https://vtt-791764533505.us-central1.run.app"]
 
 connections: dict[str, list[WebSocket]] = {}
 
