@@ -6,11 +6,20 @@ if (!bff.startsWith("http")) {
 	bff = `http://${bff}`;
 }
 
+let websocket = bff;
+if (bff.startsWith("http://")) {
+	websocket = bff.replace("http", "ws");
+} else if (bff.startsWith("https://")) {
+	websocket = bff.replace("https", "wss");
+} else {
+	console.error("Unknown protocol for BFF address");
+}
+
 // Order is alphabetical
 export const addAlbum = `${bff}/user/add_album`;
 export const albumDetails = `${bff}/music/album_details`;
 export const auth = `${bff}/auth/token`;
-export const BFFWebSocket = `ws://${bff}/ws`;
+export const BFFWebSocket = `${websocket}/ws`;
 export const createUser = `${bff}/user/create_user`;
 export const deleteUser = `${bff}/user/`;
 export const getIsCollectionPublic = `${bff}/user/is_collection_public`;
