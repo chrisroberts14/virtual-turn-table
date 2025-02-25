@@ -1,6 +1,8 @@
 // All endpoints for the BFF are defined in this file
 
-let bff = import.meta.env.VITE_BFF_ADDRESS;
+let bff = import.meta.env.VITE_BFF_ADDRESS
+	? import.meta.env.VITE_BFF_ADDRESS
+	: "http://localhost:8000";
 // If the bff doesnt begin with http, add it
 if (!bff.startsWith("http")) {
 	bff = `http://${bff}`;
