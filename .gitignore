@@ -182,3 +182,4 @@ turn_table_ui/coverage/*
 
 # Don't include images used for evaluation
 utils/images/*
+utils/results.json

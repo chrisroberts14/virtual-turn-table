@@ -1,9 +1,14 @@
-\chapter{Deployment}
-\label{cha:deployment}
+\chapter{Deployment}~\label{cha:deployment}
+Once development was complete, the application had to be deployed to be accessible to users. This involved configuring two ways to run the application: locally, using Docker Compose and on the web, using a cloud hosting service
+TODO: Add more content here.
 
-\section{Docker compose}
-Docker compose allows the program to run all the associated microservices, each running in their own Docker container, on the same local machine. The main benefit of this is we can run the whole system on any machine which can run Docker. If the application were to be run like this with all services on the same machine this would be a good way to do it but for the most part this was used to make sure the containers were each working as expected during end to end testing of the system.
+\section{Docker Compose}
+Docker Compose is a container orchestrator that allows multiple containers to be run together on one system in unison [TODO: Add ref here]. A single command can be used to both build and run the containers. The overall structure of the deployment is defined in a single file which defines which services are run and how. This includes defining environment variables, volumes, and ports to be exposed. An important part is also defining which endpoint can be called as a health check which allows the orchestrator to determine if the service is running correctly. From this we can define dependencies between the services to determine start order so that the application can be run correctly.
+% TODO: Add More
 
 \section{On the web}
+The web deployment was done using Google Cloud Run. A configuration can be pointed to the Dockerfile in the repository and, once triggered by an event on the repository, will build the image and deploy it to the web. It provides a URL and handles the complexities of hosting such as spinning up instances when needed and shutting them down when not in use.
 
-%Cite some references \cite{dyke1994, latex2012}
+The intention was for a build to be conducted and deployed after each push to the main branch, assuming every push passes all scans and tests. This, however, was deemed to be excessive for this application and so a tag mechanism was implemented, so builds are only triggered when a new tag is pushed to the repository.
+
+This service, however, comes at a monetary cost as this is an infrastructure as a service (IaaS) model. Higher usage would result in higher costs especially for the storage of the Docker image after it is built on the cloud servers. For this project the free tier proved to be sufficient but if the application were to be used more widely costs would need to be considered.

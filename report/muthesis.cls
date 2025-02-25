@@ -280,7 +280,9 @@ Documentation:
         See http://app.uio.no/ifi/texcount/faq.html for details.
 }
 %% We need >15mm  margins except on the binding edge, where it is >40mm
-\oddsidemargin 15truemm \evensidemargin 0truemm
+
+%Change the margins if this is going to be bound
+\oddsidemargin 15truemm \evensidemargin 15truemm
 \marginparwidth 40pt \marginparsep 10pt
 \topmargin 0truemm \headsep 10truemm
 \textheight 224truemm \textwidth 145truemm

@@ -1,16 +1,228 @@
-\chapter{Development}
-\label{cha:development}
+\chapter{Development}~\label{cha:development}
+Development of the application was divided into two main parts: the frontend and the backend, with the backend further broken up into its constituent services. The entire project was maintained in a single mono-repository, with each backend service and the frontend housed in separate directories. While this is not necessarily the optimal structure for a larger project this approach reduced overhead for a project of smaller scope, making it the most practical solution.
 
-\section{Frontend}
+\section{Frontend}~\label{sec:frontend-development}
 \subsection{Implementation}
-TODO: Talk about technical details to do with the implementation
+The actual implementation of the frontend used Vite as a development server and build tool for the React frontend. This gave a starting TypeScript template which was modified to create the application.
+
+Once the build system was in place the design was broken up so that each component could be built independently. The HeroUI component library used in this project provided basic components common to most web applications, such as buttons, modals, and input fields from these the more complex components could be built. One of the benefits of using this component library was its integration with Tailwind CSS, which allowed for stylings to be applied through class names rather than bespoke stylesheets. This greatly reduced the amount of time needed to style the application and ensured a consistent look across the application.
+
+After completing the frontend components, the next step was to integrate them with the backend services. Some functionalities required user authentication through Spotify to access key Spotify API features. This had to be implemented on the frontend using Spotify’s OAuth2 flow, which redirects the user to Spotify for login and then returns them to the application with an access token in the URL which is read by the application and saved to local storage, so sessions persist between refreshes.
+
+Once the authentication was implemented, the remaining backend API endpoints were integrated using the Axios library, allowing the frontend to communicate efficiently with the various services.
+
+Once the authentication was implemented, all remaining endpoint calls were implemented as functions that can be imported and run by any component. This was done using the Axios library, which though not a native JavaScript library, is widely used and well documented which made it easy to implement.
+
+\subsubsection{Landing Page}
+An oversight in the original design was the lack of a landing page which is presented to users before logging. The page follows the stylings of the application and contains graphics and text related to the application. Once the user logs in they are redirected to the scan screen.
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/landing_page.png}
+    \caption{The landing page of the application}
+    \label{fig:landing_page}
+\end{figure}
+
+
+\subsubsection{Navigation Bar}
+The navigation bar is a component included on all screens which allows the user to navigate between the different screens of the application. It consists of a static logo, screen selection tabs, and user details. The user details also serves as a dropdown trigger which displays a menu, as seen in Figure~\ref{fig:user_options_menu}, with account options such as setting their collection to public, sharing their collection with a certain user, deleting their account, and logging out.
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/menu_open_screen.png}
+    \caption{The user options menu opened from the navigation bar}
+    \label{fig:user_options_menu}
+\end{figure}
+
+\subsubsection{Play Screen}
+The play screen largely follows the initial design, consisting of three main sections: the track list, the controls, and a spinning vinyl animation. Music playback is handled by the Spotify Web Playback SDK, a client side JavaScript library that enables real-time control of Spotify playback within the browser. Actions such as changing tracks, skipping forward or backward, and pausing are executed by invoking the corresponding methods provided by the SDK.
+
+\paragraph{Track List}
+The track list displays all tracks from the currently active album, which is set on the scan screen. It serves as a selection menu of tracks, allowing users to choose a specific song for playback similarly to a music streaming service. The component is styled to fill up all vertical space between the navigation bar and scrolls vertically if the number of tracks exceeds the available space.
+
+\paragraph{Controls}
+The playback controls consist of buttons and sliders which users can interact with to effect audio playback. Clicking a button or adjusting a slider calls the relevant SDK methods, allowing users to play, pause, skip, or adjust volume. Album art and track information are displayed, so the currently playing track can be easily identified, these automatically update as the active song changes.
+One feature from the original design was removed, the ability to scrub through the whole album rather than only the currently playing track. This was considered too complex to implement and added little to the user experience and so was excluded from the final implementation.
+
+\paragraph{Spinning Vinyl}
+To emulate the feel of a physical record player, an animated spinning vinyl graphic was implemented, featuring the album cover in the centre. Just as if this were a real record player, the vinyl rotates when music is playing and stops when paused. This was controlled by editing the rotation styling of the graphic.
+
+A second animation was added to simulate the act of removing the vinyl from its sleeve when changing albums. This is meant to replicate the experience of removing a vinyl record from its sleeve and placing it on the turntable. This was done by animating the vinyl graphic to move to the side of the screen and then back to the centre with a new album cover.
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/play_screen.png}
+    \caption{The play screen of the application}
+    \label{fig:play_screen}
+\end{figure}
+
+\subsubsection{Scan Screen}
+The scan screen, though following the initial design as closely as possible, had to be changed during development as some issues with the original design became apparent during development. Similarly to the play screen it was also split into three main parts: the album confirmation sidebar, the scan section, and the album collection.
+
+\paragraph{Album Confirmation Sidebar}
+The album confirmation sidebar allowed the user to confirm the album that the identified album was correct. This presented an issue that was not addressed in the original design, how to handle incorrect album identifications To solve this, a second stage of the confirmation was introduced, using a separate scatter shot approach taken to present alternative matches, as shown in Figure~\ref{fig:album_confirmation_sidebar_incorrect}. In addition to this, the sidebar also acts as a method to display to the user the application is processing through the use of a loading animation where the identified album will appear. Once the user confirms the album selection the sidebar slides back to the side of the screen and the album is set as the active album.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=0.8\textwidth]{figures/corrent_album_confirm.png}
+        \caption{The album confirmation sidebar with the correct album guessed}
+        \label{fig:album_confirmation_sidebar}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=0.8\textwidth]{figures/top_results_confirm.png}
+        \caption{The album confirmation sidebar with the incorrect album guessed}
+        \label{fig:album_confirmation_sidebar_incorrect}
+    \end{subfigure}
+\end{figure}
+
+\paragraph{Scan Section}
+Similarly to the confirmation sidebar an issue was identified in the scan section. The original design did not account for users who may not have a camera connected to their device. To solve this a file upload option was introduced, as seen in Figure~\ref{fig:upload_component}. If no cameras can be accessed by the browser, this option becomes the default. This was also useful for users who may not want to use their camera and so the option to upload an image is available to all users.
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.4\textwidth]{figures/upload_component.png}
+    \caption{The file upload component}
+    \label{fig:upload_component}
+\end{figure}
+
+\paragraph{Album Collection}
+This section remained mostly unchanged from the original design. The user's albums slide across the bottom of the screen allowing the user to select one by clicking on an album cover. When a user hovers over an album the sliding is paused and extra details of that album appear as a tooltip, such as the title and artist.
+A feature that was added to the original design is the ability to look through the user's collection in a different format is also available by clicking the view all button. This opens a modal with all the user's albums in a view reminiscent of flicking through vinyl records in a record store, as seen in Figure~\ref{fig:collection_flick_through}.
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.3\textwidth]{figures/collection_flick_through.png}
+    \caption{The view collection modal}
+    \label{fig:collection_flick_through}
+\end{figure}
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/scan_screen.png}
+    \caption{The scan screen of the application with the camera disabled}
+    \label{fig:scan_screen}
+\end{figure}
+
+\subsubsection{Social Screen}
+The social screen had the most significant changes from the original design. Initially, it was implemented as shown in Figure~\ref{fig:social_screen_mockup}, but this layout proved too cluttered, making it increasingly difficult to navigate larger collections and so a more compact design was needed.
+
+The final design was inspired by the experience of flicking through vinyl records in a record store. Each user's collection is displayed within a grid, where albums pop up and down at random intervals. This approach allows a greater number of collections to be visible simultaneously without overwhelming the user.
+
+To enhance usability further, additional collections can be loaded incrementally by clicking the Load More button at the bottom of the screen. Users can also explore collections in greater detail by selecting them. This means the user is presented with information as they want it which was a vast improvement over the original design.
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/social_screen.png}
+    \caption{The social screen of the application with five public albums and no shared albums}
+    \label{fig:social screen}
+\end{figure}
+
 \subsection{Automated Testing}
+Automated testing of the frontend was carried out using Vitest, a testing framework designed for projects built with the Vite build system. A test driven development (TDD) approach was adopted, where test cases were written for each component before the implementation is written. These tests defined the expected functionality of the component, ensuring that development aligned with predefined functionality. The minimum amount of code is then written to pass these tests and then further refactoring is made to the resulting component to improve it. In some cases, test cases themselves required refinement, as unexpected problems necessitated changes in approach for developing specific components. This approach ensured that components did in fact carry out the functionality they were meant to and could be reliably tested in isolation.
+
+The goal for automated testing was to achieve $95\%$ test coverage, which would ensure a high level of confidence in the application's functionality. To enforce this, a GitHub Action was configured to run tests on every pull request and push onto the main branch of the repository. The build process was set to fail if test coverage dropped below $95\%$ or if any test case failed ensuring these objectives were met.
+
+\subsection{Containerisation}
+Containerisation for the frontend involved creating a Docker image which contained a pre-built version of the frontend. On start this would serve the application via an exposed port that users could connect to.
+
+The build of the application itself was straightforward once dependencies are installed. However, these dependencies are not required to be in the Docker image once the build is complete and since cloud storage has a cost associated with it the size of the image should be minimised. To achieve this a two stage build approach was employed.
+
+\begin{description}
+    \item[Build Stage] In this stage a base Node image is used to install all dependencies and then build the application.
+    \item[Production Stage] In this stage the built application is copied from the build stage into a new image. All data not copied from the build stage is left behind, resulting in a much smaller image. This is the image that is then served.
+\end{description}
+
+\subsection{Dependency Management}
+Frontend dependencies were managed using Node Package Manager (NPM). As new dependencies were installed, a JSON file within the repository was updated to record the package names and their versions. From this file any developer using NPM could install all required dependencies with a single command.
+
+To maintain up-to-date and secure dependencies, Dependabot, a service provided by GitHub, was integrated into the repository. Dependabot automatically scanned the dependency file at predefined intervals (e.g., weekly or monthly) and generated pull requests for available updates. This approach ensured that security vulnerabilities were patched and keeps all dependencies at their latest versions, so the application would not run using deprecated dependencies.
+
+The automated testing provided a mechanism to verify whether updated dependencies introduced breaking changes without manual intervention.
+
 \subsection{Challenges}
-\subsubsection{Environment}
-TODO: Add details about the problems I have with configuring environments
+\paragraph{Environment}
+The biggest challenge in frontend development was managing environment variables across different deployment environments. For instance, the BFF URL varied between the development environment, the Docker Compose environment, and the production environment.
 
-\section{Backend}
+This issue was partially solved through the use of dotenv files, which allowed environment variables to be defined in a file and automatically loaded into the application. However, since these files often contained sensitive information, such as API secret keys, they could not be committed to version control and instead had to be managed manually. Despite this limitation, once the dotenv files were properly set up, the approach functioned reliably across deployments.
+
+\paragraph{Spotify API Changes}
+
+
+\section{Backend}~\label{sec:backend-development}
 \subsection{Implementation}
-\subsection{Automated Testing}
+Each backend service followed a similar implementation structure, consisting of a FastAPI application responsible for serving API endpoints. Depending on the service's functionality, it could also establish WebSocket connections or interact with a database.
 
-\section{Code Quality} \label{sec:code-quality}
+All three services included two basic endpoints:
+\begin{description}
+    \item[Health Check:] A health check endpoint to monitor service availability.
+    \item[Docs Redirect:] A redirection endpoint leading to the automatically generated API documentation (removed in the deployed version).
+\end{description}
+
+In order to better organise the API, each service was structured using routers to categorise endpoints into logical sections, such as authentication or user data retrieval. This modular approach improved API organisation, making it easier to understand and use.
+
+\subsubsection{BFF}
+The Backend for Frontend (BFF) service was structured into five distinct routers, each responsible for a specific aspect of the application:
+
+\begin{description}
+    \item[Music Router:] Handles all endpoints related to music playback and retrieving album or song data.
+    \item[User Router:] Manages user-related endpoints, including user data retrieval and updates.
+    \item[Image Search Router:] Facilitates communication with the image-to-album service, handling album identification from uploaded images.
+    \item[Authentication Router:] Manages user authentication, including login and token validation.
+    \item[Social Router:] Handles endpoints related to the social functionality, such as collection sharing and retrieving shared collections.
+\end{description}
+
+Additionally, the BFF manages the WebSocket functionality for the notification system. When a user logs in, a WebSocket connection is established between the frontend and the BFF. If a collection is shared with the user, the BFF asynchronously sends a notification via the WebSocket connection, prompting the frontend to display the new notification to the user.
+
+\subsubsection{User Data Service}
+The User Data Service was the most complex of the three backend services, as it required direct interaction with a database. SQLAlchemy was used as the Object-Relational Mapping tool to manage database interactions, with each database table defined as a model in the code.
+
+The service was structured into two primary routers:
+
+\begin{description}
+    \item[User Router:] Handles all endpoints related to individual users.
+    \item[Social Router:] Manages endpoints related to social functionality, including collection sharing and retrieval.
+\end{description}
+
+To ensure data is not lost during database schema changes Alembic, a database migration tool was used. This automatically generated migration files, which could be executed to update the database schema while preserving existing data. Although this was not a critical concern during development, since no real user data was stored, such a system would be important in a production environment, where data persistence must be maintained across schema updates.
+
+\subsubsection{Image To Album Service}
+The Image-to-Album Service was the simplest of the three backend services, consisting of only two routers, each containing a single endpoint:
+
+\begin{description}
+    \item[Image Processing Router:] Handles the conversion of an uploaded image into a predicted album match.
+    \item[Album Retrieval Router:] Retrieves the corresponding Spotify album ID based on the predicted album match.
+\end{description}
+
+This service was completely stateless, and as such it did not require persistent data storage between requests.
+
+\subsubsection{Security}
+Security measures were implemented differently across the three backend services to ensure proper control over data access.
+
+For the User Data Service and Image-to-Album Service, security was enforced by middleware that rejected all requests not originating from the BFF service. This ensured that only authenticated and validated requests from the BFF could interact with these services.
+
+The BFF required a more complex security approach, as it had to handle requests from external users. To authenticate users, JSON Web Tokens (JWTs) were used. When a user logs in via Spotify, the frontend sends that token to the backend. If the token is valid, the backend issues a JWT formed from the given token and the user's username, this is then included in the headers of subsequent requests to the BFF.
+
+This token-based authentication ensures that that users can only access their own data, and that requests without a valid JWT are rejected, preventing unauthorized access.
+
+\subsection{Automated Testing}
+Automated testing for the backend was carried out using the Pytest library, which allows for the creation of custom test fixtures to set up and tear down the environment for each test, including managing the database state. FastAPI provides a test client which was utilised to simulate calls to endpoints to be tested as if they were being accessed by an actual client.
+
+Extensive use of mocking was necessary for simulating external API calls. This was especially important in the BFF service, which made numerous calls to the other two backend services. Mocking ensured that each service could be tested in isolation without requiring live responses from the other services and  external APIs, making the testing process more reliable and efficient.
+
+\subsection{Containerisation}
+Each of the three backend services was containerised using an Alpine Linux image with Python pre-installed. Alpine Linux was chosen due to its minimal footprint, making it one of the smallest available Linux distributions. There are also security benefits to this approach, as the reduced number of features in Alpine Linux means there are fewer potential vulnerabilities to exploit.
+
+Unlike the frontend, where dependencies are only needed during the build process, the backend dependencies must be present at runtime for the services to function correctly. As a result, a multi-stage build was not used. Instead, dependencies were installed in the same stage as the application files were copied into the container image, ensuring that all required packages were available when the service was deployed. This disadvantage of this approach is that the image size is larger, but this is unavoidable due to the nature of the backend services.
+
+\subsection{Dependency Management}
+Unlike Node applications, Python does not have a standardised dependency management system, there are multiple tools such as Pipenv and Poetry which can be used. For simplicity, the solution chosen for this project was a requirements.txt file, which lists all dependencies using semantic versioning. This approach allows dependencies to be installed using pip, the most widely used Python package manager, with a single command.
+
+Dependency updates were managed similarly to the frontend. Dependabot was configured to scan the requirements.txt file at regular intervals, generating pull requests for available updates. These updates followed the same schedule as frontend dependencies, ensuring that the dependencies were kept up to date and security vulnerabilities were patched as soon as possible.
+
+\section{Code Quality}~\label{sec:code-quality}
+Code quality standards were maintained during development through the use of pre-commit hooks and GitHub Actions. Pre-commit hooks were configured to run linters and formatters before code was committed to the repository. This ensured that potential issues were identified early, preventing poor quality code from making it into the repository. This approach was particularly valuable since the project was developed by a single developer, and so there was no code review process to catch mistakes.
+
+In addition to the pre-commit hooks, automated tests and security scans were executed every time a pull request was created or a commit was pushed to the main branch of the repository. While these checks could have been integrated into the pre-commit hooks, this was avoided due to the execution time of the tests, which would have led to a tedious development process. Instead, the tests were run on GitHub servers, leveraging parallel execution to reduce the overall testing time.
