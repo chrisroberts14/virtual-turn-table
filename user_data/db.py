@@ -18,7 +18,7 @@ if os.getenv("PROD_ENV"):
             username=os.getenv("VTT_POSTGRESQL_USER"),
             password=os.getenv("VTT_POSTGRESQL_PASSWORD"),
             database=os.getenv("VTT_POSTGRESQL_DB"),
-            query={"unix_socket": unix_socket_path},
+            query={"host": unix_socket_path},
         )
     )
 else:
