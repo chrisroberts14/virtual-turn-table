@@ -1,7 +1,7 @@
 import AddAlbum from "@/api_calls/AddAlbum.ts";
+import { useBFFToken } from "@/contexts/BFFTokenContext.ts";
 import { useMusic } from "@/contexts/MusicContext.tsx";
 import { useUpload } from "@/contexts/UploadContext.tsx";
-import { useUsername } from "@/contexts/UsernameContext.tsx";
 import type Album from "@/interfaces/Album.tsx";
 import { Button } from "@heroui/button";
 import { Image } from "@heroui/image";
@@ -14,8 +14,8 @@ const Top10Select = () => {
 		fadeConfirm,
 		setCurrentImage,
 	} = useUpload();
-	const { username } = useUsername();
 	const { setCurrentAlbum } = useMusic();
+	const { BFFToken } = useBFFToken();
 
 	const uniqueItems = [];
 	const seenTitles = new Set();
@@ -30,8 +30,8 @@ const Top10Select = () => {
 	const handleClick = (album: Album) => {
 		triggerConfirmSlide();
 		setCurrentAlbum(album);
-		if (username && album) {
-			AddAlbum(username, album.album_uri).catch((error) => {
+		if (BFFToken && album) {
+			AddAlbum(BFFToken, album.album_uri).catch((error) => {
 				console.error(error);
 			});
 		}

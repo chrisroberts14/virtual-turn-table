@@ -57,11 +57,11 @@ const AlbumConfirm = () => {
 	};
 
 	const rejectAlbum = () => {
-		//triggerConfirmSlide();
 		setIsOnTop10Select(true);
-		setCurrentAlbum(null);
-		setScannedAlbum(null);
-		//setCurrentImage(null);
+	};
+
+	const goBack = () => {
+		setIsOnTop10Select(false);
 	};
 
 	return (
@@ -123,6 +123,11 @@ const AlbumConfirm = () => {
 					</>
 				) : (
 					<CardBody className="flex flex-shrink">
+						<div className="flex justify-center">
+							<Button onPress={goBack} color="danger" className="max-w-[25%]">
+								Back
+							</Button>
+						</div>
 						<Top10Select />
 					</CardBody>
 				)}

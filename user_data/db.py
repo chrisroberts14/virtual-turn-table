@@ -8,7 +8,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import declarative_base, Session
 
-
+# pragma: no cover
 if os.getenv("PROD_ENV"):
     unix_socket_path = os.getenv("INSTANCE_UNIX_SOCKET")
     # e.g. /cloudsql/project:region:instance

@@ -45,6 +45,10 @@ const ImageCapture = () => {
 		setFadeConfirm(!fadeConfirm);
 	};
 
+	const closeConfirmSlide = () => {
+		setFadeConfirm(false);
+	};
+
 	const getAlbumFromCamera = () => {
 		setIsUploading(true);
 		triggerConfirmSlide();
@@ -95,6 +99,7 @@ const ImageCapture = () => {
 					<Upload
 						triggerConfirmSlide={triggerConfirmSlide}
 						setTop10={setTop10}
+						closeConfirmSlide={closeConfirmSlide}
 					/>
 				</div>
 			) : (
@@ -169,6 +174,7 @@ const ImageCapture = () => {
 								<Upload
 									triggerConfirmSlide={triggerConfirmSlide}
 									setTop10={setTop10}
+									closeConfirmSlide={closeConfirmSlide}
 								/>
 							</Tab>
 						</Tabs>
