@@ -90,7 +90,8 @@ The frontend is the user facing part of the application, because of this it need
 A `multipage' design approach was selected for the application as this separates the application into sections, so the user is not overloaded on a single page. This could have been implemented in two ways, a router design where the separate pages are loaded as the user navigates the application or a single page app where the screens are different `tabs'. The former would have been simpler as there would be little to no implementation to link the pages together, but it was decided to implement later. This was done as it was thought this would provide a more fluid user experience where the user could easily switch between different views. This also had the benefit of allowing music playback to continue even as the user navigates the application.
 
 \subsection{Principles}
-An easy way to ensure that the user interface is well-designed is to follow a set of principles. A good example of these would be Shneiderman's eight golden rules of interface design~\cite{Shneiderman} which were used as a guideline in this project to ensure that the user interface was intuitive and easy to use. These rules are as follows:
+An easy way to ensure that the user interface is well-designed is to follow a set of principles. A good example of these would be Shneiderman's eight golden rules of interface design~\cite{Shneiderman} which were used as a guideline in this project to ensure that the user interface was intuitive and easy to use. %These rules are as follows:
+\iffalse
 \begin{itemize}
     \item Strive for consistency
     \begin{description}
@@ -125,6 +126,7 @@ An easy way to ensure that the user interface is well-designed is to follow a se
         \item[] There should only be a small amount of information of the screen at one time, and the user should not have to remember things from one screen to another.
     \end{description}
 \end{itemize}
+\fi
 
 \subsection{Wireframe mockups}
 Prototyping the user interface provides a rapid way to visualize the application, enabling design evaluations without the need to write any code. This approach proves especially beneficial during the early stages of development, when the design remains flexible and can be easily modified. In this project, wireframe mockups were selected for their low-fidelity nature, which allowed fast iteration on design.
