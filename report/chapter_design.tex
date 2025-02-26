@@ -59,14 +59,14 @@ For this project, the HeroUI component library was utilised, offering a set of p
 React also managed the application's state and handled backend requests as needed. This enabled backend services to remain stateless, reducing complexity and improving scalability.
 
 \subsection{Docker}
-Docker is a platform for containerising applications, allowing them to run in isolated environments while communicating through specified exposed ports. This approach is a standard practice in modern web development and is widely supported by cloud providers, simplifying deployment and providing a consistent environment across different platforms.
+Docker is a platform for containerising applications, allowing them to run in isolated environments while communicating through specified exposed ports~\cite{DockerDocs}. This approach is a standard practice in modern web development and is widely supported by cloud providers, simplifying deployment and providing a consistent environment across different platforms.
 
 For this project, Docker enabled fast and efficient deployment. Cloud providers could autonomously build and run the application when supplied with the codebase and Dockerfile. Additionally, for development, the containerised system could be easily executed on any device running Docker, eliminating the need for manual environment configuration.
 
 All backend services and frontend, were containerised using Dockerfiles and deployed to a cloud provider, ensuring a scalable and reproducible deployment process.
 
 \subsection{Spotify API And Web Playback}
-The music service Spotify offers a suite of APIs for music-related services, including search and playback functionalities that matched the core features of this project. Given the impracticality of maintaining an independent album database, offloading the responsibility of maintaining a library of albums and music to Spotify was a logical choice.
+The music service Spotify offers a suite of APIs for music-related services, including search and playback functionalities that matched the core features of this project~\cite{SpotifyAPI}. Given the impracticality of maintaining an independent album database, offloading the responsibility of maintaining a library of albums and music to Spotify was a logical choice.
 
 Specifically, the search API was used to identify albums, while the playback API enabled streaming of the selected content.
 
@@ -80,7 +80,7 @@ In this project, reverse image search functionality was implemented to identify 
 Compared to other methods for recognizing albums from images, such as optical character recognition (OCR) or barcode scanning, reverse image search was selected for its robustness. OCR can be unreliable when album covers feature stylised text or lack text entirely and barcode scanning, though dependable, requires a barcode to be present. This requirement is problematic, particularly since vinyl records may predate the widespread use of barcodes.
 
 \subsection{Google Cloud}
-Google Cloud is a suite of cloud services offered on a pay-as-you-use basis. In this project, two specific services were utilised: the reverse image search API and Google Cloud Run. The reverse image search API was employed to identify albums from images uploaded by users, as detailed in Section~\ref{sec:reverse-image-search}. Google Cloud Run was used to build and host the application, running in Docker containers.
+Google Cloud is a suite of cloud services offered on a pay-as-you-use basis~\cite{GCP}. In this project, two specific services were utilised: the reverse image search API and Google Cloud Run. The reverse image search API was employed to identify albums from images uploaded by users, as detailed in Section~\ref{sec:reverse-image-search}. Google Cloud Run was used to build and host the application, running in Docker containers.
 
 Although multiple cloud providers were available, Google Cloud was selected following the adoption of Google's reverse image search API.\@ For convenience, hosting the application on Google Cloud was simpler as it eliminated the need to manage services across different providers.
 
@@ -129,7 +129,7 @@ An easy way to ensure that the user interface is well-designed is to follow a se
 \fi
 
 \subsection{Wireframe mockups}
-Prototyping the user interface provides a rapid way to visualize the application, enabling design evaluations without the need to write any code. This approach proves especially beneficial during the early stages of development, when the design remains flexible and can be easily modified. In this project, wireframe mockups were selected for their low-fidelity nature, which allowed fast iteration on design.
+Prototyping the user interface provides a rapid way to visualize the application, enabling design evaluations without the need to write any code~\cite{WILSON1988859}. This approach proves especially beneficial during the early stages of development, when the design remains flexible and can be easily modified. In this project, wireframe mockups were selected for their low-fidelity nature, which allowed fast iteration on design.
 
 Across all mockups, a consistent navigation bar is present at the top of the screen, allowing for straightforward navigation among the application's various pages.
 

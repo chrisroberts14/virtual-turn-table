@@ -149,7 +149,7 @@ The biggest challenge in frontend development was managing environment variables
 This issue was partially solved through the use of dotenv files, which allowed environment variables to be defined in a file and automatically loaded into the application. However, since these files often contained sensitive information, such as API secret keys, they could not be committed to version control and instead had to be managed manually. Despite this limitation, once the dotenv files were properly set up, the approach functioned reliably across deployments.
 
 \paragraph{Spotify API Changes}
-
+Midway through development, Spotify updated their authentication flow to require HTTPS for redirect URLs, disabling non-HTTPS redirects~\cite{spotifyredirects}. The cloud deployment was unaffected, as it already used HTTPS. However, the development environment did not, breaking the authentication flow when running locally. Fortunately, there was an easy fix, the services were just launched using self-signed SSL certificates. Though the impact on the project was small this change highlights the risks of relying on external services and the potential for breaking changes.
 
 \section{Backend}~\label{sec:backend-development}
 \subsection{Implementation}
