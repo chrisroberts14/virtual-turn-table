@@ -19,3 +19,4 @@ Pipenv
 Pytest
 websocket
 subrouters
+Soundsystem

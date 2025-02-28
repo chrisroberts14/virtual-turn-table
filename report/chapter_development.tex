@@ -198,6 +198,8 @@ The Image-to-Album Service was the simplest of the three backend services, consi
 
 This service was completely stateless, and as such it did not require persistent data storage between requests.
 
+The image processing functionality was implemented using the best guess functionality of the Google Reverse Image Search API. This guess would then be run through the Spotify search API which would return an album which would be displayed to the user. The scatter shot approach used separate data from the same reverse image search. It would instead look at the websites matches to the image were found on and use the title of the page as a search term. This proved to be effective because music albums are often the subject of reviews and sales pages which would contain the album title.
+
 \subsubsection{Security}
 Security measures were implemented differently across the three backend services to ensure proper control over data access.
 

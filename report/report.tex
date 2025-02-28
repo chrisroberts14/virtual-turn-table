@@ -10,6 +10,10 @@
 \usepackage{caption} % Extra modifications for captions
 \usepackage{float}
 \usepackage{subcaption}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
 
 \usepackage{pslatex} % Use Postscript fonts
 
@@ -43,9 +47,9 @@
 \begin{document}
 % Uncomment the following lines to leave out list of figures, tables
 % and copyright until final printing
-\figurespagefalse
-\tablespagefalse
-\copyrightfalse
+%\figurespagefalse
+%\tablespagefalse
+%\copyrightfalse
 
 \title{A Virtual Turntable Web Application}
 \author{Christopher Roberts}
@@ -85,8 +89,9 @@ I would like to thank my family and friends for their unconditional support duri
 % Appendices start here
 
 \appendix
-%\include{appendix_testcases}
-%\include{appendix_fe_comps}
-%\include{appendix_backend_endpoints}
+\include{appendix_testcases}
+\include{appendix_fe_comps}
+\include{appendix_backend_endpoints}
+\include{appendix_test_albums}
 
 \end{document}
