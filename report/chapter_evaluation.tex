@@ -5,7 +5,7 @@ Once the application was deployed it had to be determined if the application met
 These tests relate to the two primary feature tests set out in Section~\ref{sec:test-design}. These were the most crucial without which it would be hard to consider the application a success.
 
 \subsection{Album Scanning}
-The album scanning mechanism consisted of two separate APIs and so the evaluation here focuses on if the method used, that is directly searching for the album using the best guess or website titles, was successful. In total fifteen albums were used, with six images used for each album: four rotations, one blurred, and one scaled down. There was a preference for self taken images given these would not be pre-indexed by search engines as would be more representative of the images a user would take.
+The album scanning mechanism consisted of two separate APIs and so the evaluation here focuses on if the method used, that is directly searching for the album using the best guess or website titles, was successful. In total fifteen albums were used (all of which can be found in Appendix~\ref{apd:test_albums}), with six images used for each album: four rotations, one blurred, and one scaled down. There was a preference for self taken images given these would not be pre-indexed by search engines as would be more representative of the images a user would take.
 Results were deemed correct for the reverse image search if they contained the exact album name and results for the Spotify search were deemed correct if the exact correct album was returned.
 
 \subsubsection{Results}
@@ -37,8 +37,6 @@ The overall takeaway from this is the limiting factor of the accuracy of the sys
 
 This could potentially be done by pre-processing the image and attempting to remove the background via segmentation [TODO: Add reference to segmentation] or if it cannot be done automatically getting the user to crop down the image to just the album cover. Though these improvements would require potential user interface changes and increase the time taken to scan an album.
 
-
-%TODO : Add appendix containing all images used for testing
 
 \subsection{Album Playback}
 
