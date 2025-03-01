@@ -20,3 +20,4 @@ Pytest
 websocket
 subrouters
 Soundsystem
+linted

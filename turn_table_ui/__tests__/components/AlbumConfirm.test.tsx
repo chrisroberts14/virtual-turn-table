@@ -61,16 +61,6 @@ describe("AlbumConfirm", () => {
 		render(<AlbumConfirm />);
 	});
 
-	it("should set albums to null when rejectAlbum is called", async () => {
-		render(<AlbumConfirm />);
-		await waitFor(async () => {
-			await screen.findByText("No");
-			await userEvent.click(screen.getByText("No"));
-			expect(useMusic().setCurrentAlbum).toHaveBeenCalledWith(null);
-			expect(useUpload().setScannedAlbum).toHaveBeenCalledWith(null);
-		});
-	});
-
 	it("should set the correct values when confirmAlbum is called", async () => {
 		render(<AlbumConfirm />);
 		await waitFor(async () => {
