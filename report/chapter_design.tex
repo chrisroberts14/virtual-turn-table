@@ -174,7 +174,7 @@ The backend for the project would responsible for handling all business logic an
 As a microservices approach was adopted, the backend operations were divided into multiple services. As described in Section~\ref{fig:final-arch}, it was decided to use a BFF (Backend for Frontend) pattern for one of these services. The remaining functionality was split into two services; one service handles the conversion of user-uploaded images into album data, while another manages all user-related data storage.
 
 \subsubsection{BFF}
-The BFF acts as a middleman between the frontend and various backend services, often mirroring the endpoints of those services. Its main responsibility is to manage the data returned to the frontend. As this project is focused solely on a desktop web application, so the patterns potential to tailor data for different platforms was not fully utilised. However, if the application were later expanded to include additional platforms, the BFF could selectively limit data returned to given devices if they did not require it.
+The BFF acts as a middleman between the frontend and various backend services, often mirroring the endpoints of those services. Its main responsibility is to manage the data returned to the frontend. As this project is focused solely on a desktop web application, so the patterns potential to tailor data for different platforms was not fully utilised. However, if the application were later expanded to include additional platforms, the BFF could selectively limit data returned to given devices if it did not require it.
 
 The BFF also handles the WebSocket connections to the frontend, allowing the backend to push data to the frontend when necessary. This is particularly useful for notifying users of new shared collections or other events that require immediate attention.
 
@@ -190,7 +190,7 @@ This service was to handle all tasks related to user data such as collections an
 This application could have been implemented as a stateless application which would  mean there was no capability to persist data across sessions. However, such an approach would limit functionality as there could be no form of personalisation for individual users. Since a Spotify account was already required for music playback, linking user data to that account became a logical next step, enabling data persistence across sessions.
 
 \subsubsection{SQL vs NoSQL}
-SQL databases are widely used in enterprise environments due to their reliability and consistency. However, they are not necessarily optimal for web applications requiring high scalability and availability~\cite{GANESHCHANDRA201513}. In contrast, NoSQL databases are designed with scalability and availability in mind~\cite{NoSQL}, often making them more suitable for such applications.
+SQL databases are widely used in enterprise environments due to their reliability and consistency. However, relational databases are not necessarily optimal for web applications that require high scalability and availability~\cite{GANESHCHANDRA201513}. In contrast, NoSQL databases are designed with scalability and availability in mind~\cite{NoSQL}, often making them more suitable for such applications.
 Although a NoSQL database like MongoDB would have been a good choice for this project, a SQL database was selected for its easy integration with FastAPI and SQLAlchemy. This meant quicker development and cleaner code, despite not being the most inherently scalable option.
 
 \subsubsection{Diagram}
@@ -201,7 +201,7 @@ Although a NoSQL database like MongoDB would have been a good choice for this pr
     \label{fig:database-diagram}
 \end{figure}
 
-Figure~\ref{fig:database-diagram} shows the database design. User are stored with their Spotify usernames as primary keys as Spotify guarantees unique usernames. This allows data in other tables to be linked through each user’s username. Collections are represented with a link table that captures the many-to-many relationship between users and albums. A similar link table structure is used to manage the sharing of collections, tracking which users have shared access with each user. In addition, notifications regarding newly shared collections are stored in a separate table, so they can be displayed to users upon login.
+Figure~\ref{fig:database-diagram} shows the database design. User are stored with their Spotify usernames as primary keys as Spotify guarantees unique usernames. This allows data in other tables to be linked through each user’s username. Collections are represented with a link table that captures the many-to-many relationship between users and albums. A similar link table structure is used to manage the sharing of collections, tracking which users have shared access with each user. In addition, notifications regarding newly shared collections are stored in a separate table. These have to be stored between sessions as not all users are logged in simultaneously so, upon login, the user's notifications are fetched and displayed.
 
 \subsubsection{DBMS Choice}
 Since the choice was made to use a relational database, a specific relational database management system had to be selected even though the use of SQLAlchemy abstracts many of the differences among various DBMSs allowing one system to be swapped out for another with no code changes. The only notable exception is that SQLite does not enforce foreign key constraints by default, requiring manual enablement.
@@ -211,30 +211,52 @@ Originally, SQLite was chosen because, as since it's a file-based database, it c
 \subsection{Security}
 Security is an important consideration for any web application, since functionality and access to user data is exposed to the internet. Although the stored user data in this project is not particularly sensitive, it should still be safeguarded. To ensure this measures had to be implemented for each backend service.
 
-\paragraph{BFF} The BFF represents the largest potential security risk, as it is the only service that directly interacted with the frontend and therefore exposed to the public internet. To mitigate this risk, the BFF uses authentication to verify requests to all endpoints related to user data. This was handled via the API token provided by Spotify during user login, this meant access to user-specific data remained only accessible by that specific user.
+\paragraph{BFF} The BFF represents the largest potential security risk, as it is the only service that directly interacted with the frontend and therefore exposed to the public internet. To mitigate this risk, the BFF used authentication to verify requests to all endpoints related to user data. The exact details of the implementation of this are specified in Section~\ref{sec:backend-security}.
 
 \paragraph{Image-to-Album \& User Data Services} These services operate behind the BFF and only need to accept requests from that single, predictable source. Because of this, these services are designed to reject any requests originating from any external sources ensuring that only valid requests are processed.
 
 \section{Testing}~\label{sec:test-design}
-Defining the tests and success criteria prior to development was important to ensure that the project was built to meet these objectives, rather than retrofitting tests to match the final product. For most of the criteria listed in Section~\ref{sec:objectives}, it was necessary to establish tangible measurements to determine whether they had been met. This requirement led to the definition of the following tests for the primary features:
+Defining the tests and success criteria prior to development was important to ensure that the project was built to meet these objectives, rather than retrofitting tests to match the final product. For most of the criteria listed in Section~\ref{sec:objectives}, it was necessary to establish tangible measurements to determine whether those criteria had been met.
+
+\subsection{Primary Features}
+For the two discussed primary features these tests were defined:
 \begin{itemize}
-    \item The application should correctly identify albums with at least 95\% accuracy.
+    \item The application should correctly identify albums with at least $95\%$ accuracy. This functionality must be accurate but the threshold of $95\%$ is an arbitrary value chosen as it is expected the system will reach a high but not perfect level of accuracy.
     \begin{description}
         \item[Verification:] Take a set of input images, modified to be of both poor and good quality, and calculate the accuracy of the system. It is important that, as the application will likely rely on external APIs, this functionality the accuracies of any APIs are taken into account.
     \end{description}
     \item The application should play an album from start to finish without interruption.
     \begin{description}
-        \item[Verification:] Play a set of albums on the application and verify that they play without interruption.
+        \item[Verification:] Play a set of albums on the application and verify that all play without interruption.
     \end{description}
 \end{itemize}
 
-For the criteria relating to the user interface it becomes more difficult to define tests as they are more subjective. However, user feedback can be collected after users use the application in the form of surveys to gather opinions on the interface.
+\subsection{User Interface}~\label{sec:ui-tests}
+For criteria relating to the user interface it is harder to be objective as the quality of the interface is subjective. To determine if the objectives were met, a sample of users would need to be asked to use the application and provide feedback on the interface. This feedback could then be used to determine if the interface was easy to use and visually appealing as well as understanding if users liked and found the saving and sharing features useful.
 
+For this purpose the following survey was put together consisting of seven questions:
+\begin{itemize}
+    \item How easy was the application to use? (1 - 10)
+    \item How visually appealing was the application? (1 - 10)
+    \item Did you understand that listening to an album saved it to a collection associated with your account? (Yes/No)
+    \begin{itemize}
+        \item If yes, how useful did you find the collection saving feature? (1 - 10)
+    \end{itemize}
+    \item Did you understand that you could share your album collection with other users and other users could share theirs with you? (Yes/No)
+    \begin{itemize}
+        \item If yes, how useful did you find the social features? (1 - 10)
+    \end{itemize}
+    \item Any extra comments? (Free text)
+\end{itemize}
+
+These questions cover the main objectives of the user interface and as such should provide a good indication of whether the objectives were met.
+
+\subsection{Code Quality}
 The last set of criteria, relating to good software development practices, are generally more objective and as such are more easily verifiable. For this the following tests were defined:
 \begin{itemize}
-    \item The codebase should maintain at least 95\% test coverage.
+    \item The codebase should maintain at least $95\%$ test coverage. This threshold is high enough it can guarantee much of the code is tested but not so high that it becomes difficult to maintain.
     \begin{description}
-        \item[Verification:] Run all test suites and verify the line coverage and branch coverage exceed 95\%.
+        \item[Verification:] Run all test suites and verify the line coverage and branch coverage exceed $95\%.$
     \end{description}
     \item All tests must pass successfully.
     \begin{description}
