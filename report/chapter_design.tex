@@ -5,11 +5,11 @@ Before initiating detailed design work, it was decided this project would be a w
 The system architecture defines the overall structure of the project and the communication between its components. For this project, two architectural approaches were considered: a monolithic architecture and a microservices-based architecture.
 
 \subsection{Monolithic}
-For this project, the monolithic approach offers several benefits. With all code centralised within a single framework, development is simplified, and debugging becomes more straightforward. Additionally, initial deployment is less complex since only one program needs to be managed once development is complete~\cite{9109514}.
+For this project, the monolithic approach offers several benefits. With all code centralised within a single framework, development is simplified, and debugging becomes more straightforward. Additionally, initial deployment is less complex since only one program needs to be managed once development is complete~\cite{9109514}. There exist many examples of a monolithic design in web applications such as Instagram, which as of 2025 is a monolith written in Python~\cite{InstagramMonolith}.
 
 However, the monolithic design has its drawbacks. As the system grows, maintaining a large, integrated codebase can become increasingly challenging; test suites may grow more complex and time-consuming to execute. During deployment, a single fault could potentially bring down the entire system, resulting in a complete loss of service. Similarly, even minor updates would require redeploying the entire monolith, increasing the risk of downtime. Moreover, this approach does not scale as effectively for web applications; as user demand increases, the need to redeploy the monolith frequently to manage higher request volumes becomes a significant concern~\cite{9109514}.
 
-Although the scope of this project is small and so the drawbacks of a monolithic approach would have minimal impact, it was determined that the project should be designed to be fully scalable. With the potential for future growth in features and user base, the limitations inherent in a monolithic architecture would eventually become a hindrance in this scenario. Consequently, the monolithic approach was ruled out in favour of a more scalable architectural model.
+Although the scope of this project is small and so the drawbacks of a monolithic approach would have minimal impact, it was determined that the project should be designed to be fully scalable. With the potential for future growth in features and user base, the limitations inherent in a monolithic architecture would eventually become a hindrance in this scenario. Consequently, the monolithic approach was ruled out in favour of a more scalable architectural model though it should be noted that a monolithic design is not inherently unscalable.
 
 \begin{figure} [H]
     \centering
@@ -19,9 +19,9 @@ Although the scope of this project is small and so the drawbacks of a monolithic
 \end{figure}
 
 \subsection{Microservices}
-The alternative approach examined was the use of microservices. In this architecture, the application's functionality is divided into separate services that communicate with each other using standardised protocols such as HTTP.\@
+The alternative approach examined was the use of microservices. In this architecture, the application's functionality is divided into separate services that communicate with each other using standardised protocols such as HTTP. This approach is used widely in modern web development, with one example being Netflix~\cite{NetflixMicroservices}.
 
-The primary benefits of this approach pertain to deployment and maintenance. Once deployed, the system can be scaled more efficiently—only those services experiencing high demand need to be replicated, which is significantly faster and more resource-efficient than scaling a monolithic system. Additionally, maintenance is simplified because each service operates independently; developers can focus on individual components without needing a comprehensive understanding of the entire system something that can become difficult even in small systems like this project.
+The primary benefits of this approach pertain to deployment and maintenance. Once deployed, the system can be scaled more efficiently, only those services experiencing high demand need to be replicated, which is significantly faster and more resource-efficient than scaling a monolithic system. Additionally, maintenance is simplified because each service operates independently; developers can focus on individual components without needing a comprehensive understanding of the entire system something that can become difficult even in small systems like this project.
 
 However, the increased complexity of managing multiple services means that initial deployment is more challenging. Configuring the different addresses for inter-service communication can prove to be difficult, and each service requires setup that would only need to be completed once for a monolith. Nonetheless, once this initial configuration is completed, development within a microservices architecture becomes as straightforward as working with a monolithic architecture.
 
@@ -236,15 +236,15 @@ For criteria relating to the user interface it is harder to be objective as the 
 
 For this purpose the following survey was put together consisting of seven questions:
 \begin{itemize}
-    \item How easy was the application to use? (1 - 10)
-    \item How visually appealing was the application? (1 - 10)
+    \item How easy was the application to use? ($1$ - $10$)
+    \item How visually appealing was the application? ($1$ - $10$)
     \item Did you understand that listening to an album saved it to a collection associated with your account? (Yes/No)
     \begin{itemize}
-        \item If yes, how useful did you find the collection saving feature? (1 - 10)
+        \item If yes, how useful did you find the collection saving feature? ($1$ - $10$)
     \end{itemize}
     \item Did you understand that you could share your album collection with other users and other users could share theirs with you? (Yes/No)
     \begin{itemize}
-        \item If yes, how useful did you find the social features? (1 - 10)
+        \item If yes, how useful did you find the social features? ($1$ - $10$)
     \end{itemize}
     \item Any extra comments? (Free text)
 \end{itemize}

@@ -7,7 +7,10 @@ These tests relate to the two primary feature tests set out in Section~\ref{sec:
 \subsection{Album Scanning}
 The album scanning mechanism consisted of two separate APIs, and the evaluation focuses on the accuracy of these two APIs as well as the effectiveness of the two methods used to identify albums, namely, using either the best guess from reverse image search results or extracted website titles.
 
-To conduct the evaluation, fifteen albums were tested, as listed in Appendix~\ref{apd:test_albums}. For each album, six images were used as is shown in Table~\ref{tab:image-evaluation-examples}.
+To conduct the evaluation, fifteen albums were tested. For each album, six images were used as is shown in Table~\ref{tab:image-evaluation-examples}.
+\ifshowappendix
+Each used album is listed in Appendix~\ref{apd:test_albums}.
+\fi
 
 \begin{table} [H]
     \centering
@@ -22,9 +25,9 @@ To conduct the evaluation, fifteen albums were tested, as listed in Appendix~\re
             \hline
             Normal & \includegraphics[width=2.5cm]{figures/test_albums/Reflektor.jpg} \\
             \hline
-            Rotated 90° & \includegraphics[width=2.5cm]{figures/test_albums/Reflektor_Rotated - 90.jpg} \\
+            Rotated $90$\textdegree & \includegraphics[width=2.5cm]{figures/test_albums/Reflektor_Rotated - 90.jpg} \\
             \hline
-            Rotated 180° & \includegraphics[width=2.5cm]{figures/test_albums/Reflektor_Rotated - 180.jpg} \\
+            Rotated $180$\textdegree & \includegraphics[width=2.5cm]{figures/test_albums/Reflektor_Rotated - 180.jpg} \\
             \hline
         \end{tabular}
     \end{subtable}
@@ -35,7 +38,7 @@ To conduct the evaluation, fifteen albums were tested, as listed in Appendix~\re
             \hline
             \textbf{Image Type} & \textbf{Example} \\
             \hline
-            Rotated 270° & \includegraphics[width=2.5cm]{figures/test_albums/Reflektor_Rotated - 270.jpg} \\
+            Rotated $270$\textdegree & \includegraphics[width=2.5cm]{figures/test_albums/Reflektor_Rotated - 270.jpg} \\
             \hline
             Blurred & \includegraphics[width=2.5cm]{figures/test_albums/Reflektor_Blurred.jpg} \\
             \hline
@@ -65,7 +68,7 @@ The results are split into two sets:
 
 \begin{figure} [H]
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/evaluation_graphs_ris.png}
+    \includegraphics[width=0.65\textwidth]{figures/evaluation_graphs_ris.png}
     \caption{Accuracy of Reverse Image Search}
     \label{fig:album-scanning-results-ris}
 \end{figure}
@@ -99,7 +102,7 @@ Despite the shortcomings of the reverse image search, the results indicate the s
 
 \begin{figure} [H]
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/evaluation_graphs_spotify.png}
+    \includegraphics[width=0.65\textwidth]{figures/evaluation_graphs_spotify.png}
     \caption{Accuracy of Spotify Search}
     \label{fig:album-scanning-results-spotify}
 \end{figure}
@@ -119,7 +122,7 @@ The primary limiting factor in the system's accuracy is the accuracy of the reve
 Since the Google reverse image search API is treated as a black box, direct improvements to its internal processing are not possible. This leaves only one option to improve its accuracy, input refinement. Two possible approaches include:
 
 \begin{itemize}
-    \item Pre-processing the image – Applying pre-processing techniques to remove backgrounds before passing the image to the API such as segmentation [TODO: Add reference to segmentation]
+    \item Pre-processing the image – Applying pre-processing techniques to remove backgrounds before passing the image to the API for example segmentation where the background of the image is removed automatically %[TODO: Add reference to segmentation potentially]
     \item User-assisted cropping – Prompting users to manually crop the image, ensuring only the album cover is submitted for identification
 \end{itemize}
 
@@ -128,22 +131,24 @@ Though these methods may improve accuracy, the first could introduce additional 
 It should also be noted that the sample size for testing was relatively small, with only fifteen albums evaluated. As a result, the accuracy figures obtained may not be fully representative of the system's performance on a larger and more diverse dataset. For example, it is likely less popular albums are less likely to be identified, and more popular albums are more likely to be identified. Testing with a broader selection of albums would be necessary to obtain a more comprehensive assessment of the system’s accuracy and limitations.
 
 \subsection{Album Playback}
-This test aimed to verify that the music playback functionality operated as intended. The most effective approach was to evaluate the application from a user perspective, simulating real-world usage by using it to listen to whole albums, ensuring that playback functioned correctly. Testing was conducted using a subset of five of the albums listed in Appendix~\ref{apd:test_albums}.
+This test aimed to verify that the music playback functionality operated as intended. The most effective approach was to evaluate the application from a user perspective, simulating real-world usage by using it to listen to whole albums, ensuring that playback functioned correctly.
+\ifshowappendix
+Testing was conducted using a subset of five of the albums listed in Appendix~\ref{apd:test_albums}.
+\fi
 
 \subsubsection{Results}
 The results of this test were entirely positive. All selected albums played from start to finish without issues. Additionally, the music controls, including play, pause, and skip—functioned as expected, and album artwork and track information were displayed correctly throughout playback as the tracks changed.
 
 \section{User Interface}
-The user interface was tested using user feedback in the form of a short survey to be completed after a user had used the application. [TODO: Create survey]
+The survey described in Section~\ref{sec:test-design} was used to evaluate the user interface. In total [TODO: Add number] participants completed the survey.
+
+\subsection{Results}
+[TODO: Add results from survey]
 
 \subsection{Participants}
 Ideally, the user interface evaluation would have been conducted with a large and diverse user base to gather feedback from individuals with varying levels of technical expertise. However, this was beyond the scope of the current evaluation, and instead, a smaller sample group was used.
 
 It is important to acknowledge the potential biases in the participant selection. The sample group consisted primarily of friends and family, many of whom were computer science students. As a result, the participants may have been more familiar with the technology than the average user and could also have been predisposed to providing more favourable reviews as not to disappoint the creator of the application. Because of this, while the survey provides useful insights, the findings may not be fully representative of a broader user base.
-
-\subsection{Results}
-[TODO: Add results from survey]
-
 
 \section{Development Practices}
 The development practices were evaluated based on the tests set out in Section~\ref{sec:test-design}. A pass was defined as meeting the verification specified.
@@ -170,10 +175,16 @@ Test coverage was measured using pytest-cov for the backend and Vitest for the f
 The backend achieved full coverage with all lines and branches tested. The frontend achieved $95\%$ coverage, which whilst meeting the target is likely a result of the inexperience of the developer in frontend development with many changes needed even after the tests were originally defined.
 
 Code coverage though did cover all important aspects of the application and as such can be considered a success.
+\ifshowappendix
+A full list of the tests can be found in Appendix~\ref{apd:testcases}.
+\fi
 
 \subsection{Code Quality}
-For code quality the goals of enabling formatting and linting were met using pre-commit hooks. This meant all code on the repository was correctly formatted and linted. This approach was effective for a single developer but in hindsight, since this requires all developers to install the hooks, if this project were to be developed by a team it would have been a superior approach to confirm these rules had been met in actions on pull requests, forcing the developer to comply before merging.
+The code quality objectives of enforcing formatting and linting were successfully achieved through the use of pre-commit hooks. This ensured that all code committed to the repository adhered to established formatting and linting rules.
 
-\subsection{Automated Deployment}
+Though this approach was effective for a single developer, in hindsight, it may not have been ideal for team-based development because pre-commit hooks require each developer to manually install them. A much more robust approach would have been to enforce these rules using GitHub Actions that run on pull requests. This could either format the code itself or reject the pull request if the code did not meet the required standards, forcing the developer to run the formatting and linting tools locally before pushing their changes achieving the same goal as the pre-commit hooks.
 
-\subsection{Automated Dependency Management}
+\subsection{Automated Deployment and Dependency Management}
+The automated deployment process was successfully implemented. Once configured on Google Cloud Run, the application could be rebuilt and deployed automatically whenever a new tag was pushed to the repository.
+
+Similarly, automated dependency management was effectively set up using Dependabot, with checks for updates running every week. Over the course of development, $110$ pull requests were generated for dependency updates, with only three requiring manual intervention, primarily due to breaking changes. It is of note that none of the changes that passed all tests actually resulted in breaking changes to the application, suggesting that the testing system in place was effective in verifying functionality after each update.
