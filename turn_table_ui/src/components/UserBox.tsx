@@ -46,12 +46,12 @@ const UserBox = () => {
 	const { BFFToken } = useBFFToken();
 
 	const deleteAccount = async () => {
-		if (!username) {
+		if (!username || !BFFToken) {
 			showError("No user logged in");
 			return;
 		}
 		clearStateData();
-		return await DeleteUser(username);
+		return await DeleteUser(BFFToken);
 	};
 
 	useEffect(() => {
@@ -98,8 +98,8 @@ const UserBox = () => {
 						if (key === "logout") {
 							logout();
 						} else if (key === "togglePublic") {
-							if (username) {
-								ToggleCollectionPublic(username).then(() => {
+							if (BFFToken) {
+								ToggleCollectionPublic(BFFToken).then(() => {
 									// Set the state to the opposite of the current state
 									setIsCollectionPublic(!isCollectionPublic);
 									showSuccess(

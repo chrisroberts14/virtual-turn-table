@@ -4,13 +4,10 @@ import axios from "axios";
 const ShareCollection = async (authToken: string, receiver: string) => {
 	return await axios
 		.post(
-			shareCollection,
-			{
-				receiver: receiver,
-			},
+			`${shareCollection}?receiver=${receiver}`,
+			{},
 			{
 				headers: {
-					"Content-Type": "application/json",
 					Authorization: `Bearer ${authToken}`,
 				},
 			},

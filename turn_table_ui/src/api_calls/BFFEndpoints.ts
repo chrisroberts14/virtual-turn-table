@@ -17,6 +17,6 @@ export const getUserAlbums = `http://${bff}/user/get_user_albums`;
 export const getUsersBySearch = `http://${bff}/user/search`;
 export const imageToAlbum = `http://${bff}/image_search/image_to_album/`;
 export const playTrack = `http://${bff}/music/play_track/`;
-export const shareCollection = `http://${bff}/social/share_collection/`;
+export const shareCollection = `http://${bff}/social/share_collection`;
 export const toggleCollectionPublic = `http://${bff}/social/toggle_collection_public`;
 export const userInfo = `http://${bff}/user/get_user_info`;
