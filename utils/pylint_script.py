@@ -14,6 +14,8 @@ def main():
     if sys.platform == "win32":
         cmd = (r".venv\Scripts\pylint.exe", *sys.argv[1:])
     else:
+        # Add the path to the vtt file to the path
+        sys.path.append("~/Desktop/TYP/virtual-turn-table")
         cmd = (".venv/bin/pylint", *sys.argv[1:])
     return subprocess.call(cmd)
 

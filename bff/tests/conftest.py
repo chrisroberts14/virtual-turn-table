@@ -11,6 +11,19 @@ from bff.social import get_albums
 from bff.auth import verify_token
 
 
+pytestmark = pytest.mark.anyio
+
+
+@pytest.fixture
+def anyio_backend():
+    """
+    Fixture for the anyio backend.
+
+    :return:
+    """
+    return "asyncio"
+
+
 def override_verify_token():
     """Override the verify token function."""
     return {"user": {"username": "test_client", "spotify_access_token": "test_token"}}
