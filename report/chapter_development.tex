@@ -23,7 +23,6 @@ An oversight in the original design was the lack of a landing page which is pres
     \label{fig:landing_page}
 \end{figure}
 
-
 \subsubsection{Navigation Bar}
 The navigation bar is a component included on all screens which allows the user to navigate between the different screens of the application. It consists of a static logo, screen selection tabs, and user details. The user details also serves as a dropdown trigger which displays a menu, as seen in Figure~\ref{fig:user_options_menu}, with account options such as setting their collection to public, sharing their collection with a certain user, deleting their account, and logging out.
 
@@ -151,6 +150,9 @@ This issue was partially solved through the use of dotenv files, which allowed e
 \paragraph{Spotify API Changes}
 Midway through development, Spotify updated their authentication flow to require HTTPS for redirect URLs, disabling non-HTTPS redirects~\cite{spotifyredirects}. The cloud deployment was unaffected, as it already used HTTPS. However, the development environment did not, breaking the authentication flow when running locally. Fortunately, there was an easy fix, the services were just launched using self-signed SSL certificates. Though the impact on the project was small this change highlights the risks of relying on external services and the potential for breaking changes.
 
+\paragraph{Maintaining State Between Refreshes}
+The local state of the frontend is managed through variables that are reset upon page refreshes. As a result, if a user refreshes the page or closes the browser and reopens it, the session is lost, requiring them to go through the process of logging in and selecting or scanning an album. This issue was solved via state persistence, implemented using the browser's local storage. When the application initialises, it attempts to retrieve stored session data. If valid data is found, the session is restored, allowing the user to continue from where they left off. Meaning if a user refreshes the page while listening to an album, they are returned to the play screen with the same album and song still playing.
+
 \section{Backend}~\label{sec:backend-development}
 \subsection{Implementation}
 Each backend service followed a similar implementation structure, consisting of a FastAPI application responsible for serving API endpoints. Depending on the service's functionality, it could also establish WebSocket connections or interact with a database.
@@ -199,6 +201,8 @@ The Image-to-Album Service was the simplest of the three backend services, consi
 This service was completely stateless, and as such it did not require persistent data storage between requests.
 
 The image processing functionality was implemented using the best guess functionality of the Google Reverse Image Search API. This guess would then be run through the Spotify search API which would return an album which would be displayed to the user. The scatter shot approach used separate data from the same reverse image search. It would instead look at the websites matches to the image were found on and use the title of the page as a search term. This proved to be effective because music albums are often the subject of reviews and sales pages which would contain the album title.
+
+
 
 \subsubsection{Security}~\label{sec:backend-security}
 Security measures were implemented differently across the three backend services to ensure proper control over data access.
