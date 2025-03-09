@@ -7,6 +7,7 @@ import { useError } from "@/contexts/ErrorContext";
 import { useUsername } from "@/contexts/UsernameContext";
 import useResizeHandler from "@/hooks/UseResizeHandler";
 import type { Collection } from "@/interfaces/Collection";
+import eventEmitter from "@/utils/EventEmitter";
 import { Button } from "@heroui/button";
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { Skeleton } from "@heroui/skeleton";
@@ -48,6 +49,12 @@ const SocialPage = () => {
 		});
 		fetchSharedCollections().catch(() => {
 			showError("Failed to fetch shared collections");
+		});
+
+		eventEmitter.on("refresh-social", () => {
+			fetchSharedCollections().catch(() => {
+				showError("Failed to fetch shared collections");
+			});
 		});
 	}, [BFFToken, username, showError]);
 

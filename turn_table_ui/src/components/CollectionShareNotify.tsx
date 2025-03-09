@@ -5,6 +5,7 @@ import { useBFFToken } from "@/contexts/BFFTokenContext.ts";
 import { CollectionShareConfirmContext } from "@/contexts/CollectionShareConfirmContext";
 import { useUsername } from "@/contexts/UsernameContext";
 import type Notification from "@/interfaces/Notification";
+import eventEmitter from "@/utils/EventEmitter";
 import { Tooltip } from "@heroui/tooltip";
 import { useEffect, useState } from "react";
 
@@ -38,8 +39,8 @@ const CollectionShareNotify = () => {
 					setNotifications([...notifications, data as Notification]);
 				}
 				if (data.success) {
-					// Show a success message
-					console.log("Success!");
+					// Create an event that will cause a refresh of the social page
+					eventEmitter.emit("refresh-social");
 				}
 			};
 		}
