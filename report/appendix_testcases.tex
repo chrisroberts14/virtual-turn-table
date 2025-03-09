@@ -1,5 +1,277 @@
 \chapter{Appendix 1: Testcases} \label{apd:testcases}
 
 \section{Frontend Testcases} \label{sec:frontend_testcases}
+\begin{multicols}{1}
+    \begin{itemize}
+        \item App - should render without being logged inApp - should render with being logged in
+\item Add album routine - runs
+\item Add album routine - throws an error when it fails
+\item Auth routine - runs
+\item Auth routine - throws an error when it fails
+\item CreateUser - runs
+\item CreateUser - throws an error when it fails
+\item CreateUser - throws an error when it fails
+\item DeleteUser - should run
+\item DeleteUser - should throw an error when it fails
+\item DeleteUser - should throw an error when it fails
+\item GetAlbumDetails - should return album details
+\item GetAlbumDetails - should throw an axios error when it fails
+\item GetAlbumDetails - should throw an non axios error when it fails
+\item GetIsCollectionPublic - should return isCollectionPublic
+\item GetIsCollectionPublic - should throw an axios error when it fails
+\item GetIsCollectionPublic - should throw an non axios error when it fails
+\item GetNotifications - should call the endpoint and return the data
+\item GetNotifications - should throw an error when it fails
+\item GetNotifications - should throw an error when it fails
+\item GetPublicCollections - should return public collections
+\item GetPublicCollections - should throw an axios error when it fails
+\item GetPublicCollections - should throw an non axios error when it fails
+\item GetSharedCollections - should return public collections
+\item GetSharedCollections - should throw an axios error when it fails
+\item GetSharedCollections - should throw an non axios error when it fails
+\item GetUserAlbums - should return data
+\item GetUserAlbums - should throw an axios error when it fails
+\item GetUserAlbums - should throw a non axios error when it fails
+\item GetUserInfo - should return data
+\item GetUserInfo - should throw an axios error when it fails
+\item GetUserInfo - should throw a non axios error when it fails
+\item GetUsersBySearch - should return users
+\item GetUsersBySearch - should throw an axios error when it fails
+\item GetUsersBySearch - should throw an non axios error when it fails
+\item ImageToAlbum - should return data
+\item ImageToAlbum - should throw an axios error when it fails
+\item ImageToAlbum - should throw a non axios error when it fails
+\item PlayTrack - should call axios.post with the correct parameters
+\item PlayTrack - should throw an error if fails
+\item PlayerSetup - should handle player going offline
+\item PlayerSetup - should handle failed connection gracefully
+\item PlayerSetup - should throw error if success is false
+\item PlayerSetup - player state changed event should update track position
+\item ShareCollection - should share collection
+\item ShareCollection - should throw an error when it fails
+\item ToggleCollectionPublic - should return the new value
+\item ToggleCollectionPublic - should throw an error when it fails
+\item UploadFile - should set the scanned album
+\item UploadFile - should throw an error if fails
+\item AlbumCollectionDisplay - should render and set correct values
+\item AlbumCollectionDisplay - should call setCurrentAlbum when an album is clicked
+\item AlbumCollectionDisplay - should set hovered album when an album is hovered
+\item AlbumCollectionDisplay - should call showError when GetUserAlbums fails
+\item AlbumCollectionDisplay - should render if a collection was passed in
+\item AlbumCollectionDisplay - should run the userAlbumUpdate method if albumAdded event is called
+\item AlbumConfirm - should render
+\item AlbumConfirm - should set the correct values when confirmAlbum is called
+\item AlbumConfirm - should put an error in the console if the album was failed to be added to the users collection
+\item AlbumConfirm - should set buttonsDisabled to true when scannedAlbum is set to null
+\item AlbumDisplay - should render
+\item AlbumHistorySelector - should render with no hovered album
+\item AlbumHistorySelector - should render with hovered album
+\item CollectionPreviewHorizontal - renders correctly
+\item ErrorDisplay - should show a message if error is defined
+\item ErrorDisplay - should not show a message if error is not defined
+\item ErrorDisplay - should call clearError when the close button is clicked
+\item ImageCapture upload - should render when no cameras are found
+\item ImageCapture camera - should render when cameras are found
+\item ImageCapture camera - should get album when capture is done
+\item ImageCapture camera - should render with image
+\item ImageCapture camera - should show an error if the screenshot fails
+\item ImageCapture camera - should show an error if the image to album call fails
+\item ImageCapture camera - should switch camera
+\item Login - should redirect
+\item MusicPlayer - should render
+\item MusicPlayer - should render with current album
+\item MusicPlayer - should render with current album and player
+\item MusicPlayer - should output an error if the player setup fails
+\item Navigation Bar - renders the navigation bar with the logo and title
+\item Navigation Bar - renders Play and Scan tabs
+\item Navigation Bar - calls setCurrentPage when a tab is clicked
+\item Navigation Bar - renders UserBox when signed in, otherwise renders Login
+\item ScanPage - should render correctly
+\item ShareModal - should render ShareModal
+\item ShareModal - on close should set isOpen to false and clear input value
+\item ShareModal - should call showError if share collection fails
+\item SocialPage - should render
+\item SocialPage - should with no collections
+\item SocialPage - should not render the current user's collections
+\item SocialPage - should not fetch collections if token or username is not present
+\item SocialPage - should show error if fetching collections fails
+\item SocialPage - should render public collections even if current user is in them
+\item SongControls - should render
+\item SongControls - should call togglePlayPause when the play/pause button is clicked
+\item SongControls - should call nextSong when the next track button is clicked
+\item SongControls - should call prevSong when the previous track button is clicked
+\item SongDetails - should render
+\item SongList - should render
+\item SongList - should update the song if item is clicked
+\item SongList - should update the song if item is un-clicked
+\item SoundWave - should render
+\item SoundWave - should resize the number of bars when the window is resized
+\item SoundWave - should update the bars every 300ms
+\item SpinningVinyl - renders
+\item Top10Select - should render
+\item Top10Select - should close when album is clicked
+\item TrackScrubber - renders a slider
+\item Upload - should render
+\item Upload - should correctly upload a file
+\item Upload - should show an error if the upload fails
+\item UserBox - renders the user info when GetUserInfo returns valid data
+\item UserBox - should logout when logout button is clicked
+\item VolumeScrubber - should render
+\item useAlbumSelection - should provide context value when used within AlbumSelectionProvider
+\item useAlbumSelection - should throw an error when used outside AlbumSelectionProvider
+\item useCapture - should provide context value when used within AlbumSelectionProvider
+\item useCapture - should throw an error when used outside upload
+\item useCapture - should show error message
+\item useCapture - should clear error message
+\item useCapture - should clear the error after 5000ms
+\item useMusic - should provide context value when used within MusicProvider
+\item useMusic - should throw an error when used outside MusicProvider
+\item useNavigation - should provide context value when used within NavigationProvider
+\item useNavigation - should throw an error when used outside NavigationProvider
+\item SongControlContext - should provide context values when used in a SongControl context
+\item SongControlContext - should throw an error when used outside a SongControl context
+\item SpotifyTokenContext - should provide context values when used in a SpotifyToken context
+\item SpotifyTokenContext - should throw an error when used outside a SpotifyToken context
+\item useCapture - should provide context value when used within UploadContext Provider
+\item useCapture - should throw an error when used outside upload
+\item UsernameContext - should provide context values when used in a Username context
+\item UsernameContext - should throw an error when used outside a Username context
+\item UseApp - should initialise properly when not logged in
+\item UseApp - should initialise properly when logged in with valid token
+\item UseApp - should initialise properly when params are supplied in the URL
+\item UseApp - should initialise properly when the session has expired
+\item UseApp - should move to play page when currentAlbum is changed
+\item UseMusicPlayer - should initialise with album data
+\item UseMusicPlayer - should initialise without album data
+\item UseMusicPlayer - should create the player on render
+\item UseMusicPlayer - should log and error if creating the player fails on render
+\item UseMusicPlayer - should update the songs when the current album changes
+\item UseMusicPlayer - should update next song when the current song changes
+\item UseMusicPlayer - should set the next song to null if the current song is the last song on the album
+\item UseMusicPlayer - should show an error if the play track call fails
+\item UseUserBox - should return a user box
+\item UseUserBox - should clear state data on logout
+\item UseUserBox - should update on setUsername change
+\item UseUserBox - should logout if GetUserInfo fails
+\item StateData - should store the data if there is no old state
+\item StateData - should merge the new state with the old state
+\item StateData - should return the state data
+\item StateData - should return null if no data is stored
+\item StateData - should clear the state data
+\item getScreenShot - should return the screenshot
+\item getScreenShot - should return undefined if webcam.current is undefined
+    \end{itemize}
+\end{multicols}
 
 \section{Backend Testcases} \label{sec:backend_testcases}
+\subsubsection{BFF}
+\begin{multicols}{2}
+    \begin{itemize}
+        \item test\_get\_token
+        \item test\_failed\_verification
+        \item test\_verify\_token
+        \item test\_verify\_token\_invalid
+        \item test\_docs\_redirect
+        \item test\_check\_health
+        \item test\_get\_album\_details
+        \item test\_get\_album\_failed\_search
+        \item test\_image\_to\_uri
+        \item test\_failed\_image\_search
+        \item test\_failed\_album\_search
+        \item test\_play\_track
+        \item test\_play\_track\_fails
+        \item test\_play\_track\_no\_device\_id
+        \item test\_get\_public\_collections\_bad\_spotify
+        \item test\_get\_public\_collections
+        \item test\_get\_public\_collections\_failed\_user\_data
+        \item test\_get\_shared\_collections
+        \item test\_get\_shared\_collections\_empty\_albums
+        \item test\_get\_shared\_collections\_failed\_user\_data
+        \item test\_get\_shared\_collections\_bad\_spotify
+        \item test\_share\_collection
+        \item test\_share\_collection\_failed
+        \item test\_share\_collection
+        \item test\_share\_collection\_failed
+        \item test\_receive\_message[true]
+        \item test\_receive\_message[false]
+        \item test\_receive\_message\_bad\_request[true]
+        \item test\_receive\_message\_bad\_request[false]
+        \item test\_get\_user\_info
+        \item test\_user\_info\_bad\_token
+        \item test\_get\_user\_info\_failed
+        \item test\_get\_user\_not\_in\_db
+        \item test\_create\_user
+        \item test\_create\_user\_failed
+        \item test\_add\_album
+        \item test\_add\_album\_creation\_failed
+        \item test\_add\_album\_link\_failed
+        \item test\_get\_user\_albums
+        \item test\_get\_user\_albums\_bad\_request
+        \item test\_get\_user\_albums\_not\_public\_not\_shared
+        \item test\_get\_user\_albums\_fail\_public\_collection
+        \item test\_get\_user\_albums\_fail\_get\_shared\_collections
+        \item test\_get\_users\_by\_search
+        \item test\_get\_users\_by\_search\_bad\_request
+        \item test\_get\_notifications
+        \item test\_get\_notifications\_bad\_request
+        \item test\_delete\_user
+        \item test\_delete\_user\_bad\_request
+        \item test\_is\_collection\_public
+        \item test\_is\_collection\_public\_bad\_request
+    \end{itemize}
+\end{multicols}
+
+\subsubsection{Image To Album}
+\begin{multicols}{2}
+    \begin{itemize}
+        \item test\_docs\_redirect
+        \item test\_check\_health
+        \item test\_reverse\_image\_search
+        \item test\_bad\_file\_type
+        \item test\_spotify\_search
+        \item test\_spotify\_search\_bad\_response\_token
+        \item test\_spotify\_search\_bad\_search
+        \item test\_spotify\_search\_bad\_album\_get
+        \item test\_spotify\_search\_no\_album
+    \end{itemize}
+\end{multicols}
+
+\subsubsection{User Data}
+\begin{multicols}{2}
+    \begin{itemize}
+        \item test\_get\_public\_collections
+        \item test\_get\_shared\_collections
+        \item test\_get\_shared\_collections\_bad\_user
+        \item test\_share\_collection
+        \item test\_share\_collection\_same\_user
+        \item test\_share\_collection\_no\_albums
+        \item test\_share\_collection\_bad\_sharer
+        \item test\_share\_collection\_bad\_receiver
+        \item test\_make\_collection\_public
+        \item test\_make\_collection\_public\_bad\_user
+        \item test\_share\_reject
+        \item test\_share\_reject\_bad\_notification
+        \item test\_share\_accept
+        \item test\_share\_accept\_bad\_notification
+        \item test\_docs\_redirect
+        \item test\_check\_health
+        \item test\_get\_user\_albums
+        \item test\_get\_user\_albums\_no\_user
+        \item test\_create\_user
+        \item test\_create\_user\_already\_exists
+        \item test\_create\_user\_new\_image
+        \item test\_create\_album
+        \item test\_create\_album\_exists
+        \item test\_create\_album\_link
+        \item test\_create\_album\_link\_no\_user
+        \item test\_create\_album\_link\_no\_album
+        \item test\_create\_album\_link\_already\_exists
+        \item test\_is\_collection\_public
+        \item test\_is\_collection\_public\_no\_user
+        \item test\_get\_users\_by\_search
+        \item test\_get\_notifications
+        \item test\_get\_notifications\_no\_user
+        \item test\_delete\_user
+        \item test\_delete\_user\_no\_user
+    \end{itemize}
+\end{multicols}

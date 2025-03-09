@@ -52,8 +52,9 @@ def main():
     :return:
     """
     # Create ten users
-    create_user_endpoint = "http://localhost:8000/user/create_user"
-    add_album_link_endpoint = "http://localhost:8000/user/add_album"
+    create_user_endpoint = "http://localhost:8002/user/create_user"
+    create_album_endpoint = "http://localhost:8002/user/create_album/{}"
+    add_album_link_endpoint = "http://localhost:8002/user/add_album_link"
     for i in range(10):
         username = f"test-user-{i}"
         user = {"username": username, "image_url": ""}
@@ -64,7 +65,7 @@ def main():
         # Set the first 5 users to have public collections
         if i < 5:
             response = requests.put(
-                f"http://localhost:8000/social/toggle_collection_public/{username}",
+                f"http://localhost:8002/social/toggle_collection_public/{username}",
                 timeout=5,
             )
             if response.status_code != 200:
@@ -73,6 +74,11 @@ def main():
         # Add five albums for each user
         five_albums = random.sample(album_ids, 5)
         for album_id in five_albums:
+            # Create the album
+            response = requests.post(create_album_endpoint.format(album_id), timeout=5)
+            if response.status_code != 201:
+                print("Failed to create album")
+                return 1
             data = {"album_uri": album_id, "user_id": username}
             response = requests.post(add_album_link_endpoint, json=data, timeout=5)
             if response.status_code != 201:

@@ -14,7 +14,8 @@ import { useState } from "react";
 const Upload: React.FC<{
 	triggerConfirmSlide: () => void;
 	setTop10: Dispatch<SetStateAction<Album[]>>;
-}> = ({ triggerConfirmSlide, setTop10 }) => {
+	closeConfirmSlide: () => void;
+}> = ({ triggerConfirmSlide, setTop10, closeConfirmSlide }) => {
 	const [file, setFile] = useState<File | null>(null);
 	const [fileImage, setFileImage] = useState<string | null>(null);
 	const { showError } = useError();
@@ -27,9 +28,14 @@ const Upload: React.FC<{
 			if (!fadeConfirm) {
 				triggerConfirmSlide();
 			}
-			await UploadFile(file, setScannedAlbum, setTop10).catch((error) => {
-				showError(error.message);
-			});
+			try {
+				await UploadFile(file, setScannedAlbum, setTop10);
+			} catch (error) {
+				showError("Upload failed");
+				setTimeout(() => {
+					closeConfirmSlide();
+				}, 1000);
+			}
 		}
 		setIsUploading(false);
 	};
@@ -61,7 +67,11 @@ const Upload: React.FC<{
 					</CardHeader>
 					<Divider />
 					<CardBody>
-						{fileImage && <Image src={fileImage} alt="Uploaded Image" />}
+						<div className="flex justify-center">
+							{fileImage && (
+								<Image src={fileImage} alt="Uploaded Image" className="h-60" />
+							)}
+						</div>
 					</CardBody>
 					<Divider />
 					<CardFooter className="justify-center">

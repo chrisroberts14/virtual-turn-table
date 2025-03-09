@@ -3,6 +3,10 @@
 % Change the MSc option to MPhil, MRes or PhD if appropriate
 % Add 'anon' to the above options to replace your name with your student ID
 
+% Change the line below to true if you want appendices to be shown
+\newif\ifshowappendix
+\showappendixtrue
+
 \usepackage{verbatim}
 \usepackage{graphicx}
 \usepackage{url} % typeset URL's reasonably
@@ -10,6 +14,9 @@
 \usepackage{caption} % Extra modifications for captions
 \usepackage{float}
 \usepackage{subcaption}
+\usepackage{array}
+\usepackage{gensymb}
+\usepackage{multicol}
 
 \usepackage{pslatex} % Use Postscript fonts
 
@@ -44,7 +51,7 @@
 % Uncomment the following lines to leave out list of figures, tables
 % and copyright until final printing
 %\figurespagefalse
-\tablespagefalse
+%\tablespagefalse
 %\copyrightfalse
 
 \title{A Virtual Turntable Web Application}
@@ -82,11 +89,14 @@ I would like to thank my family and friends for their unconditional support duri
 %% University regulations simply require that your citation style be consistent, so see what style
 %% your supervisor recommends.
 
+\ifshowappendix
 % Appendices start here
 
 \appendix
 %\include{appendix_testcases}
 %\include{appendix_fe_comps}
 %\include{appendix_backend_endpoints}
+\include{appendix_test_albums}
+\fi
 
 \end{document}

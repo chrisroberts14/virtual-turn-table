@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import AddAlbum from "../../src/api_calls/AddAlbum";
 import Top10Select from "../../src/components/Top10Select";
+import { useBFFToken } from "../../src/contexts/BFFTokenContext";
 import { useMusic } from "../../src/contexts/MusicContext";
 import { useUpload } from "../../src/contexts/UploadContext";
 import { useUsername } from "../../src/contexts/UsernameContext";
@@ -12,6 +13,7 @@ vi.mock("../../src/contexts/UploadContext");
 vi.mock("../../src/contexts/UsernameContext");
 vi.mock("../../src/contexts/MusicContext");
 vi.mock("../../src/api_calls/AddAlbum");
+vi.mock("../../src/contexts/BFFTokenContext");
 
 const album: Album = {
 	title: "title",
@@ -49,6 +51,11 @@ describe("Top10Select", () => {
 
 		// @ts-ignore
 		(AddAlbum as vi.mock).mockReturnValue(Promise.resolve());
+
+		// @ts-ignore
+		(useBFFToken as vi.mock).mockReturnValue({
+			BFFToken: "BFFToken",
+		});
 	});
 
 	afterEach(() => {

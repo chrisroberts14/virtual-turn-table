@@ -14,7 +14,7 @@ Once the authentication was implemented, the remaining backend API endpoints wer
 Once the authentication was implemented, all remaining endpoint calls were implemented as functions that can be imported and run by any component. This was done using the Axios library, which though not a native JavaScript library, is widely used and well documented which made it easy to implement.
 
 \subsubsection{Landing Page}
-An oversight in the original design was the lack of a landing page which is presented to users before logging. The page follows the stylings of the application and contains graphics and text related to the application. Once the user logs in they are redirected to the scan screen.
+An oversight in the original design was the lack of a landing page which is presented to users before logging. The page follows the stylings of the application and contains graphics and text related to the application. Once the user logs the page is redirected to the scan screen. A landing page also gives the chance to give a brief overview of the application and its features as well as add visually appealing graphics which might improve the user's impression of the application.
 
 \begin{figure} [H]
     \centering
@@ -22,7 +22,6 @@ An oversight in the original design was the lack of a landing page which is pres
     \caption{The landing page of the application}
     \label{fig:landing_page}
 \end{figure}
-
 
 \subsubsection{Navigation Bar}
 The navigation bar is a component included on all screens which allows the user to navigate between the different screens of the application. It consists of a static logo, screen selection tabs, and user details. The user details also serves as a dropdown trigger which displays a menu, as seen in Figure~\ref{fig:user_options_menu}, with account options such as setting their collection to public, sharing their collection with a certain user, deleting their account, and logging out.
@@ -111,7 +110,7 @@ The social screen had the most significant changes from the original design. Ini
 
 The final design was inspired by the experience of flicking through vinyl records in a record store. Each user's collection is displayed within a grid, where albums pop up and down at random intervals. This approach allows a greater number of collections to be visible simultaneously without overwhelming the user.
 
-To enhance usability further, additional collections can be loaded incrementally by clicking the Load More button at the bottom of the screen. Users can also explore collections in greater detail by selecting them. This means the user is presented with information as they want it which was a vast improvement over the original design.
+To enhance usability further, additional collections can be loaded incrementally by clicking the Load More button at the bottom of the screen. Users can also explore collections in greater detail by selecting them. This means the user is presented with information as it is wanted which was a vast improvement over the original design which filled the screen with too much information for the user to process.
 
 \begin{figure} [H]
     \centering
@@ -121,7 +120,7 @@ To enhance usability further, additional collections can be loaded incrementally
 \end{figure}
 
 \subsection{Automated Testing}
-Automated testing of the frontend was carried out using Vitest, a testing framework designed for projects built with the Vite build system. A test driven development (TDD) approach was adopted, where test cases were written for each component before the implementation is written. These tests defined the expected functionality of the component, ensuring that development aligned with predefined functionality. The minimum amount of code is then written to pass these tests and then further refactoring is made to the resulting component to improve it. In some cases, test cases themselves required refinement, as unexpected problems necessitated changes in approach for developing specific components. This approach ensured that components did in fact carry out the functionality they were meant to and could be reliably tested in isolation.
+Automated testing of the frontend was carried out using Vitest~\cite{Vitest}, a testing framework designed for projects built with the Vite build system. A test driven development (TDD) approach was adopted, where test cases were written for each component before the implementation is written. These tests defined the expected functionality of the component, ensuring that development aligned with predefined functionality. The minimum amount of code is then written to pass these tests and then further refactoring is made to the resulting component to improve it. In some cases, test cases themselves required refinement, as unexpected problems necessitated changes in approach for developing specific components. This approach ensured that components did in fact carry out the intended functionality and could be reliably tested in isolation.
 
 The goal for automated testing was to achieve $95\%$ test coverage, which would ensure a high level of confidence in the application's functionality. To enforce this, a GitHub Action was configured to run tests on every pull request and push onto the main branch of the repository. The build process was set to fail if test coverage dropped below $95\%$ or if any test case failed ensuring these objectives were met.
 
@@ -138,7 +137,7 @@ The build of the application itself was straightforward once dependencies are in
 \subsection{Dependency Management}
 Frontend dependencies were managed using Node Package Manager (NPM). As new dependencies were installed, a JSON file within the repository was updated to record the package names and their versions. From this file any developer using NPM could install all required dependencies with a single command.
 
-To maintain up-to-date and secure dependencies, Dependabot, a service provided by GitHub, was integrated into the repository. Dependabot automatically scanned the dependency file at predefined intervals (e.g., weekly or monthly) and generated pull requests for available updates. This approach ensured that security vulnerabilities were patched and keeps all dependencies at their latest versions, so the application would not run using deprecated dependencies.
+To maintain up-to-date and secure dependencies, Dependabot, a service provided by GitHub, was integrated into the repository. Dependabot automatically scanned the dependency file at predefined intervals (e.g. weekly or monthly) and generated pull requests for available updates. This approach ensured that security vulnerabilities were patched and keeps all dependencies at their latest versions, so the application would not run using deprecated dependencies.
 
 The automated testing provided a mechanism to verify whether updated dependencies introduced breaking changes without manual intervention.
 
@@ -146,10 +145,13 @@ The automated testing provided a mechanism to verify whether updated dependencie
 \paragraph{Environment}
 The biggest challenge in frontend development was managing environment variables across different deployment environments. For instance, the BFF URL varied between the development environment, the Docker Compose environment, and the production environment.
 
-This issue was partially solved through the use of dotenv files, which allowed environment variables to be defined in a file and automatically loaded into the application. However, since these files often contained sensitive information, such as API secret keys, they could not be committed to version control and instead had to be managed manually. Despite this limitation, once the dotenv files were properly set up, the approach functioned reliably across deployments.
+This issue was partially solved through the use of dotenv files, which allowed environment variables to be defined in a file and automatically loaded into the application. However, since these files often contained sensitive information, such as API secret keys, committing to version control was not an option and so instead the files had to be managed manually. Despite this limitation, once the dotenv files were properly set up, the approach functioned reliably across deployments.
 
 \paragraph{Spotify API Changes}
+Midway through development, Spotify updated their authentication flow to require HTTPS for redirect URLs, disabling non-HTTPS redirects~\cite{spotifyredirects}. The cloud deployment was unaffected, as it already used HTTPS. However, the development environment did not, breaking the authentication flow when running locally. Fortunately, there was an easy fix, the services were just launched using self-signed SSL certificates. Though the impact on the project was small this change highlights the risks of relying on external services and the potential for breaking changes.
 
+\paragraph{Maintaining State Between Refreshes}
+The local state of the frontend is managed through variables that are reset upon page refreshes. As a result, if a user refreshes the page or closes the browser and reopens it, the session is lost, requiring them to go through the process of logging in and selecting or scanning an album. This issue was solved via state persistence, implemented using the browser's local storage. When the application initialises, it attempts to retrieve stored session data. If valid data is found, the session is restored, allowing the user to continue from where they left off. Meaning if a user refreshes the page while listening to an album, they are returned to the play screen with the same album and song still playing.
 
 \section{Backend}~\label{sec:backend-development}
 \subsection{Implementation}
@@ -198,17 +200,21 @@ The Image-to-Album Service was the simplest of the three backend services, consi
 
 This service was completely stateless, and as such it did not require persistent data storage between requests.
 
-\subsubsection{Security}
+The image processing functionality was implemented using the best guess functionality of the Google Reverse Image Search API. This guess would then be run through the Spotify search API which would return an album which would be displayed to the user. The scatter shot approach used separate data from the same reverse image search. It would instead look at the websites matches to the image were found on and use the title of the page as a search term. This proved to be effective because music albums are often the subject of reviews and sales pages which would contain the album title.
+
+
+
+\subsubsection{Security}~\label{sec:backend-security}
 Security measures were implemented differently across the three backend services to ensure proper control over data access.
 
 For the User Data Service and Image-to-Album Service, security was enforced by middleware that rejected all requests not originating from the BFF service. This ensured that only authenticated and validated requests from the BFF could interact with these services.
 
-The BFF required a more complex security approach, as it had to handle requests from external users. To authenticate users, JSON Web Tokens (JWTs) were used. When a user logs in via Spotify, the frontend sends that token to the backend. If the token is valid, the backend issues a JWT formed from the given token and the user's username, this is then included in the headers of subsequent requests to the BFF.
+The BFF required a more complex security approach, as it had to handle requests from external users. To authenticate users, JSON Web Tokens (JWTs) were used, which are common in web applications~\cite{9320801}. When a user logs in via Spotify, the frontend sends that token to the backend. If the token is valid, the backend issues a JWT formed from the given token and the user's username, this is then included in the headers of subsequent requests to the BFF.
 
 This token-based authentication ensures that that users can only access their own data, and that requests without a valid JWT are rejected, preventing unauthorized access.
 
 \subsection{Automated Testing}
-Automated testing for the backend was carried out using the Pytest library, which allows for the creation of custom test fixtures to set up and tear down the environment for each test, including managing the database state. FastAPI provides a test client which was utilised to simulate calls to endpoints to be tested as if they were being accessed by an actual client.
+Automated testing for the backend was carried out using the Pytest library~\cite{PyTest}, which allows for the creation of custom test fixtures to set up and tear down the environment for each test, including managing the database state. FastAPI provides a test client which was utilised to simulate calls to endpoints to be tested as if the endpoints were being called by an actual client.
 
 Extensive use of mocking was necessary for simulating external API calls. This was especially important in the BFF service, which made numerous calls to the other two backend services. Mocking ensured that each service could be tested in isolation without requiring live responses from the other services and  external APIs, making the testing process more reliable and efficient.
 

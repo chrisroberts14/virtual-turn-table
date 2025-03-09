@@ -19,3 +19,5 @@ Pipenv
 Pytest
 websocket
 subrouters
+Soundsystem
+linted

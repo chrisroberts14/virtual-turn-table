@@ -1,7 +1,8 @@
 \chapter{Introduction}\label{cha:intro}
 
 \section{Project Overview And Motivations}
-Since the advent of music streaming services, they have grown steadily, resulting in an industry with approximately \$19.3 billion in revenue in 2023~\cite{IFPI}. Despite this, vinyl records have seen a resurgence in their sales~\cite{BPI}, but the need for additional hardware is a barrier for most listeners. Turntables cannot be carried around and on top of this are not cheap. This project attempts to resolve this issue by developing a virtual turntable using web technologies to allow listeners to play their vinyl collections from the convenience of their digital devices whilst attempting to emulate the feel of dropping the needle on an LP.\@
+Since the advent of music streaming services user numbers have grown steadily, resulting in an industry with approximately \$19.3 billion in revenue in 2023~\cite{IFPI}. Despite this, vinyl records have seen a resurgence in their sales~\cite{BPI}, but the need for additional hardware is a barrier for most listeners.
+This project attempts to remedy this issue by providing an alternative to traditional turntables with a virtual version. It will not suffer from the lack of portability and costs associated with physical turntables by taking advantage of web technologies, allowing users to play their collections from the convenience of their digital devices at no additional cost whilst attempting to emulate the feel of dropping the needle on an LP.
 
 \section{Objectives}\label{sec:objectives}
 The project, at its simplest, must match the capability of a physical turntable whilst being entirely on a digital device. That is it must meet the following criteria:
@@ -12,11 +13,11 @@ The project, at its simplest, must match the capability of a physical turntable 
 On top of these basic requirements, as the project is to be used on digital devices, it should meet criteria which are common to products produced in this domain:
 \begin{itemize}
     \item Visually appealing user interface
-    \item Intuitive and user-friendly interface
+    \item Easy to use user interface
     \item Social system between users
     \item Save users collections for easier repeat listens
 \end{itemize}
-As an extension to the goals for the final application produced, there are certain criteria that are considered good software development practices, and these are also goals that should be met during the development.
+As an extension to these goals, there are certain criteria that are considered good software development practices, these goals should also be met during development:
 \begin{itemize}
     \item High code quality
     \item Automated testing
@@ -25,7 +26,7 @@ As an extension to the goals for the final application produced, there are certa
 \end{itemize}
 
 \section{Project Plan}
-Effective planning is essential in software development to ensure design criteria are met and tasks are completed, even for a solo developer. In this project, an agile approach was adopted to provide greater flexibility and support iterative development with the desire for fast development, in contrast to traditional methodologies such as Waterfall \cite{5222784}. Which is a methodology better suited for projects with well-defined scope and stable requirements, and any changes to these result in additional time spent on replanning \cite{andrei2019study}.
+An effective plan is essential in software development. This ensures design criteria are met and tasks are completed on time, even for a solo developer. In this project, an agile approach was adopted which provides greater flexibility and supported an iterative development approach which met the desire for a fast development process. This is in contrast to traditional methodologies such as Waterfall~\cite{5222784}, which is better suited for projects with a well-defined scope and stable requirements something which was not suitable for this project.
 
 \subsection{Planning system} \label{sec:plan-system}
 A Kanban system was used to manage development tasks, offering a structured, visual approach to tracking progress. Tasks were categorised into three stages: Backlog, In Progress, and Done, as shown in Figure~\ref{fig:kanban-board}. This system provided a clear overview of remaining work while also enabling tasks to be prioritised, ensuring that more important work, such as that composing the critical functionality, was completed first.
@@ -44,7 +45,7 @@ Critically, the planning system needed to be easy to set up and use, to avoid co
 The plan for this project was structured into three key phases: design, development and testing, and deployment and maintenance.
 
 \subsubsection{Design}
-The first stage of the project involved finalizing the system design before commencing code development. This high-level planning approach addressed key architectural and technological decisions early in the process, ensuring a well-defined foundation. By making these decisions in advance, the need for ad hoc choices during development was minimised, reducing the risk of unintended consequences later in the project. This phase established the system's architecture, technology stack, deployment strategy, and user interface design, all of which are further detailed in Chapter~\ref{cha:design}.
+The first stage of the project involved finalising the system design before commencing code development. This high-level planning approach addressed key architectural and technological decisions early in the process, ensuring a well-defined foundation. By making these decisions in advance, the need for ad hoc choices during development was minimised, reducing the risk of unintended consequences later in the project. This phase established the system's architecture, technology stack, deployment strategy, and user interface design, all of which are further detailed in Chapter~\ref{cha:design}.
 
 \subsubsection{Development And Testing}
 The development phase encompassed both the implementation of the core software and the integration of automated code quality tools to maintain consistency and reliability. A test-driven development (TDD) approach was adopted to ensure tests covered all intended functionality. This included the creation of automated tests, reducing reliance on manual testing, which was particularly useful as the project grew in size. Additionally, linters, formatters, and continuous testing were incorporated to enforce code quality standards as each commit was pushed to the repository, as further discussed in Section~\ref{sec:code-quality}.

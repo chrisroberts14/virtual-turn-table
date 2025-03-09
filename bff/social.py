@@ -184,7 +184,7 @@ async def share_collection(
         await manager.send_message(json.dumps(response.json()), receiver)
 
 
-@social_router.put("/toggle_collection_public/{username}")
+@social_router.put("/toggle_collection_public")
 async def toggle_collection_public(
     settings: Annotated[Settings, Depends(get_settings)],
     auth_payload=Depends(verify_token),
