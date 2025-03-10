@@ -33,7 +33,7 @@ However, the increased complexity of managing multiple services means that initi
 \end{figure}
 
 \subsection{Final design}
-The final design employs a microservices approach alongside a backend-for-frontend (BFF) design pattern. In this pattern, a dedicated backend service, the BFF, is created for each type of frontend application, such as desktop or mobile, ensuring that each backend caters specifically to a specific interface’s requirements. This pattern leverages the benefits of a microservices architecture and helps to reduce complexity by isolating functionality that is specific to a single frontend~\cite{BFF}. Details about each microservice are described in Section~\ref{sec:backend-design}.
+The final design employs a microservices approach alongside a backend-for-frontend (BFF) design pattern. In this pattern, a dedicated backend service, the BFF, is created for each type of frontend application, such as desktop or mobile, ensuring that each backend caters specifically to a specific interface’s requirements. This pattern leverages the benefits of a microservices architecture and helps to reduce complexity by isolating functionality that is specific to a single frontend~\cite{BFF}. There are also security benefits as users need only to authenticate with a single service rather than each of the microservices individually. Details about each microservice are described in Section~\ref{sec:backend-design}.
 
 \begin{figure} [H]
     \centering
@@ -71,9 +71,9 @@ Specifically, the search API was used to identify albums, while the playback API
 However, a key limitation of this approach is that the playback API requires a Spotify Premium subscription~\cite{SpotifyPlaybackSDK}. Though, as the Spotify API mandates user authentication via a Spotify account, this requirement allows the Spotify account to serve as the user account for the application, thereby reducing security concerns related to the storage and management of user data.
 
 \subsection{Reverse Image Search}~\label{sec:reverse-image-search}
-Reverse image search is a form of content-based image retrieval that uses an image as the query to retrieve related results. This process involves extracting feature vectors, using algorithms such as SIFT, and comparing these against a collection of previously indexed images to return the closest matches~\cite{Gaillard2017LargeSR}.
+Reverse image search is a form of content-based image retrieval that uses an image as the query to retrieve related results. This process involves extracting feature vectors, using algorithms such as SIFT or deep learning techniques, and comparing these against a collection of previously indexed images to return the closest matches~\cite{Gaillard2017LargeSR}.
 
-In this project, reverse image search functionality was implemented to identify albums from images uploaded by users. Recognizing that maintaining an up-to-date, in-house database of album covers would be impractical, it was decided early on to leverage an external API.\@ Two reverse image search APIs were evaluated: Google and Bing. Although Bing's API was simpler to integrate, it frequently failed to accurately identify albums—even from images that were already indexed by Bing's image search. In contrast, Google's API demonstrated a much higher reliability in album identification. Given the critical importance of accurate album retrieval for the project, the Google API was ultimately chosen.
+In this project, reverse image search functionality was implemented to identify albums from images uploaded by users. Recognizing that maintaining an up-to-date, in-house database of album covers would be impractical, it was decided early on to leverage an external API. Two reverse image search APIs were evaluated: Google and Bing. Although Bing's API was simpler to integrate, it frequently failed to accurately identify albums—even from images that were already indexed by Bing's image search. In contrast, Google's API demonstrated a much higher reliability in album identification. Given the critical importance of accurate album retrieval for the project, the Google API was ultimately chosen.
 
 Compared to other methods for recognizing albums from images, such as optical character recognition (OCR) or barcode scanning, reverse image search was selected for its robustness. OCR can be unreliable when album covers feature stylised text or lack text entirely and barcode scanning, though dependable, requires a barcode to be present. This requirement is problematic, particularly since vinyl records may predate the widespread use of barcodes.
 
@@ -127,14 +127,16 @@ A `multipage' design approach was selected for the application as this separates
 \fi
 
 \subsection{Wireframe mockups}
-Prototyping the user interface provides a rapid way to visualize the application, enabling design evaluations without the need to write any code~\cite{WILSON1988859}. This approach proves especially beneficial during the early stages of development, when the design remains flexible and can be easily modified. In this project, wireframe mockups were selected for their low-fidelity nature, which allowed fast iteration on design.
+Prototyping the user interface provides a rapid way to visualise the application, enabling design evaluations without the need to write any code~\cite{WILSON1988859}. This approach proves especially beneficial during the early stages of development. At that point designs need to remain flexible, so they can be easily modified as feedback is collected. In this project, wireframe mockups were selected for their low-fidelity nature, which allowed fast iteration on design.
 
 Across all mockups, a consistent navigation bar is present at the top of the screen, allowing for straightforward navigation among the application's various pages.
 
 \subsubsection{Play Screen}
-Figure~\ref{fig:play_screen_mockup} depicts the mockup of the play screen, where users control music playback. Essential functionality implemented here includes buttons to play, pause, skip forward or backward, adjust the track position, and manage volume. Fitting with a modern streaming service, individual tracks can be played from the album, even though this would not be commonly done with a physical turn table.
+Figure~\ref{fig:play_screen_mockup} depicts the mockup of the play screen, where users control music playback. Essential functionality implemented here includes buttons to play, pause, skip forward or backward, adjust the track position, and manage volume. As the look of the controls fits what is found on popular music streaming services it is likely that users have experience with controlling playback in this manner.
 
-The screen is also designed to incorporate elements of a physical turntable as part of the theme. Mainly the spinning vinyl seen in the centre.
+The track list displayed on the left side allows the user to select a single track from the album to play. Features like this are not found on physical turntables but users listening online may expect functionality like this, so it was included.
+
+The spinning vinyl in the centre of the screen had no functional purpose but was included to maintain the theme of vinyl records. For this purpose animations also play showing a vinyl being removed from a sleeve whenever the album is changed.
 \begin{figure} [H]
     \centering
     \includegraphics[width=0.6\linewidth]{figures/play_screen_mockup.png}
@@ -143,7 +145,9 @@ The screen is also designed to incorporate elements of a physical turntable as p
 \end{figure}
 
 \subsubsection{Scanning Screen}
-Figure~\ref{fig:scan_screen_mockup} shows the scanning screen, where users can upload images of album covers to identify the corresponding album. It also displays the logged-in user’s existing album collection, allowing quick selection of albums already scanned. The confirmation dialogue (shown on the left) enables users to confirm the identified album or reject it if incorrect.
+Figure~\ref{fig:scan_screen_mockup} shows the scanning screen. Here users can take and upload images of album covers to identify the corresponding album.
+At the bottom of the screen the logged-in user’s existing album collection is displayed, allowing quick selection of albums already scanned. Its addition means users only have to scan an album once.
+The confirmation dialogue (shown on the left) appears after the application has returned a result for a scan of an album. It enables users to confirm the identified album if it is correct or reject it if incorrect.
 
 \begin{figure} [H]
     \centering
@@ -154,7 +158,7 @@ Figure~\ref{fig:scan_screen_mockup} shows the scanning screen, where users can u
 
 
 \subsubsection{Social Screen}
-Figure~\ref{fig:social_screen_mockup} shows the social screen, where users can view collections belonging to others shared directly with them or made public by other users. This feature aimed to add a sense of social interaction among users and allow for the discovery of new music.
+Figure~\ref{fig:social_screen_mockup} shows the social screen, where users can view collections belonging to others, either shared directly with them or made public. Users could use this page to see what their friends are listening to or discover new music.
 
 \begin{figure} [H]
     \centering
@@ -164,23 +168,23 @@ Figure~\ref{fig:social_screen_mockup} shows the social screen, where users can v
 \end{figure}
 
 \section{Backend}~\label{sec:backend-design}
-The backend for the project would responsible for handling all business logic and data handling. It would mostly respond to API calls from the frontend except in cases where the backend would need to asynchronously push data to the frontend. This would be done using WebSockets.
+The backend for the project was responsible for handling all business logic and data handling. It would mostly respond to API calls from the frontend except in cases where the backend would need to asynchronously push data to the frontend. That functionality would be achieved using WebSockets which support bidirectional communication between the frontend and backend.
 
 \subsection{Microservices split}
-As a microservices approach was adopted, the backend operations were divided into multiple services. As described in Section~\ref{fig:final-arch}, it was decided to use a BFF (Backend for Frontend) pattern for one of these services. The remaining functionality was split into two services; one service handles the conversion of user-uploaded images into album data, while another manages all user-related data storage.
+Since a microservices approach was adopted, the backend operations were divided into multiple services. As is discussed in Section~\ref{fig:final-arch}, it was decided to use a BFF (Backend for Frontend) pattern for one of these services. The remaining functionality was split into two services; one service handles the conversion of user-uploaded images into album data, while another manages all user-related data storage. The services could have been split further, but this size was deemed appropriate for the project's scope.
 
-\subsubsection{BFF}
-The BFF acts as a middleman between the frontend and various backend services, often mirroring the endpoints of those services. Its main responsibility is to manage the data returned to the frontend. As this project is focused solely on a desktop web application, so the patterns potential to tailor data for different platforms was not fully utilised. However, if the application were later expanded to include additional platforms, the BFF could selectively limit data returned to given devices if it did not require it.
+\subsubsection{BFF Service}
+The BFF acts as a middleman between the frontend and various backend services, sometimes mirroring the endpoints of the other backend services. Its main responsibility is to tailor the data returned to the frontend. However, as this project is focused solely on a desktop web application, so the patterns potential to tailor data for different platforms was not fully utilised. If the application were later expanded to include additional platforms, the BFF could selectively limit data returned to given devices if it did not require it.
 
-The BFF also handles the WebSocket connections to the frontend, allowing the backend to push data to the frontend when necessary. This is particularly useful for notifying users of new shared collections or other events that require immediate attention.
+The BFF also handles the WebSocket connections to the frontend, allowing the backend to push data to the frontend when necessary. The main purpose for this functionality was to show notifications to users on the frontend when they received a request for a collection to be shared with them.
 
-\subsubsection{Image to Album}
-This service was the smallest of the three, encapsulating a very specific functionality. It included endpoints responsible for identifying albums from various inputs, such as images of the album, allowing different methods, such as OCR or reverse image search to be handled through separate endpoints with the caller choosing which to use. Along with that the service also hosted a way to search for albums using Spotify's API as a method to return an exact album from a guess that might have been generated by an identification method.
+\subsubsection{Image to Album Service}
+This service was the smallest of the three, encapsulating a very specific functionality. Its intended design included endpoints responsible for identifying albums from various inputs, such as images of the album, allowing different methods, such as OCR or reverse image search to be handled through separate endpoints with the caller choosing which to use. Alongside that the service also hosted a way to search for albums using Spotify's API. This acted as a method to return an exact album from a guess that might have been generated by an identification method.
 
-Separating these functions from the rest of the application’s services means users could still listen to their existing collections in the event that this service going down.
+The separation of this functionality from the rest of the application’s services means users could still listen to their existing collections in the event of a failure of this service.
 
-\subsubsection{User Data}
-This service was to handle all tasks related to user data such as collections and sharing. It would do this by interacting with a database detailed in Section~\ref{sec:database}. Each endpoint would be responsible for editing the data in the database in some way such as creating a user or sharing a collection.
+\subsubsection{User Data Service}
+The user data service handled all tasks related to user data such as storing collections and sharing them. To maintain non-volatile storage it would interact with a database detailed in Section~\ref{sec:database}. Each endpoint would perform a read or some edit of the data in the database in some way such as creating a user or sharing a collection.
 
 \subsection{Database}~\label{sec:database}
 This application could have been implemented as a stateless application which would  mean there was no capability to persist data across sessions. However, such an approach would limit functionality as there could be no form of personalisation for individual users. Since a Spotify account was already required for music playback, linking user data to that account became a logical next step, enabling data persistence across sessions.
