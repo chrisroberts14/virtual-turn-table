@@ -378,7 +378,7 @@ class TestShareCollection:
 class TestToggleCollectionPublic:
     """Test the toggle public collection endpoint."""
 
-    endpoint = "/social/toggle_collection_public/test_user"
+    endpoint = "/social/toggle_collection_public"
 
     def test_share_collection(self, client, mocker):
         """Test sharing a collection."""
