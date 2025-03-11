@@ -19,4 +19,4 @@ pytest~=8.3.3
 requests~=2.32.3
 sqlalchemy~=2.0.36
 
-starlette~=0.40.0
+starlette~=0.46.1

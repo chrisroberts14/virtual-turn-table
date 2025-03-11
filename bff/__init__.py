@@ -5,17 +5,16 @@ from typing import Annotated
 
 import requests
 from fastapi import FastAPI, Request, Depends, WebSocket
-from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.middleware.base import BaseHTTPMiddleware
+from fastapi.responses import RedirectResponse, JSONResponse
 
+from bff.api_models import APIException, WebSocketMessage
 from bff.auth import auth_router
 from bff.config import Settings, get_settings
+from bff.image_search import image_search_router
 from bff.music import music_router
 from bff.social import social_router
 from bff.user import user_router
-from bff.image_search import image_search_router
-from bff.api_models import APIException, WebSocketMessage
 from bff.websocket import manager
 
 app = FastAPI()
@@ -31,28 +30,21 @@ origins = ["http://localhost:5173", "https://vtt-791764533505.us-central1.run.ap
 connections: dict[str, list[WebSocket]] = {}
 
 
-# pylint: disable=too-few-public-methods
-class CustomErrorMiddleware(BaseHTTPMiddleware):
-    """Custom error handling middleware."""
+@app.exception_handler(APIException)
+async def global_exception_handler(_: Request, exc: APIException):
+    """
+    Custom exception handler for the API.
 
-    async def dispatch(self, request: Request, call_next):
-        """
-        Dispatch method for middleware.
-
-        :param request:
-        :param call_next:
-        :return:
-        """
-        try:
-            return await call_next(request)
-        except APIException as ex:
-            return JSONResponse(
-                status_code=ex.status_code,
-                content={"status": "error", "message": ex.message},
-            )
+    :param _:
+    :param exc:
+    :return:
+    """
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"status": "error", "message": exc.message},
+    )
 
 
-app.add_middleware(CustomErrorMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,

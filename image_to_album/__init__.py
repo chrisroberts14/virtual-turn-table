@@ -32,22 +32,19 @@ app.add_middleware(
 )
 
 
-@app.middleware("http")
-async def custom_error_handling_middleware(request: Request, call_next):
+@app.exception_handler(APIException)
+async def global_exception_handler(_: Request, exc: APIException):
     """
-    Custom error handling middleware.
+    Custom exception handler for the API.
 
-    :param request:
-    :param call_next:
+    :param _:
+    :param exc:
     :return:
     """
-    try:
-        return await call_next(request)
-    except APIException as ex:
-        return JSONResponse(
-            status_code=ex.status_code,
-            content={"status": "error", "message": ex.message},
-        )
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"status": "error", "message": exc.message},
+    )
 
 
 @app.get("/")
