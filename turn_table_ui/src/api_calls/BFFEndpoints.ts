@@ -32,6 +32,6 @@ export const getUserAlbums = `${bff}/user/get_user_albums`;
 export const getUsersBySearch = `${bff}/user/search`;
 export const imageToAlbum = `${bff}/image_search/image_to_album/`;
 export const playTrack = `${bff}/music/play_track/`;
-export const shareCollection = `${bff}/social/share_collection/`;
+export const shareCollection = `${bff}/social/share_collection`;
 export const toggleCollectionPublic = `${bff}/social/toggle_collection_public`;
 export const userInfo = `${bff}/user/get_user_info`;
