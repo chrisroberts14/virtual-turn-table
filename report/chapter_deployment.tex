@@ -1,7 +1,5 @@
 \chapter{Deployment}~\label{cha:deployment}
-Once development was complete, the application had to be deployed to be accessible to users. This involved configuring two ways to run the application: locally, using Docker Compose and on the web, using a cloud hosting service.
-
-Once development was completed the next objective was to deploy the application to make it accessible to users. The system is built in such a way that there are two primary methods of deployment:
+Once development was completed, the next objective was to deploy the application to make it accessible to users. The system is built in such a way that there are two primary methods of deployment:
 
 \begin{itemize}
     \item Local Deployment – Using Docker Compose to facilitate easy setup and testing in a local environment.
@@ -11,9 +9,9 @@ Once development was completed the next objective was to deploy the application 
 Each method required a specific configuration to ensure the application could run correctly.
 
 \section{Docker Compose}
-Docker Compose is a container orchestrator that enables multiple containers to run together in a unison on a single system~\cite{DockerCompose}. A single command can be used to both build and running the whole application. The deployment structure is defined in a Compose file, which specifies the services to be run along with their configurations, including environment variables, volumes, and exposed ports. Additionally, a health check endpoint can be defined to allow the orchestrator to verify whether a service is running correctly.
+Docker Compose is a container orchestrator that enables multiple containers to run together in unison on a single system~\cite{DockerCompose}. A single command can be used to build and run the whole application. The deployment structure is defined in a Compose file, which specifies the services to be run along with their configurations, including environment variables, volumes, and exposed ports. A health check endpoint can also be defined to allow the orchestrator to verify whether a service is running correctly.
 
-In this application there were five services defined:
+In this application, there were five services defined:
 \begin{itemize}
     \item The three backend services
     \item The React frontend
@@ -22,13 +20,13 @@ In this application there were five services defined:
 
 Once the containers were running, each service could communicate with any other through exposed ports defined in the Compose file.
 
-This deployment method is particularly useful for running a local version of the system, especially during development as it mirrors a deployment using the same containers, as it naturally integrates with the existing Docker-based containerisation. However, Docker Compose lacks scalability and as each deployment would have its own database makes the whole social aspect unusable. As a result, a production deployment a different solution.
+This deployment method is particularly useful for running a local version of the system, especially during development. It mirrors a deployment using the same containers and naturally integrates with the existing Docker-based containerisation. However, Docker Compose lacks scalability, and each deployment would have its own database, making the whole social aspect unusable. As a result, the production deployment is a different solution.
 
 \section{On the web}
 Web deployment was carried out using Google Cloud Run, which allows a configuration to be pointed to a Dockerfile in the repository. When triggered by a repository event, such as a commit on the main branch, Cloud Run automatically builds the image and deploys it to the web. This service provides a URL for the deployed application and manages hosting complexities, such as scaling instances up or down based on demand.
 
 Initially, the plan was to automatically build and deploy the application after every push to the main branch, provided all scans and tests passed. However, this approach was deemed excessive for this project. Instead, a tag-based mechanism was used, where builds are only triggered when a new tag is pushed to the repository, effectively allowing manual control over when deployments are triggered.
 
-Since Google Cloud Run operates on an Infrastructure as a Service (IaaS) model, deployment incurs monetary costs based on usage. Two things contribute to these costs, storage, for Docker images and the database, and number of calls (i.e. how much the service is used) For this project, the free tier provided was sufficient to cover usage, but wider adoption of the application would require consideration over the costs.
+Since Google Cloud Run operates on an Infrastructure as a Service (IaaS) model, deployment incurs monetary costs based on usage. Two things contribute to these costs: storage for Docker images and the database and the number of calls (i.e., how much the service is used). For this project, the free tier provided was sufficient to cover usage, but wider adoption of the application would require consideration of the costs.
 
-The transition from SQLite to PostgreSQL also impacted deployment. SQLite would have been simpler, as it does not require a separate cloud-hosted database instance. However, PostgreSQL required setting up a dedicated Google Cloud SQL instance which the backend connects to. This had drawbacks in terms of the complexity of the deployment as well as the costs associated with running a cloud-hosted database.
+The transition from SQLite to PostgreSQL also impacted deployment. SQLite would have been simpler, as it does not require a separate cloud-hosted database instance. However, PostgreSQL required setting up a dedicated Google Cloud SQL instance that the backend connects to. This had drawbacks in terms of the complexity of the deployment and the costs associated with running a cloud-hosted database.
