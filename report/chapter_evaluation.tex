@@ -25,9 +25,9 @@ Each used album is listed in Appendix~\ref{apd:test_albums}.
             \hline
  Normal & \includegraphics[width=2.5cm]{figures/test_albums/Reflektor.jpg} \\
             \hline
- Rotated $90$\textdegree & \includegraphics[width=2.5cm]{figures/test_albums/Reflektor_Rotated - 90.jpg} \\
+            Rotated $90$\textdegree & \includegraphics[width=2.5cm]{figures/test_albums/Reflektor_Rotated - 90.jpg} \\
             \hline
- Rotated $180$\textdegree & \includegraphics[width=2.5cm]{figures/test_albums/Reflektor_Rotated - 180.jpg} \\
+            Rotated $180$\textdegree & \includegraphics[width=2.5cm]{figures/test_albums/Reflektor_Rotated - 180.jpg} \\
             \hline
         \end{tabular}
     \end{subtable}
@@ -38,11 +38,11 @@ Each used album is listed in Appendix~\ref{apd:test_albums}.
             \hline
             \textbf{Image Type} & \textbf{Example} \\
             \hline
- Rotated $270$\textdegree & \includegraphics[width=2.5cm]{figures/test_albums/Reflektor_Rotated - 270.jpg} \\
+            Rotated $270$\textdegree & \includegraphics[width=2.5cm]{figures/test_albums/Reflektor_Rotated - 270.jpg} \\
             \hline
- Blurred & \includegraphics[width=2.5cm]{figures/test_albums/Reflektor_Blurred.jpg} \\
+            Blurred & \includegraphics[width=2.5cm]{figures/test_albums/Reflektor_Blurred.jpg} \\
             \hline
- Scaled Down & \includegraphics[width=2.5cm]{figures/test_albums/Reflektor_Scaled.jpg} \\
+            Scaled Down & \includegraphics[width=2.5cm]{figures/test_albums/Reflektor_Scaled.jpg} \\
             \hline
         \end{tabular}
     \end{subtable}
@@ -140,15 +140,47 @@ Testing was conducted using a subset of five albums listed in Appendix~\ref{apd:
 The results of this test were entirely positive. All selected albums played from start to finish without issues. Additionally, the music controls, including play, pause, and skip—functioned as expected, and album artwork and track information were displayed correctly throughout playback as the tracks changed.
 
 \section{User Interface}
-The survey described in Section~\ref{sec:test-design} was used to evaluate the user interface. In total, [TODO: Add number] participants completed the survey.
+The survey described in Section~\ref{sec:test-design} was used to evaluate the user interface. In total, seven participants completed the survey. Originally, they were provided with the application and asked to play around with it. Once the first user had completed the survey their feedback was used to adjust the process for the next user. Instead, users were provided with a list of objectives that they would have to complete which would cover all functionality.
 
 \subsection{Results}
-[TODO: Add results from the survey]
+The results for the first four questions in the survey are shown in Table~\ref{tab:ui-evaluation-results}.
+\begin{table}
+    \centering
+    \begin{tabular}{|m{5cm}|m{2cm}|m{2cm}|m{2cm}|}
+        \hline
+        \textbf{Question} & \textbf{Average} & \textbf{Minimum} & \textbf{Maximum} \\
+        \hline
+        How easy was the application to use? & $5.71$ & $3$ & $7$ \\
+        \hline
+        How visually appealing was the application? & $8.29$ & $6$ & $10$ \\
+        \hline
+        How useful did you find the ability to save albums to your collection? & $7.71$ & $5$ & $10$ \\
+        \hline
+        How valuable did/would you find the social features? & $5$ & $3$ & $8$ \\
+        \hline
+    \end{tabular}
+    \caption{User Interface Evaluation Results}
+    \label{tab:ui-evaluation-results}
+\end{table}
 
-\subsection{Participants}
+\paragraph{Question 1: How easy was the application to use?}
+These results indicate a mixed response to the application's interface and features. The visual appeal of the application was rated particularly highly, with an average score of $8.29$ though, as will be discussed in Section~\ref{sec:ui-evaluation-participants}, this could be a result of many participants sharing a view of what a visually appealing application should look like.
+
+\paragraph{Question 2: How visually appealing was the application?}
+In terms of usability the application did not perform as well. The average score for was only $5.71$ suggesting most users struggled with the application at some point. This was most likely caused by the design of the interface. Some users added that certain features were hidden to them or not in the place they expected them to be. The example most frequently given was that the share collection buttons were not on the social page where they would make sense to be. One user also found they could not use the web browser of their choice as the application would appear broken in it. This was missed in testing as the developer only tested in Google Chrome which, though it is the most popular browser [TODO: CITE], is not the only one.
+
+\paragraph{Questions 3 and 4: How useful did you find the ability to save albums to your collection? How valuable did/would you find the social features?}
+The two features that were asked about had very different receptions from users. Having a collection associated with their account was seen as a good feature, with an average score of $7.71$. The social features were not seen as much of a benefit, with an average score of $5$. Users likely did not see the value in social features in such a small application.
+
+\paragraph{Extra Comments From Users}
+As part of the evaluation users could add extra comments. Most were about UI design choices. Many users found the application to be different from what they would expect and some struggled to figure out what to do on certain screens. This was particularly a problem on the landing screen where users did not feel prompted to log in to continue.
+
+Other users found minor visual bugs that were not picked up in testing. Variation in screen sizes was the most common cause of these bugs. During development the developer focused on a single screen size and resolution (16:9 aspect ratio). This also limited the application's usability with one user commenting that the application might be more useful on a phone.
+
+\subsection{Participants}~\label{sec:ui-evaluation-participants}
 Ideally, the user interface evaluation would have been conducted with a large and diverse user base to gather feedback from individuals with varying levels of technical expertise. However, this was beyond the scope of the current evaluation, so a smaller sample group was used instead.
 
-It is important to acknowledge the potential biases in the participant selection. The sample group consisted primarily of friends and family, many of whom were computer science students. As a result, the participants may have been more familiar with the technology than the average user. They could also have been predisposed to providing more favourable reviews not to disappoint the application's developer. Because of this, while the survey provides valuable insights, the findings may not fully represent a broader user base.
+It is important to acknowledge the potential biases in the participant selection. The sample group consisted primarily of friends and family, many of whom were computer science students. As a result, the participants may have been more familiar with the technology than the average user. They could also have been predisposed to providing more favourable reviews as to not disappoint the application's developer. Because of this, while the survey provides valuable insights, the findings may not fully represent a broader user base.
 
 \section{Development Practices}
 The development practices were evaluated based on the tests in Section~\ref{sec:test-design}. A pass was defined as meeting the verification specified.
@@ -163,16 +195,16 @@ Test coverage was measured using pytest-cov for the backend and Vitest for the f
         \hline
         \textbf{Component} & \textbf{Coverage} \\
         \hline
- Backend & $100\%$ \\
+        Backend & $100\%$ \\
         \hline
- Frontend & $95\%$ \\
+        Frontend & $95\%$ \\
         \hline
     \end{tabular}
     \caption{Test Coverage Results}
     \label{tab:test-coverage-results}
 \end{table}
 
-The backend achieved full coverage with all lines and branches tested. The frontend achieved $95\%$ coverage, which, whilst meeting the target, is likely a result of the inexperience of the developer in frontend development, with many changes needed even after the tests were initially defined.
+The backend achieved full coverage with all lines and branches tested. The frontend achieved $95\%$ coverage, which whilst meeting the target, the fact it was below $100\%$ is likely a result of the inexperience of the developer in frontend development with many changes needed even after the tests were originally defined.
 
 Code coverage covered all important aspects of the application and so can be considered a success.
 \ifshowappendix

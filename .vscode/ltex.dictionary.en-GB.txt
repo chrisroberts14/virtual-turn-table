@@ -21,3 +21,4 @@ websocket
 subrouters
 Soundsystem
 linted
+pytest-cov
