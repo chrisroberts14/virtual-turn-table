@@ -1,6 +1,15 @@
-\chapter{Conclusions And Future Work}
-\label{cha:conclusion}
+\chapter{Conclusions}~\label{cha:conclusion}
 
-TODO: Add conclusion
+\section{Conclusions}
+This project focused on developing and deploying a web application that functions like a traditional turntable. In this sense, it should be considered a success, as in most cases, it succeeds based on the criteria set out that it should use a representation of the physical album as input to play the whole album. However, the system's inaccuracy in identifying albums could be considered a failure, especially considering it is the only way to listen to music using the application.
 
-%Cite some references \cite{dyke1994, latex2012}
+In terms of planning, the project closely followed what was set out in Section~\ref{sec:plan}, and the agile methodology proved to be a good fit for the project. The Kanban board was a good way to manage tasks and was effective when issues arose that had to be added to the board. The architectural decisions in the design phase proved well-thought-out as no issues arose during development that required a rethink of the architecture. The backend structure needed no changes to the initial design other than the change to a different DBMS, which was quickly done due to the choice of SQLAlchemy as an ORM. The frontend, though having some issues, was technically well implemented and the design included all features.
+
+The intention to keep to good software development practices proved very successful. Automated test coverage gave high confidence that the application was working as intended, with the only exception being minor visual bugs on the frontend. In conjunction with automated dependency management, the project could always use the latest versions of dependencies, ensuring no known vulnerabilities existed. The automated deployment also proved successful, with the application automatically being built and deployed on the cloud whenever a commit was tagged on the repository's main branch.
+
+The evaluation of the project showed that the application was well received by users but also showed the flaws in the application. The UI was not perfect, and some features could have been added. The social features were not used by many users, suggesting a rethink of these features could benefit the application greatly.
+
+\section{Future Work}
+Future work could focus on porting the application to mobile devices. Probably just in an app.
+Features like Shazam could also be added and new methods to add albums like OCR, barcodes or plain search.
+The fact many users did not seem to think the social features were useful suggests a rethink of these features could be necessary.
