@@ -10,6 +10,7 @@ The intention to keep to good software development practices proved very success
 The evaluation of the project showed that the application was well received by users but also showed the flaws in the application. The UI was not perfect, and some features could have been added. The social features were not used by many users, suggesting a rethink of these features could benefit the application greatly.
 
 \section{Future Work}
-Future work could focus on porting the application to mobile devices. Probably just in an app.
-Features like Shazam could also be added and new methods to add albums like OCR, barcodes or plain search.
-The fact many users did not seem to think the social features were useful suggests a rethink of these features could be necessary.
+The system was not perfect as was seen during the evaluation. In terms of improvements to the currently implemented features future work should focus on improvements to the album identification system given it did not perform as well as hoped. The only option for improving the current system would be adding refinement techniques to be applied to the input image, hopefully improving the results from the reverse image search API. An alternative would be to implement new methods alongside the current one, such as OCR or barcode scanning. The user could then switch between methods if the current one fails improving the chances the scan will be successful.
+Alternatives could also ditch the `scanning' concept entirely and user different methods. An example was given by a participant in the evaluation of using audio fingerprinting to identify albums from their audio~\cite{Cano2005}. An ultimate fail-safe could be to allow the user to search for the album manually.
+
+On a larger scale, the application could be ported to mobile devices as an app. This development would require either a new frontend or a major rework of the current one in order for it to work on smaller screens with different aspect ratios to desktop screens.
