@@ -2,12 +2,12 @@
 Once the application was deployed, it had to be determined if it met the requirements set out in the design phase. The tests set out in Section~\ref{sec:test-design} were carried out to do this.
 
 \section{Primary Features}
-These tests relate to the two primary feature tests in Section~\ref{sec:test-design}. As these features are fundamental to the application's core functionality, their implementation is critical in determining whether the project is a success. If the application failed to meet these criteria, it would be hard to consider the outcome a complete success.
+These tests relate to the two primary feature tests in Section~\ref{sec:test-design}. As these features were fundamental to the application's core functionality, their implementation was critical in determining whether the project succeeded.
 
 \subsection{Album Scanning}
 The album scanning mechanism consisted of two separate APIs, and the evaluation focuses on the accuracy of these two APIs and the effectiveness of the two methods used to identify albums, namely, using either the best guess from reverse image search results or extracted website titles.
 
-Fifteen albums were tested to conduct the evaluation. Six images were used for each album, as shown in Table~\ref{tab:image-evaluation-examples}.
+Fifteen albums were used to conduct the evaluation. For each album six manipulated images were used, as shown in Table~\ref{tab:image-evaluation-examples}.
 \ifshowappendix
 Each used album is listed in Appendix~\ref{apd:test_albums}.
 \fi
@@ -51,7 +51,7 @@ Each used album is listed in Appendix~\ref{apd:test_albums}.
     \label{tab:image-evaluation-examples}
 \end{table}
 
-Self-taken images were used to ensure that the test cases were more representative of authentic user-uploaded images. This is opposed to using images already present on the Internet, which could be pre-indexed by search engines.
+Self-taken images were preferred to ensure that the test cases were more representative of authentic user-uploaded images. This is opposed to using images already present on the Internet, which could be pre-indexed by search engines.
 
 The criteria for a pass were defined as follows:
 \begin{itemize}
@@ -98,7 +98,7 @@ Performance was particularly poor for rotated images, with only albums that had 
     \end{subfigure}
 \end{figure}
 
-Despite the shortcomings of the reverse image search, the results indicate that the scatter-shot approach, using website titles, was equally or more successful across all categories of images. These results validate the choice to include it as it improves the overall chances of identification.
+Despite the shortcomings of the reverse image search, the results indicate that the scatter-shot approach, using website titles, was equally or more successful across all categories of images. These results validate including it as it improves the overall chances of identification.
 
 \begin{figure} [H]
     \centering
@@ -117,7 +117,7 @@ The results from the Spotify search API demonstrated strong performance. When pr
 These results indicate that the chosen method, directly using reverse image search outputs with no processing as inputs for the Spotify search API, was broadly effective, even though it did not achieve the target $95\%$ accuracy.
 
 \subsubsection{Key Takeaways}
-The primary limiting factor in the system's accuracy is the reverse image search API's accuracy. Therefore, any changes to improve this accuracy should focus on enhancing this API's accuracy.
+The primary limiting factor in the system's accuracy is the reverse image search API's accuracy. Therefore, any changes hoping to improve the accuracy of album identification should focus on enhancing this API's accuracy.
 
 Since the Google reverse image search API is treated as a black box, direct improvements to its internal processing are impossible, leaving only one option to improve its accuracy: input refinement. Two possible approaches include:
 
@@ -126,25 +126,24 @@ Since the Google reverse image search API is treated as a black box, direct impr
     \item User-assisted cropping – Prompting users to crop the image manually, ensuring only the album cover is submitted for identification
 \end{itemize}
 
-Though these methods may improve accuracy, the first could introduce additional UI elements, making the system more complex from a user perspective. The second may increase the time required to scan an album. Therefore, any enhancements should be carefully evaluated to balance accuracy improvements with user experience.
+Though these methods may improve accuracy, the second could introduce additional UI elements, making the system more complex from a user perspective. The first may increase the time required to scan an album. Therefore, any enhancements should be carefully evaluated to balance accuracy improvements with user experience.
 
 It should also be noted that the sample size for testing was relatively small, with only fifteen albums evaluated. As a result, the accuracy figures obtained may not fully represent the system's performance on a more extensive and diverse dataset. For example, less popular albums are likely less likely to be identified, and more popular albums are more likely to be identified. Testing with a broader selection of albums would be necessary to obtain a more comprehensive assessment of the system's accuracy and limitations.
 
 \subsection{Album Playback}
 This test aimed to verify that the music playback functionality operated as intended. The most effective approach was to evaluate the application from a user perspective, simulating real-world usage by using it to listen to whole albums, ensuring that playback functioned correctly.
 \ifshowappendix
-Testing was conducted using a subset of five albums listed in Appendix~\ref{apd:test_albums}.
+%Testing was conducted using a subset of five albums listed in Appendix~\ref{apd:test_albums}.
 \fi
 
 \subsubsection{Results}
 The results of this test were entirely positive. All selected albums played from start to finish without issues. Additionally, the music controls, including play, pause, and skip—functioned as expected, and album artwork and track information were displayed correctly throughout playback as the tracks changed.
 
 \section{User Interface}
-The survey described in Section~\ref{sec:test-design} was used to evaluate the user interface. In total, seven participants completed the survey. Initially, they were provided with the application and asked to play around with it. Once the first user had completed the survey, their feedback was used to adjust the process for the following users. Instead, users were given a list of objectives they would have to complete to cover all functionality.
+The survey described in Section~\ref{sec:test-design} was used to evaluate the user interface. In total, seven participants completed the survey. Initially, the first user was given the application and asked to play around with it but based on their feedback the process was adjusted. Instead, users were given a list of objectives to complete to cover all functionality.
 
 \subsection{Results}
-The results for the first four questions in the survey are shown in Table~\ref{tab:ui-evaluation-results}.
-\begin{table}
+\begin{table} [H]
     \centering
     \begin{tabular}{|m{5cm}|m{2cm}|m{2cm}|m{2cm}|}
         \hline
@@ -163,13 +162,15 @@ The results for the first four questions in the survey are shown in Table~\ref{t
     \label{tab:ui-evaluation-results}
 \end{table}
 
+The results for the first four questions in the survey are shown in Table~\ref{tab:ui-evaluation-results}.
+
 \paragraph{Question 1: How easy was the application to use?}
-These results indicate a mixed response to the application's interface and features. The visual appeal of the application was rated particularly highly, with an average score of $8.29$, though, as will be discussed in Section~\ref{sec:ui-evaluation-participants}, this could be a result of many participants sharing a view of what properties a visually appealing application has.
+In terms of usability, the application did not perform well. The average score was only $5.71$, suggesting most users struggled with the application at some point. This was most likely a result of the design of the interface. Some users added that certain features were hidden from them or not in the place they expected them to be. The example most frequently given was that the share collection buttons were not on the social page where they would make sense to be. One user also found they could not use the web browser of their choice as the application would appear broken. This was missed in testing as the developer only tested in Google Chrome.
 
 \paragraph{Question 2: How visually appealing was the application?}
-In terms of usability, the application did not perform well. The average score was only $5.71$, suggesting most users struggled with the application at some point. This was most likely caused by the design of the interface. Some users added that certain features were hidden from them or not in the place they expected them to be. The example most frequently given was that the share collection buttons were not on the social page where they would make sense to be. One user also found they could not use the web browser of their choice as the application would appear broken. This was missed in testing as the developer only tested in Google Chrome.
+The visual appeal of the application was rated particularly highly, with an average score of $8.29$, though, as will be discussed in Section~\ref{sec:ui-evaluation-participants}, this could be a result of many participants sharing a view of what a visually appealing looks like.
 
-\paragraph{Questions 3 and 4: How useful did you find the ability to save albums to your collection? How valuable did/would you find the social features?}
+\paragraph{Questions 3 and 4: How useful did you find the ability to save albums to your collection? \& How valuable did/would you find the social features?}
 The two features that were asked about had very different perceptions from users. Having a collection associated with their account was seen as a good feature, with an average score of $7.71$. The social features were not seen as much of a benefit, with an average score of $5$. Users likely did not see the value in social features in such a small application.
 
 \paragraph{Extra Comments From Users}
