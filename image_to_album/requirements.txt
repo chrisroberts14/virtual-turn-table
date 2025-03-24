@@ -1,4 +1,4 @@
-fastapi[standard]~=0.115.8
+fastapi[standard]~=0.115.12
 filelock~=3.17.0
 
 google-cloud-vision~=3.10.0
