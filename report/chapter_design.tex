@@ -56,9 +56,13 @@ React is a JavaScript library for building interactive web interfaces~\cite{Reac
 
 For this project, the HeroUI component library was utilised~\cite{HeroUI}. It offered a set of pre-designed components that could be assembled into larger, more complex bespoke UI elements to create the final application.
 
-React also managed the application's state and handled backend requests as needed, allowing backend services to remain stateless, reducing complexity and improving scalability.
+React also managed the application's state and handled backend requests as needed. This choice allowed backend services to remain stateless, reducing complexity and improving scalability.
+
+An alternative approach using plain JavaScript and HTML was considered as for a smaller project the initial setup would be much faster but the lack of scalability and maintainability would have been a significant issue as the project grew. Testability would also have been a problem as it would be difficult to test parts of the application in isolation.
 
 \subsection{Docker}
+The application had many dependencies which had to be installed to run the application correctly. This presents a challenge of how to ensure the correct versions are installed at build or run time. A possible solution could be to just installing all required packages on the whole system, however, what if different services require different versions of the same package? A better solution would be to keep all services separate and to run them in different environments. To achieve this, Docker was used.
+
 Docker is a platform for containerising applications, allowing them to run in isolated environments while communicating through specified exposed ports~\cite{DockerDocs}. This approach is widely supported by cloud providers~\cite{AWSDocker,GoogleDocker}, simplifying deployment and providing a consistent environment across different platforms.
 
 For this project, Docker enabled efficient and error-free deployment. When triggered, cloud providers could autonomously build and run each of the four containers when supplied with the codebase and Dockerfile. In addition, if a user wanted to run the application locally, the containerised system could be easily launched on any device running Docker, eliminating the need for manual environment configuration.
@@ -152,7 +156,7 @@ This application could have been implemented as a stateless application, meaning
 
 \subsubsection{SQL vs NoSQL}
 SQL databases are widely used in enterprise environments due to their reliability and consistency. However, relational databases are not necessarily optimal for web applications that require high scalability and availability~\cite{GANESHCHANDRA201513}. In contrast, NoSQL databases are designed with scalability and availability in mind~\cite{NoSQL}, often making them more suitable for such applications.
-Although a NoSQL database like MongoDB would have been a good choice for this project, an SQL database was selected for its easy integration with FastAPI and SQLAlchemy, meaning quicker development and cleaner code, despite not being the most inherently scalable option.
+Although a NoSQL database like MongoDB would have been a good choice for this project, an SQL database was selected for its easy integration with FastAPI and SQLAlchemy, meaning quicker development and cleaner code, despite not being the most inherently scalable option. Though it should be noted that cloud database providers will often automatically scale the database as needed at a cost~\cite{CloudSQLScaling}.
 
 \subsubsection{Diagram}
 \begin{figure} [H]
