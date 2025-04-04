@@ -1,3 +1,5 @@
 {"rule":"HE_VERB_AGR","sentence":"^\\QEach of the three backend services were containerised in the same way using and Alpine Linux image with Python installed.\\E$"}
 {"rule":"THE_NN_AND_THE_NN","sentence":"^\\QOnce the user confirms the album selection the sidebar slides back to the side of the screen and the album is set as the active album.\\E$"}
 {"rule":"POSSESSIVE_APOSTROPHE","sentence":"^\\QNonetheless, once this initial configuration is completed, development within a microservices architecture becomes as straightforward as working with a monolithic architecture.\\E$"}
+{"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QAt that point, designs must remain flexible so they can be easily modified as feedback is collected.\\E$"}
+{"rule":"CD_NN","sentence":"^\\QEach of the four major components—the frontend and three backend services—was containerised with its own configuration and build process.\\E$"}

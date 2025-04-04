@@ -21,3 +21,6 @@ websocket
 subrouters
 Soundsystem
 linted
+pytest-cov
+DMBSs
+artifactory
