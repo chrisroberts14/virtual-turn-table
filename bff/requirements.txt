@@ -6,4 +6,4 @@ pytest-mock~=3.14.0
 pytest-xdist~=3.6.1
 pytest~=8.3.4
 requests~=2.32.3
-starlette~=0.46.1
+starlette~=0.46.2
